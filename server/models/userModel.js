@@ -5,7 +5,11 @@ const userSchema = new Schema(
     fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    profilePhoto: { type: String, default: "" },
+    profilePhoto: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/dglygevqa/image/upload/v1764871016/Sample_User_Icon_bqevwd.png",
+    },
     bio: { type: String, default: "" },
     followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: Schema.Types.ObjectId, ref: "User" }],

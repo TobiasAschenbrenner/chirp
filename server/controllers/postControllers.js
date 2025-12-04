@@ -1,4 +1,4 @@
-const HttpError = require("../middleware/errorMiddleware");
+const HttpError = require("../models/errorModel");
 const PostModel = require("../models/postModel");
 const UserModel = require("../models/userModel");
 

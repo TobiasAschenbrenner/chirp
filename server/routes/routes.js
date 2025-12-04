@@ -21,6 +21,11 @@ const {
   createBookmark,
   getUserBookmarks,
 } = require("../controllers/postControllers");
+const {
+  createComment,
+  getComment,
+  deleteComment,
+} = require("../controllers/commentControllers");
 const authMiddleware = require("../middleware/authMiddleware");
 
 // USER ROUTES
@@ -43,5 +48,10 @@ router.patch("/posts/:id", authMiddleware, updatePost);
 router.delete("/posts/:id", authMiddleware, deletePost);
 router.get("/posts/:id/like", authMiddleware, likeDislikePost);
 router.get("/posts/:id/bookmarks", authMiddleware, createBookmark);
+
+// COMMENT ROUTES
+router.post("/comments/:postId", authMiddleware, createComment);
+router.get("/comments/:postId", authMiddleware, getComment);
+router.delete("/comments/:commentId", authMiddleware, deleteComment);
 
 module.exports = router;
