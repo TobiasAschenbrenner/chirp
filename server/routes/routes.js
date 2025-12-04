@@ -26,6 +26,12 @@ const {
   getComment,
   deleteComment,
 } = require("../controllers/commentControllers");
+const {
+  createMessage,
+  getMessage,
+  getConversations,
+} = require("../controllers/messageControllers");
+
 const authMiddleware = require("../middleware/authMiddleware");
 
 // USER ROUTES
@@ -53,5 +59,10 @@ router.get("/posts/:id/bookmarks", authMiddleware, createBookmark);
 router.post("/comments/:postId", authMiddleware, createComment);
 router.get("/comments/:postId", authMiddleware, getComment);
 router.delete("/comments/:commentId", authMiddleware, deleteComment);
+
+// MESSAGE ROUTES
+router.post("/messages/:receiverId", authMiddleware, createMessage);
+router.get("/messages/:receiverId", authMiddleware, getMessage);
+router.get("/conversations", authMiddleware, getConversations);
 
 module.exports = router;
