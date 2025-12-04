@@ -1,6 +1,7 @@
 const HttpError = require("../models/errorModel");
 const ConversationModel = require("../models/conversationModel");
 const MessageModel = require("../models/messageModel");
+const { io, getReceiverSocketId } = require("../socket/socket");
 
 // CREATE MESSAGE
 // POST : api/messages/:receiverId
@@ -29,6 +30,12 @@ const createMessage = async (req, res, next) => {
     await conversation.updateOne({
       lastMessage: { text: messageBody, senderId: req.user.id },
     });
+
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
+
     res.json(newMessage);
   } catch (error) {
     return next(new HttpError(error));
