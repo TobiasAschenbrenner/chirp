@@ -1,0 +1,12 @@
+# Node
+node_modules
+
+# Env & config
+.env
+
+# Editor / OS
+.vscode/
+.DS_Store
+
+# Uploads
+uploads/
