@@ -1,0 +1,25 @@
+<form class="createPost" enctype="multipart/form-data" (ngSubmit)="onSubmit()">
+  <p *ngIf="error" class="createPost__error-message">
+    {{ error }}
+  </p>
+
+  <div class="createPost__top">
+    <div class="createPost__avatar"></div>
+
+    <textarea name="body" [(ngModel)]="body" placeholder="What's on your mind?" required></textarea>
+  </div>
+
+  <div class="createPost__bottom">
+    <span></span>
+
+    <div class="createPost__actions">
+      <label for="image" class="icon-button" aria-label="Add image">
+        <mat-icon>image</mat-icon>
+      </label>
+
+      <input type="file" id="image" hidden (change)="onFileChange($event)" />
+
+      <button type="submit">Post</button>
+    </div>
+  </div>
+</form>

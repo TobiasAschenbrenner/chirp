@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Sidebar } from '../../components/sidebar/sidebar';
+import { CreatePost } from '../../components/create-post/create-post';
 
 type MockPost = {
   id: string;
@@ -12,11 +13,13 @@ type MockPost = {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, Sidebar],
+  imports: [CommonModule, Sidebar, CreatePost],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })
 export class Home {
+  error = '';
+
   posts: MockPost[] = [
     {
       id: '1',
@@ -28,5 +31,9 @@ export class Home {
 
   openThemes(): void {
     console.log('Open themes modal (todo)');
+  }
+
+  createPost(data: FormData): void {
+    console.log('Create post payload:', data);
   }
 }
