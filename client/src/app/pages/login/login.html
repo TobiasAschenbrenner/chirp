@@ -1,37 +1,46 @@
-<div class="login-container">
-  <h1>Login</h1>
+<section class="register">
+  <div class="container register__container">
+    <h2>Sign in</h2>
 
-  <form (ngSubmit)="onSubmit()" novalidate>
-    <div class="form-group">
-      <label for="email">Email</label>
+    <form (ngSubmit)="loginUser()">
+      <p *ngIf="error" class="form__error-message">{{ error }}</p>
+
       <input
-        id="email"
         type="email"
         name="email"
-        [(ngModel)]="email"
-        required
         placeholder="Email"
+        [(ngModel)]="loginData.email"
+        autofocus
       />
-    </div>
 
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        name="password"
-        [(ngModel)]="password"
-        required
-        placeholder="Password"
-      />
-    </div>
+      <div class="password__controller">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          name="password"
+          placeholder="Password"
+          [(ngModel)]="loginData.password"
+        />
 
-    <button type="submit" [disabled]="loading">
-      {{ loading ? 'Logging in…' : 'Login' }}
-    </button>
+        <span
+          class="password__toggle"
+          role="button"
+          tabindex="0"
+          (click)="togglePassword()"
+          (keydown.enter)="togglePassword()"
+          [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+        >
+          {{ showPassword ? '🙈' : '👁️' }}
+        </span>
+      </div>
 
-    <p class="error" *ngIf="error">
-      {{ error }}
-    </p>
-  </form>
-</div>
+      <p>
+        Don't have an account?
+        <a routerLink="/register">Sign up</a>
+      </p>
+
+      <button type="submit" class="btn primary" [disabled]="loading">
+        {{ loading ? 'Logging in…' : 'Login' }}
+      </button>
+    </form>
+  </div>
+</section>

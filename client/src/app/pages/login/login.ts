@@ -13,31 +13,38 @@ import { Auth } from '../../services/auth/auth';
   styleUrls: ['./login.scss'],
 })
 export class Login {
-  email = '';
-  password = '';
-
+  loginData = { email: '', password: '' };
+  error = '';
+  showPassword = false;
   loading = false;
-  error: string | null = null;
 
   constructor(private auth: Auth, private router: Router) {}
 
-  onSubmit(): void {
-    if (!this.email.trim() || !this.password) {
-      this.error = 'Please enter email and password.';
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  loginUser(): void {
+    this.error = '';
+
+    const email = this.loginData.email.trim();
+    const password = this.loginData.password;
+
+    if (!email || !password) {
+      this.error = 'Email and password are required.';
       return;
     }
 
     this.loading = true;
-    this.error = null;
 
-    this.auth.login({ email: this.email.trim(), password: this.password }).subscribe({
-      next: () => {
+    this.auth.login({ email, password }).subscribe({
+      next: (res) => {
         this.loading = false;
         this.router.navigate(['/home']);
       },
       error: (err) => {
         this.loading = false;
-        this.error = err?.error?.message || 'Login failed. Please try again.';
+        this.error = err?.error?.message || 'Login failed.';
       },
     });
   }
