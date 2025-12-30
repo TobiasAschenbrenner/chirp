@@ -39,7 +39,6 @@ export class Register {
     const password = this.userData.password;
     const confirmPassword = this.userData.confirmPassword;
 
-    // Basic validation like the React tutorial
     if (!fullName || !email || !password || !confirmPassword) {
       this.error = 'Please fill out all fields.';
       return;

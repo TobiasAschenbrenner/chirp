@@ -27,5 +27,10 @@
       [post]="post"
       (postUpdated)="emitUpdatedPost($event)"
     ></app-like-dislike-post>
+
+    <button type="button" class="feed__action" aria-label="Comments">
+      <mat-icon>chat_bubble_outline</mat-icon>
+      <small>{{ post.comments.length || 0 }}</small>
+    </button>
   </footer>
 </article>

@@ -2,7 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export type Post = any;
+export interface Post {
+  _id: string;
+  creator: string;
+  body: string;
+  image: string;
+  likes: string[];
+  comments: string[];
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class Posts {
