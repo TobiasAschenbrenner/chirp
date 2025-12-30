@@ -18,9 +18,9 @@
   </div>
 
   <footer class="feed__footer">
-    <button type="button" class="feed__action" disabled>
-      <mat-icon>favorite_border</mat-icon>
-      <small>{{ post.likes?.length || 0 }}</small>
-    </button>
+    <app-like-dislike-post
+      [post]="post"
+      (postUpdated)="emitUpdatedPost($event)"
+    ></app-like-dislike-post>
   </footer>
 </article>

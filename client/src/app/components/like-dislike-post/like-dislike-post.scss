@@ -1,0 +1,25 @@
+.likeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0.4rem;
+
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+
+  small {
+    opacity: 0.8;
+  }
+}
+
+.likeButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -1,0 +1,10 @@
+<button
+  type="button"
+  class="likeButton"
+  (click)="toggleLike()"
+  [disabled]="busy()"
+  aria-label="Like or unlike post"
+>
+  <mat-icon>{{ liked() ? 'favorite' : 'favorite_border' }}</mat-icon>
+  <small>{{ likesCount() }}</small>
+</button>

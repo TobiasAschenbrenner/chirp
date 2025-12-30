@@ -19,4 +19,8 @@ export class Posts {
   getFollowingPosts() {
     return this.http.get<Post[]>('/api/posts/following');
   }
+
+  likePost(postId: string) {
+    return this.http.get<Post>(`/api/posts/${postId}/like`);
+  }
 }
