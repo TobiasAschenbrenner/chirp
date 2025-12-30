@@ -6,11 +6,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Post } from '../../services/posts/posts';
 import { Users, User } from '../../services/users/users';
 import { LikeDislikePost } from '../like-dislike-post/like-dislike-post';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, MatIconModule, LikeDislikePost],
+  imports: [CommonModule, RouterModule, MatIconModule, LikeDislikePost],
   templateUrl: './feed.html',
   styleUrls: ['./feed.scss'],
 })
@@ -24,12 +25,13 @@ export class Feed implements OnInit {
   constructor(private usersApi: Users, private destroyRef: DestroyRef) {}
 
   ngOnInit(): void {
-    if (!this.post?.creator) return;
+    const creatorId = this.creatorId();
+    if (!creatorId) return;
 
     this.creatorLoading.set(true);
 
     this.usersApi
-      .getUser(this.post.creator)
+      .getUser(creatorId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (user) => {
@@ -41,6 +43,12 @@ export class Feed implements OnInit {
           this.creatorLoading.set(false);
         },
       });
+  }
+
+  private creatorId(): string | null {
+    const c = this.post?.creator;
+    if (!c) return null;
+    return typeof c === 'string' ? c : c._id;
   }
 
   emitUpdatedPost(updated: Post): void {

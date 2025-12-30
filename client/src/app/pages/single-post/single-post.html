@@ -1,0 +1,62 @@
+<section class="singlePost">
+  <p *ngIf="loading()">Loading…</p>
+  <p *ngIf="error()" class="error">{{ error() }}</p>
+
+  <ng-container *ngIf="post() as p">
+    <header class="feed__header">
+      <img
+        class="avatar"
+        *ngIf="creator()?.profilePhoto"
+        [src]="creator()!.profilePhoto"
+        alt="Profile"
+      />
+
+      <div class="feed__header-details">
+        <h4>{{ creator()?.fullName || 'User' }}</h4>
+        <small>{{ p.createdAt || '' }}</small>
+      </div>
+    </header>
+
+    <div class="feed__body">
+      <p>{{ p.body }}</p>
+      <div class="feed__images">
+        <img *ngIf="p.image" [src]="p.image" alt="Post image" />
+      </div>
+    </div>
+
+    <footer class="feed__footer">
+      <div class="actions-left">
+        <app-like-dislike-post
+          [post]="p"
+          (postUpdated)="onPostUpdated($event)"
+        ></app-like-dislike-post>
+
+        <button type="button" class="feed__action" aria-label="Comments">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          <small>{{ comments().length }}</small>
+        </button>
+      </div>
+    </footer>
+
+    <ul class="singlePost__comments">
+      <form class="singlePost__comments-form" (ngSubmit)="createComment()">
+        <textarea
+          placeholder="Enter your comment..."
+          name="comment"
+          [ngModel]="commentText()"
+          (ngModelChange)="commentText.set($event)"
+        ></textarea>
+
+        <button class="singlePost__comments-btn" type="submit" aria-label="Send">
+          <mat-icon>send</mat-icon>
+        </button>
+      </form>
+
+      <app-post-comment
+        *ngFor="let c of comments()"
+        [comment]="c"
+        (delete)="deleteComment($event)"
+      ></app-post-comment>
+    </ul>
+  </ng-container>
+</section>
