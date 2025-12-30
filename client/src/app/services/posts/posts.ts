@@ -11,4 +11,12 @@ export class Posts {
   createPost(data: FormData): Observable<Post> {
     return this.http.post<Post>('/api/posts', data);
   }
+
+  getPosts() {
+    return this.http.get<Post[]>('/api/posts');
+  }
+
+  getFollowingPosts() {
+    return this.http.get<Post[]>('/api/posts/following');
+  }
 }

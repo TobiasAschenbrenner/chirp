@@ -1,0 +1,9 @@
+<div class="forYouOrFollowing">
+  <button type="button" [class.active]="active === 'foryou'" (click)="setMode('foryou')">
+    For you
+  </button>
+
+  <button type="button" [class.active]="active === 'following'" (click)="setMode('following')">
+    Following
+  </button>
+</div>
