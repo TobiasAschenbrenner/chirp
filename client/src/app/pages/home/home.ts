@@ -7,12 +7,14 @@ import { ForYouOrFollowing } from '../../components/for-you-or-following/for-you
 
 import { Posts, Post } from '../../services/posts/posts';
 
+import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
+
 type FeedMode = 'foryou' | 'following';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, Sidebar, CreatePost, ForYouOrFollowing],
+  imports: [CommonModule, Sidebar, CreatePost, ForYouOrFollowing, FeedSkeleton],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })

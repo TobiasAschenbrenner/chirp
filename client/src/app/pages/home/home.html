@@ -10,17 +10,21 @@
         (modeChange)="onModeChange($event)"
       ></app-for-you-or-following>
 
-      <p *ngIf="loading()">Loading…</p>
+      <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
 
-      <div class="feed">
-        <article class="post" *ngFor="let post of posts()">
-          <p class="post__body">{{ post.body }}</p>
+      <ng-container *ngIf="!loading()">
+        <p *ngIf="posts().length === 0" class="center">No posts found</p>
 
-          <img *ngIf="post.image" class="post__image" [src]="post.image" alt="Post image" />
+        <div class="feed" *ngIf="posts().length > 0">
+          <article class="post" *ngFor="let post of posts()">
+            <p class="post__body">{{ post.body }}</p>
 
-          <small class="post__meta">Creator: {{ post.creator }}</small>
-        </article>
-      </div>
+            <img *ngIf="post.image" class="post__image" [src]="post.image" alt="Post image" />
+
+            <small class="post__meta">Creator: {{ post.creator }}</small>
+          </article>
+        </div>
+      </ng-container>
     </div>
   </div>
 </section>
