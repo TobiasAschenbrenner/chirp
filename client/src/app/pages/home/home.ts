@@ -1,20 +1,19 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { CreatePost } from '../../components/create-post/create-post';
 import { ForYouOrFollowing } from '../../components/for-you-or-following/for-you-or-following';
-
 import { Posts, Post } from '../../services/posts/posts';
-
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
+
+import { Feeds } from '../../components/feeds/feeds';
 
 type FeedMode = 'foryou' | 'following';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, Sidebar, CreatePost, ForYouOrFollowing, FeedSkeleton],
+  imports: [CommonModule, Sidebar, CreatePost, ForYouOrFollowing, FeedSkeleton, Feeds],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })
@@ -32,6 +31,10 @@ export class Home implements OnInit {
 
   openThemes(): void {
     console.log('Open themes modal (todo)');
+  }
+
+  onPostUpdated(updated: Post): void {
+    this.posts.update((list) => list.map((p) => (p._id === updated._id ? updated : p)));
   }
 
   onModeChange(mode: FeedMode): void {

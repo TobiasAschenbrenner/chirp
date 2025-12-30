@@ -1,0 +1,26 @@
+<article class="feed">
+  <header class="feed__header">
+    <div class="feed__header-left">
+      <div class="feed__avatar"></div>
+      <div class="feed__header-details">
+        <h4 class="feed__name">User</h4>
+        <small class="feed__time">{{ post.createdAt || '' }}</small>
+      </div>
+    </div>
+  </header>
+
+  <div class="feed__body">
+    <p class="feed__text">{{ post.body }}</p>
+
+    <div class="feed__images" *ngIf="post.image">
+      <img [src]="post.image" alt="Post image" />
+    </div>
+  </div>
+
+  <footer class="feed__footer">
+    <button type="button" class="feed__action" disabled>
+      <mat-icon>favorite_border</mat-icon>
+      <small>{{ post.likes?.length || 0 }}</small>
+    </button>
+  </footer>
+</article>

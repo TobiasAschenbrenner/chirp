@@ -1,0 +1,9 @@
+<div class="feeds">
+  <p *ngIf="posts.length === 0" class="center">No posts found</p>
+
+  <app-feed
+    *ngFor="let post of posts"
+    [post]="post"
+    (postUpdated)="onPostUpdated($event)"
+  ></app-feed>
+</div>

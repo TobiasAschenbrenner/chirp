@@ -13,17 +13,7 @@
       <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
 
       <ng-container *ngIf="!loading()">
-        <p *ngIf="posts().length === 0" class="center">No posts found</p>
-
-        <div class="feed" *ngIf="posts().length > 0">
-          <article class="post" *ngFor="let post of posts()">
-            <p class="post__body">{{ post.body }}</p>
-
-            <img *ngIf="post.image" class="post__image" [src]="post.image" alt="Post image" />
-
-            <small class="post__meta">Creator: {{ post.creator }}</small>
-          </article>
-        </div>
+        <app-feeds [posts]="posts()" (postUpdated)="onPostUpdated($event)"></app-feeds>
       </ng-container>
     </div>
   </div>
