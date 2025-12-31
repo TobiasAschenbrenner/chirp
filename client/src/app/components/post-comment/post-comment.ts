@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, DestroyRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Auth } from '../../services/auth/auth';
+import { Users, User } from '../../services/users/users';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { ProfileImage } from '../profile-image/profile-image';
 
@@ -26,21 +28,45 @@ type Comment = {
   templateUrl: './post-comment.html',
   styleUrls: ['./post-comment.scss'],
 })
-export class PostComment {
+export class PostComment implements OnInit {
   @Input({ required: true }) comment!: Comment;
   @Output() delete = new EventEmitter<string>();
 
-  constructor(private auth: Auth) {}
+  liveCreator = signal<User | null>(null);
 
-  creator(): CommentCreator | null {
+  constructor(private auth: Auth, private usersApi: Users, private destroyRef: DestroyRef) {}
+
+  ngOnInit(): void {
+    const creatorId = this.creatorId();
+    if (!creatorId) return;
+
+    this.usersApi
+      .getUser(creatorId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (user) => this.liveCreator.set(user),
+        error: () => this.liveCreator.set(null),
+      });
+  }
+
+  private creatorId(): string | null {
     const c = this.comment.creator;
-    return typeof c === 'string' ? null : c;
+    if (!c) return null;
+    return typeof c === 'string' ? c : c.creatorId;
+  }
+
+  creatorName(): string {
+    return this.liveCreator()?.fullName ?? 'User';
+  }
+
+  photoUrl(): string | null {
+    return this.liveCreator()?.profilePhoto ?? null;
   }
 
   isOwner(): boolean {
     const me = this.auth.getUserId();
-    const c = this.creator();
-    return !!me && !!c?.creatorId && me === c.creatorId;
+    const creatorId = this.creatorId();
+    return !!me && !!creatorId && me === creatorId;
   }
 
   onDelete(): void {

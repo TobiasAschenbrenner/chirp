@@ -1,13 +1,9 @@
 <li class="comment">
-  <app-profile-image
-    *ngIf="creator()?.creatorPhoto"
-    [src]="creator()!.creatorPhoto"
-    size="sm"
-  ></app-profile-image>
+  <app-profile-image *ngIf="photoUrl()" [src]="photoUrl()!" size="sm"></app-profile-image>
 
   <div class="comment__body">
     <div class="comment__meta">
-      <strong>{{ creator()?.creatorName || 'User' }}</strong>
+      <strong>{{ creatorName() }}</strong>
       <small>{{ comment.createdAt | timeAgo }}</small>
     </div>
     <p>{{ comment.comment }}</p>
