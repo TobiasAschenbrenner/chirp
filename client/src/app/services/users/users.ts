@@ -41,7 +41,7 @@ export class Users {
   changeAvatar(file: File) {
     const fd = new FormData();
     fd.set('avatar', file);
-    return this.http.patch<User>(`/api/users/avatar`, fd);
+    return this.http.post<User>(`/api/users/avatar`, fd);
   }
 
   updateProfile(data: { fullName: string; bio: string }) {

@@ -1,6 +1,6 @@
 <section class="profile">
   <div class="profile__container">
-    <form class="profile__image" (ngSubmit)="submitAvatar()">
+    <div class="profile__image">
       <img [src]="user.profilePhoto" alt="Profile photo" />
 
       <label
@@ -14,8 +14,9 @@
 
       <button
         *ngIf="avatarTouched()"
-        type="submit"
+        type="button"
         class="profile__image-btn"
+        (click)="submitAvatar()"
         aria-label="Save avatar"
       >
         <mat-icon>check</mat-icon>
@@ -27,7 +28,7 @@
         accept="image/png, image/jpeg"
         (change)="onPickAvatar($event)"
       />
-    </form>
+    </div>
 
     <h4>{{ user.fullName }}</h4>
 
