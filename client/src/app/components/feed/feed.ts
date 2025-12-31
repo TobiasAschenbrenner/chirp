@@ -7,11 +7,12 @@ import { Post } from '../../services/posts/posts';
 import { Users, User } from '../../services/users/users';
 import { LikeDislikePost } from '../like-dislike-post/like-dislike-post';
 import { RouterModule } from '@angular/router';
+import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, LikeDislikePost],
+  imports: [CommonModule, RouterModule, MatIconModule, LikeDislikePost, TimeAgoPipe],
   templateUrl: './feed.html',
   styleUrls: ['./feed.scss'],
 })

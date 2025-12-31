@@ -13,7 +13,7 @@
 
       <div class="feed__header-details">
         <h4>{{ creator()?.fullName || 'User' }}</h4>
-        <small>{{ p.createdAt || '' }}</small>
+        <small>{{ p.createdAt | timeAgo }}</small>
       </div>
     </header>
 

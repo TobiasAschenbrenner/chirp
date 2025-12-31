@@ -9,7 +9,7 @@
         <h4 class="feed__name">
           {{ creator()?.fullName || (creatorLoading() ? 'Loading…' : 'Unknown user') }}
         </h4>
-        <small class="feed__time">{{ post.createdAt || '' }}</small>
+        <small class="feed__time">{{ post.createdAt | timeAgo }}</small>
       </div>
     </div>
   </header>

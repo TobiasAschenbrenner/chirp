@@ -8,11 +8,20 @@ import { Posts, Post, Comment, PostUser } from '../../services/posts/posts';
 import { Comments as CommentsApi } from '../../services/comments/comments';
 import { LikeDislikePost } from '../../components/like-dislike-post/like-dislike-post';
 import { PostComment } from '../../components/post-comment/post-comment';
+import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 
 @Component({
   selector: 'app-single-post',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MatIconModule, LikeDislikePost, PostComment],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatIconModule,
+    LikeDislikePost,
+    PostComment,
+    TimeAgoPipe,
+  ],
   templateUrl: './single-post.html',
   styleUrls: ['./single-post.scss'],
 })
