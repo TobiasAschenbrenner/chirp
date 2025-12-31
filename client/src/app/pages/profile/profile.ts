@@ -9,6 +9,9 @@ import { Feeds } from '../../components/feeds/feeds';
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
 import { UserProfile } from '../../components/user-profile/user-profile';
 
+import { MatDialog } from '@angular/material/dialog';
+import { EditProfileDialog } from '../../components/edit-profile-dialog/edit-profile-dialog';
+
 import { Auth } from '../../services/auth/auth';
 
 @Component({
@@ -24,7 +27,12 @@ export class Profile implements OnInit {
   loading = signal(true);
   error = signal('');
 
-  constructor(private route: ActivatedRoute, private usersApi: Users, private auth: Auth) {}
+  constructor(
+    private route: ActivatedRoute,
+    private usersApi: Users,
+    private auth: Auth,
+    private dialog: MatDialog
+  ) {}
 
   toggleFollow(): void {
     const u = this.user();
@@ -44,7 +52,18 @@ export class Profile implements OnInit {
   }
 
   openEditProfile(): void {
-    console.log('Edit profile modal later');
+    const u = this.user();
+    if (!u) return;
+
+    const ref = this.dialog.open(EditProfileDialog, {
+      data: { user: u },
+    });
+
+    ref.afterClosed().subscribe((updated?: User) => {
+      if (updated) {
+        this.user.set(updated);
+      }
+    });
   }
 
   ngOnInit(): void {

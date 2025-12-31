@@ -1,0 +1,22 @@
+<h3 class="title">Edit profile</h3>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="form">
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <label class="field">
+    <span>Full name</span>
+    <input type="text" formControlName="fullName" />
+  </label>
+
+  <label class="field">
+    <span>Bio</span>
+    <textarea rows="4" formControlName="bio"></textarea>
+  </label>
+
+  <div class="actions">
+    <button mat-button type="button" (click)="close()" [disabled]="saving">Cancel</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="saving || form.invalid">
+      {{ saving ? 'Saving…' : 'Update' }}
+    </button>
+  </div>
+</form>

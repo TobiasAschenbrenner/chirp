@@ -43,4 +43,8 @@ export class Users {
     fd.set('avatar', file);
     return this.http.patch<User>(`/api/users/avatar`, fd);
   }
+
+  updateProfile(data: { fullName: string; bio: string }) {
+    return this.http.patch<User>(`/api/users/edit`, data);
+  }
 }
