@@ -1,7 +1,7 @@
 <section class="profile">
   <div class="profile__container">
     <div class="profile__image">
-      <img [src]="user.profilePhoto" alt="Profile photo" />
+      <app-profile-image [src]="user.profilePhoto" size="lg"></app-profile-image>
 
       <label
         *ngIf="!avatarTouched()"

@@ -6,11 +6,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
+import { ProfileImage } from '../profile-image/profile-image';
 
 @Component({
   selector: 'app-create-post',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, ProfileImage],
   templateUrl: './create-post.html',
   styleUrls: ['./create-post.scss'],
 })

@@ -11,11 +11,20 @@ import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 import { LikeDislikePost } from '../like-dislike-post/like-dislike-post';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
+import { ProfileImage } from '../profile-image/profile-image';
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, MatIconModule, FormsModule, LikeDislikePost, TimeAgoPipe, RouterModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    FormsModule,
+    LikeDislikePost,
+    TimeAgoPipe,
+    RouterModule,
+    ProfileImage,
+  ],
   templateUrl: './feed.html',
   styleUrls: ['./feed.scss'],
 })

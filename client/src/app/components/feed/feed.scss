@@ -16,21 +16,6 @@
   align-items: center;
 }
 
-.feed__avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  border: 1px solid #dcdcdc;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-}
-
 .feed__name {
   margin: 0;
   font-size: 1rem;

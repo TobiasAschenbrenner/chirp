@@ -2,7 +2,11 @@
   <header class="feed__header">
     <div class="feed__header-left">
       <div class="feed__avatar">
-        <img *ngIf="creator()?.profilePhoto" [src]="creator()!.profilePhoto" alt="Profile" />
+        <app-profile-image
+          *ngIf="creator()?.profilePhoto"
+          [src]="creator()!.profilePhoto"
+          size="sm"
+        ></app-profile-image>
       </div>
 
       <div class="feed__header-details">
@@ -11,7 +15,6 @@
       </div>
     </div>
 
-    <!-- Owner actions -->
     <div *ngIf="isOwner()" class="feed__header-actions">
       <button type="button" class="iconBtn" (click)="startEdit()" [disabled]="busy()">
         <mat-icon>edit</mat-icon>

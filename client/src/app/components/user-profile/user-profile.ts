@@ -5,11 +5,12 @@ import { RouterModule } from '@angular/router';
 
 import { User } from '../../services/users/users';
 import { Auth } from '../../services/auth/auth';
+import { ProfileImage } from '../profile-image/profile-image';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterModule],
+  imports: [CommonModule, MatIconModule, RouterModule, ProfileImage],
   templateUrl: './user-profile.html',
   styleUrls: ['./user-profile.scss'],
 })

@@ -7,11 +7,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
+import { ProfileImage } from '../profile-image/profile-image';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, MatIconModule],
+  imports: [CommonModule, RouterModule, FormsModule, MatIconModule, ProfileImage],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.scss'],
 })

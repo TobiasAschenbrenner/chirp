@@ -23,7 +23,11 @@
         aria-label="Profile"
       >
         <div class="navbar__avatar">
-          <img *ngIf="user()?.profilePhoto" [src]="user()!.profilePhoto" alt="Profile" />
+          <app-profile-image
+            *ngIf="user()?.profilePhoto"
+            [src]="user()!.profilePhoto"
+            size="sm"
+          ></app-profile-image>
         </div>
       </a>
 

@@ -1,10 +1,9 @@
 <li class="comment">
-  <img
-    class="comment__avatar"
+  <app-profile-image
     *ngIf="creator()?.creatorPhoto"
     [src]="creator()!.creatorPhoto"
-    alt="Profile"
-  />
+    size="sm"
+  ></app-profile-image>
 
   <div class="comment__body">
     <div class="comment__meta">

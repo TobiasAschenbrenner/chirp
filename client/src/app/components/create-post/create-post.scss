@@ -29,19 +29,8 @@
 .createPost__avatar {
   width: 42px;
   height: 42px;
-  border-radius: 999px;
-  border: 1px solid #dcdcdc;
-  overflow: hidden;
-
   display: grid;
   place-items: center;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
 }
 
 .createPost__bottom {
