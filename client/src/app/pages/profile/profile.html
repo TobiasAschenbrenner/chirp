@@ -2,23 +2,12 @@
   <p *ngIf="error()" class="error">{{ error() }}</p>
 
   <ng-container *ngIf="user() as u">
-    <header class="profile__header">
-      <img class="profile__avatar" [src]="u.profilePhoto" alt="Profile" />
-
-      <div class="profile__info">
-        <h2 class="profile__name">{{ u.fullName }}</h2>
-        <p class="profile__bio" *ngIf="u.bio">{{ u.bio }}</p>
-
-        <div class="profile__stats">
-          <span
-            ><strong>{{ u.followers?.length || 0 }}</strong> Followers</span
-          >
-          <span
-            ><strong>{{ u.following?.length || 0 }}</strong> Following</span
-          >
-        </div>
-      </div>
-    </header>
+    <app-user-profile
+      [user]="u"
+      (followToggle)="toggleFollow()"
+      (avatarChange)="changeAvatar($event)"
+      (editProfile)="openEditProfile()"
+    ></app-user-profile>
 
     <h3 class="profile__posts-title">{{ u.fullName }}'s posts</h3>
   </ng-container>

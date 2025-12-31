@@ -7,11 +7,14 @@ import { Post } from '../../services/posts/posts';
 
 import { Feeds } from '../../components/feeds/feeds';
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
+import { UserProfile } from '../../components/user-profile/user-profile';
+
+import { Auth } from '../../services/auth/auth';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, Feeds, FeedSkeleton],
+  imports: [CommonModule, Feeds, FeedSkeleton, UserProfile],
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss'],
 })
@@ -21,7 +24,28 @@ export class Profile implements OnInit {
   loading = signal(true);
   error = signal('');
 
-  constructor(private route: ActivatedRoute, private usersApi: Users) {}
+  constructor(private route: ActivatedRoute, private usersApi: Users, private auth: Auth) {}
+
+  toggleFollow(): void {
+    const u = this.user();
+    if (!u?._id) return;
+
+    this.usersApi.followUnfollow(u._id).subscribe({
+      next: (updated) => this.user.set(updated),
+      error: (err) => console.log(err),
+    });
+  }
+
+  changeAvatar(file: File): void {
+    this.usersApi.changeAvatar(file).subscribe({
+      next: (updated) => this.user.set(updated),
+      error: (err) => console.log(err),
+    });
+  }
+
+  openEditProfile(): void {
+    console.log('Edit profile modal later');
+  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

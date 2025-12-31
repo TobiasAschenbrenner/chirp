@@ -33,4 +33,14 @@ export class Users {
   getUserPosts(id: string) {
     return this.http.get<{ posts: Post[] }>(`/api/users/${id}/posts`);
   }
+
+  followUnfollow(userId: string) {
+    return this.http.get<User>(`/api/users/${userId}/follow-unfollow`);
+  }
+
+  changeAvatar(file: File) {
+    const fd = new FormData();
+    fd.set('avatar', file);
+    return this.http.patch<User>(`/api/users/avatar`, fd);
+  }
 }
