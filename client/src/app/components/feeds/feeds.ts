@@ -14,6 +14,11 @@ import { Post } from '../../services/posts/posts';
 export class Feeds {
   @Input() posts: Post[] = [];
   @Output() postUpdated = new EventEmitter<Post>();
+  @Output() postDeleted = new EventEmitter<string>();
+
+  onPostDeleted(id: string): void {
+    this.postDeleted.emit(id);
+  }
 
   onPostUpdated(updated: Post): void {
     this.postUpdated.emit(updated);

@@ -8,5 +8,9 @@
 <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
 
 <ng-container *ngIf="!loading()">
-  <app-feeds [posts]="posts()" (postUpdated)="onPostUpdated($event)"></app-feeds>
+  <app-feeds
+    [posts]="posts()"
+    (postUpdated)="onPostUpdated($event)"
+    (postDeleted)="onPostDeleted($event)"
+  ></app-feeds>
 </ng-container>

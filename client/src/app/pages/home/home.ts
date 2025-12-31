@@ -1,6 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Sidebar } from '../../components/sidebar/sidebar';
 import { CreatePost } from '../../components/create-post/create-post';
 import { ForYouOrFollowing } from '../../components/for-you-or-following/for-you-or-following';
 import { Posts, Post } from '../../services/posts/posts';
@@ -13,7 +12,7 @@ type FeedMode = 'foryou' | 'following';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, Sidebar, CreatePost, ForYouOrFollowing, FeedSkeleton, Feeds],
+  imports: [CommonModule, CreatePost, ForYouOrFollowing, FeedSkeleton, Feeds],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })
@@ -35,6 +34,10 @@ export class Home implements OnInit {
 
   onPostUpdated(updated: Post): void {
     this.posts.update((list) => list.map((p) => (p._id === updated._id ? updated : p)));
+  }
+
+  onPostDeleted(postId: string): void {
+    this.posts.update((list) => list.filter((p) => p._id !== postId));
   }
 
   onModeChange(mode: FeedMode): void {

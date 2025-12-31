@@ -6,16 +6,37 @@
       </div>
 
       <div class="feed__header-details">
-        <h4 class="feed__name">
-          {{ creator()?.fullName || (creatorLoading() ? 'Loading…' : 'Unknown user') }}
-        </h4>
+        <h4 class="feed__name">{{ creator()?.fullName || 'User' }}</h4>
         <small class="feed__time">{{ post.createdAt | timeAgo }}</small>
       </div>
+    </div>
+
+    <!-- Owner actions -->
+    <div *ngIf="isOwner()" class="feed__header-actions">
+      <button type="button" class="iconBtn" (click)="startEdit()" [disabled]="busy()">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button type="button" class="iconBtn" (click)="deletePost()" [disabled]="busy()">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
     </div>
   </header>
 
   <div class="feed__body">
-    <p class="feed__text">{{ post.body }}</p>
+    <div *ngIf="editing(); else readMode" class="feed__edit">
+      <textarea [ngModel]="editBody()" (ngModelChange)="editBody.set($event)" rows="3"></textarea>
+
+      <div class="feed__edit-actions">
+        <button type="button" class="btn" (click)="cancelEdit()" [disabled]="busy()">Cancel</button>
+        <button type="button" class="btn primary" (click)="saveEdit()" [disabled]="busy()">
+          Save
+        </button>
+      </div>
+    </div>
+
+    <ng-template #readMode>
+      <p class="feed__text">{{ post.body }}</p>
+    </ng-template>
 
     <div class="feed__images" *ngIf="post.image">
       <img [src]="post.image" alt="Post image" />

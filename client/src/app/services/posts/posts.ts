@@ -10,10 +10,9 @@ export interface PostUser {
 
 export interface Comment {
   _id: string;
-  creator: PostUser | string;
-  post?: string;
   comment: string;
   createdAt?: string;
+  creator: string | CommentCreator;
 }
 
 export interface Post {
@@ -25,6 +24,12 @@ export interface Post {
   comments: (string | Comment)[];
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface CommentCreator {
+  creatorId: string;
+  creatorName: string;
+  creatorPhoto: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -49,5 +54,13 @@ export class Posts {
 
   getPost(id: string) {
     return this.http.get<Post>(`/api/posts/${id}`);
+  }
+
+  deletePost(postId: string) {
+    return this.http.delete<{ message?: string }>(`/api/posts/${postId}`);
+  }
+
+  editPost(postId: string, body: string) {
+    return this.http.patch<Post>(`/api/posts/${postId}`, { body });
   }
 }
