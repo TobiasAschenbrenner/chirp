@@ -47,4 +47,8 @@ export class Users {
   updateProfile(data: { fullName: string; bio: string }) {
     return this.http.patch<User>(`/api/users/edit`, data);
   }
+
+  getBookmarks() {
+    return this.http.get<{ bookmarks: Post[] }>(`/api/users/bookmarks`);
+  }
 }

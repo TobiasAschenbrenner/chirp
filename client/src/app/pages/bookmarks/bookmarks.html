@@ -1,0 +1,18 @@
+<section class="bookmarks">
+  <h2 class="bookmarks__title">Bookmarks</h2>
+
+  <p *ngIf="error()" class="error">{{ error() }}</p>
+
+  <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
+
+  <ng-container *ngIf="!loading()">
+    <p class="center" *ngIf="bookmarks().length < 1">No posts bookmarked</p>
+
+    <app-feeds
+      *ngIf="bookmarks().length > 0"
+      [posts]="bookmarks()"
+      (postUpdated)="onPostUpdated($event)"
+      (postDeleted)="onPostDeleted($event)"
+    ></app-feeds>
+  </ng-container>
+</section>

@@ -7,6 +7,7 @@ import { Home } from './pages/home/home';
 import { Profile } from './pages/profile/profile';
 import { SinglePost } from './pages/single-post/single-post';
 import { MainLayout } from './pages/main-layout/main-layout';
+import { Bookmarks } from './pages/bookmarks/bookmarks';
 
 import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
@@ -23,6 +24,7 @@ export const routes: Routes = [
       { path: 'home', component: Home },
       { path: 'posts/:id', component: SinglePost },
       { path: 'users/:id', component: Profile },
+      { path: 'bookmarks', component: Bookmarks },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },
