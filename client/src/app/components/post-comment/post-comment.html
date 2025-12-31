@@ -1,17 +1,23 @@
 <li class="comment">
   <img
     class="comment__avatar"
-    *ngIf="creator()?.profilePhoto"
-    [src]="creator()!.profilePhoto"
+    *ngIf="creator()?.creatorPhoto"
+    [src]="creator()!.creatorPhoto"
     alt="Profile"
   />
 
   <div class="comment__body">
-    <strong>{{ creator()?.fullName || 'User' }}</strong>
+    <strong>{{ creator()?.creatorName || 'User' }}</strong>
     <p>{{ comment.comment }}</p>
   </div>
 
-  <button type="button" class="comment__delete" (click)="onDelete()" aria-label="Delete">
+  <button
+    *ngIf="isOwner()"
+    type="button"
+    class="comment__delete"
+    (click)="onDelete()"
+    aria-label="Delete"
+  >
     <mat-icon>delete_outline</mat-icon>
   </button>
 </li>
