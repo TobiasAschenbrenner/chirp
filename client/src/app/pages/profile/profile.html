@@ -3,10 +3,12 @@
 
   <ng-container *ngIf="user() as u">
     <app-user-profile
+      *ngIf="user() as u"
       [user]="u"
+      [busy]="busy()"
       (followToggle)="toggleFollow()"
-      (avatarChange)="changeAvatar($event)"
       (editProfile)="openEditProfile()"
+      (avatarChange)="changeAvatar($event)"
     ></app-user-profile>
 
     <h3 class="profile__posts-title">{{ u.fullName }}'s posts</h3>

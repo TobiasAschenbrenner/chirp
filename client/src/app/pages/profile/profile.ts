@@ -34,13 +34,39 @@ export class Profile implements OnInit {
     private dialog: MatDialog
   ) {}
 
-  toggleFollow(): void {
-    const u = this.user();
-    if (!u?._id) return;
+  busy = signal(false);
 
-    this.usersApi.followUnfollow(u._id).subscribe({
-      next: (updated) => this.user.set(updated),
-      error: (err) => console.log(err),
+  toggleFollow(): void {
+    const profile = this.user();
+    if (!profile?._id || this.busy()) return;
+
+    const myId = this.auth.getUserId();
+    if (!myId) return;
+
+    this.busy.set(true);
+
+    this.usersApi.followUnfollow(profile._id).subscribe({
+      next: () => {
+        this.user.update((u) => {
+          if (!u) return u;
+
+          const followers = Array.isArray((u as any).followers) ? [...(u as any).followers] : [];
+
+          const ids = followers
+            .map((f: any) => (typeof f === 'string' ? f : f?._id))
+            .filter(Boolean) as string[];
+
+          const hasMe = ids.includes(myId);
+          const nextIds = hasMe ? ids.filter((id) => id !== myId) : [myId, ...ids];
+
+          return { ...(u as any), followers: nextIds } as any;
+        });
+        this.busy.set(false);
+      },
+      error: (err) => {
+        console.log(err);
+        this.busy.set(false);
+      },
     });
   }
 

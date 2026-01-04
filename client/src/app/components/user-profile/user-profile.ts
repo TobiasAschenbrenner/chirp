@@ -15,7 +15,17 @@ import { ProfileImage } from '../profile-image/profile-image';
   styleUrls: ['./user-profile.scss'],
 })
 export class UserProfile {
-  @Input({ required: true }) user!: User;
+  private _user = signal<User | null>(null);
+
+  @Input({ required: true })
+  set user(value: User) {
+    this._user.set(value);
+  }
+  get user(): User {
+    return this._user() as User;
+  }
+
+  @Input() busy = false;
 
   @Output() editProfile = new EventEmitter<void>();
   @Output() followToggle = new EventEmitter<void>();
@@ -26,12 +36,41 @@ export class UserProfile {
 
   constructor(public auth: Auth) {}
 
-  isOwnProfile = computed(() => this.auth.getUserId() === this.user?._id);
+  isOwnProfile = computed(() => {
+    const u = this._user();
+    return !!u && this.auth.getUserId() === u._id;
+  });
 
   followsUser = computed(() => {
+    const u = this._user();
     const me = this.auth.getUserId();
-    return !!me && Array.isArray(this.user?.followers) && this.user.followers.includes(me);
+    if (!u || !me) return false;
+
+    const followers = (u as any).followers;
+    if (!Array.isArray(followers)) return false;
+
+    return followers.some((f: any) => (typeof f === 'string' ? f === me : f?._id === me));
   });
+
+  followerCount = computed(() => {
+    const u = this._user();
+    const followers = u ? (u as any).followers : null;
+    return Array.isArray(followers) ? followers.length : 0;
+  });
+
+  followingCount = computed(() => {
+    const u = this._user();
+    const following = u ? (u as any).following : null;
+    return Array.isArray(following) ? following.length : 0;
+  });
+
+  onEditProfile(): void {
+    this.editProfile.emit();
+  }
+
+  onFollowToggle(): void {
+    this.followToggle.emit();
+  }
 
   onPickAvatar(event: Event): void {
     const input = event.target as HTMLInputElement;

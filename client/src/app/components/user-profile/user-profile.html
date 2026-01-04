@@ -4,7 +4,7 @@
       <app-profile-image [src]="user.profilePhoto" size="lg"></app-profile-image>
 
       <label
-        *ngIf="!avatarTouched()"
+        *ngIf="isOwnProfile() && !avatarTouched()"
         for="avatar"
         class="profile__image-edit"
         aria-label="Change avatar"
@@ -13,16 +13,18 @@
       </label>
 
       <button
-        *ngIf="avatarTouched()"
+        *ngIf="isOwnProfile() && avatarTouched()"
         type="button"
         class="profile__image-btn"
         (click)="submitAvatar()"
+        [disabled]="busy"
         aria-label="Save avatar"
       >
         <mat-icon>check</mat-icon>
       </button>
 
       <input
+        *ngIf="isOwnProfile()"
         id="avatar"
         type="file"
         accept="image/png, image/jpeg"
@@ -30,31 +32,39 @@
       />
     </div>
 
-    <h4>{{ user.fullName }}</h4>
+    <h4 class="profile__name">{{ user.fullName }}</h4>
 
     <ul class="profile__follows">
       <li>
-        <h4>{{ user.following?.length || 0 }}</h4>
+        <h4>{{ followingCount() }}</h4>
         <small>Following</small>
       </li>
       <li>
-        <h4>{{ user.followers?.length || 0 }}</h4>
+        <h4>{{ followerCount() }}</h4>
         <small>Followers</small>
       </li>
     </ul>
 
     <div class="profile__actions-wrapper">
-      <button *ngIf="isOwnProfile()" type="button" class="btn" (click)="editProfile.emit()">
+      <button
+        *ngIf="isOwnProfile()"
+        type="button"
+        class="btn"
+        (click)="onEditProfile()"
+        [disabled]="busy"
+      >
         Edit profile
       </button>
 
-      <button *ngIf="!isOwnProfile()" type="button" class="btn dark" (click)="followToggle.emit()">
+      <button
+        *ngIf="!isOwnProfile()"
+        type="button"
+        class="btn dark"
+        (click)="onFollowToggle()"
+        [disabled]="busy"
+      >
         {{ followsUser() ? 'Unfollow' : 'Follow' }}
       </button>
-
-      <a *ngIf="!isOwnProfile()" class="btn default" [routerLink]="['/messages', user._id]">
-        Message
-      </a>
     </div>
 
     <article class="profile__bio" *ngIf="user.bio">

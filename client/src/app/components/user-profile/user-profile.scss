@@ -1,6 +1,7 @@
 .profile {
   background: #fff;
-  border-radius: 12px;
+  border: 1px solid #eee;
+  border-radius: 14px;
   padding: 1.25rem;
   margin-bottom: 1.5rem;
 }
@@ -14,6 +15,9 @@
 
 .profile__image {
   position: relative;
+  display: inline-grid;
+  place-items: center;
+  margin-bottom: 0.75rem;
 
   input[type='file'] {
     display: none;
@@ -23,53 +27,81 @@
 .profile__image-edit,
 .profile__image-btn {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 32px;
-  height: 32px;
+  bottom: -4px;
+  right: -4px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
-  border: none;
-  background: #111;
-  color: #fff;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  color: #111;
   display: grid;
   place-items: center;
   cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  transition: transform 120ms ease, background 120ms ease, opacity 120ms ease;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: #f6f6f6;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    box-shadow: none;
+  }
 }
 
-.profile__image-edit {
-  background: #f3f3f3;
-  color: #111;
-  border: 1px solid #ddd;
+.profile__image-btn {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+
+  &:hover {
+    background: #222;
+  }
 }
 
 .profile__name {
-  margin: 0.25rem 0 0;
-}
-
-.profile__email {
-  font-size: 0.85rem;
-  opacity: 0.7;
+  margin: 0.25rem 0 0.25rem;
+  font-size: 1.15rem;
+  line-height: 1.25;
 }
 
 .profile__follows {
   display: flex;
-  gap: 1.5rem;
-  margin: 1rem 0;
+  gap: 1.75rem;
+  margin: 0.9rem 0 0.6rem;
   padding: 0;
   list-style: none;
 
   li {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    align-items: center;
+    gap: 0.2rem;
 
     h4 {
       margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.1;
     }
 
     small {
       opacity: 0.7;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.2px;
     }
   }
 }
@@ -77,13 +109,29 @@
 .profile__actions-wrapper {
   display: flex;
   gap: 0.75rem;
-  margin: 0.75rem 0 1rem;
+  margin: 0.8rem 0 1rem;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .profile__bio {
-  max-width: 520px;
-  margin-top: 0.75rem;
-  opacity: 0.85;
+  max-width: 560px;
+  margin-top: 0.6rem;
+  opacity: 0.9;
+
+  p {
+    margin: 0;
+    line-height: 1.45;
+    white-space: pre-wrap;
+  }
+}
+
+@media (max-width: 420px) {
+  .profile__actions-wrapper {
+    width: 100%;
+  }
+
+  .profile__actions-wrapper .btn {
+    width: 100%;
+  }
 }
