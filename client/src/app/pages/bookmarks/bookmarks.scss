@@ -1,13 +1,29 @@
+.bookmarks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
 .bookmarks__title {
-  margin: 0 0 1rem;
+  text-align: center;
+  padding: 0.7rem 1rem;
+  background: var(--color-gray-0);
+  border-radius: var(--radius-3);
+  width: 24rem;
+  min-width: fit-content;
+  margin: 0 auto;
+  color: var(--color-gray-900);
 }
 
 .center {
   text-align: center;
-  opacity: 0.8;
+  padding: 1rem 0;
+  opacity: 0.85;
 }
 
 .error {
-  color: #b00020;
-  margin-bottom: 0.75rem;
+  background: var(--color-danger);
+  color: var(--color-gray-0);
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-3);
 }

@@ -4,7 +4,9 @@
 }
 
 .layout {
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 .content {
@@ -17,9 +19,9 @@
   }
 
   .layout {
-    display: grid;
-    grid-template-columns: 18rem 1fr;
-    gap: 1.2rem;
+    grid-template-columns: 18rem minmax(0, 640px);
+    justify-content: center;
     align-items: start;
+    gap: 1.2rem;
   }
 }
