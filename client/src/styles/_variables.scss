@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  /* Primary */
+  --color-primary: #2f6f4e;
+  --color-primary-variant: #d9efe4;
+
+  /* Neutrals */
+  --color-gray-0: #fbfcfa;
+  --color-gray-100: #f1f4f0;
+  --color-gray-200: #dde3dc;
+  --color-gray-300: #c4cdc4;
+  --color-gray-400: #a6b2a6;
+  --color-gray-500: #879487;
+  --color-gray-600: #5c675c;
+  --color-gray-700: #2e332e;
+  --color-gray-800: #161a16;
+  --color-gray-900: #0a0c0a;
+
+  /* Accent */
+  --color-danger: #b4233a;
+
+  --transition: all 250ms ease;
+
+  --radius-1: 0.3rem;
+  --radius-2: 0.6rem;
+  --radius-3: 0.9rem;
+  --radius-4: 1.2rem;
+  --radius-5: 2rem;
+
+  --container-w-lg: min(980px, 92%);
+  --container-w-sm: 96%;
+}
+
+/* darker mode */
+.dark {
+  --color-gray-0: #1c221d;
+  --color-gray-100: #121612;
+  --color-gray-200: #2a332b;
+  --color-gray-300: #3a463c;
+  --color-gray-400: #5a6a5c;
+  --color-gray-500: #7d8b7e;
+  --color-gray-600: #a7b3a8;
+  --color-gray-700: #c9d2ca;
+  --color-gray-800: #e2e8e2;
+  --color-gray-900: #f4f7f4;
+
+  --color-primary: #3ea372;
+  --color-primary-variant: rgba(62, 163, 114, 0.18);
+}

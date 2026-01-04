@@ -1,0 +1,17 @@
+input,
+textarea {
+  font: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-gray-500);
+}
+
+.form__error-message,
+.error {
+  background: var(--color-danger);
+  color: var(--color-gray-0);
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-2);
+}
