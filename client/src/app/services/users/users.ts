@@ -32,6 +32,13 @@ export class Users {
     return req$;
   }
 
+  searchUsers(q: string, limit = 8, page = 1) {
+    return this.http.get<{ users: User[]; total: number; page: number; limit: number }>(
+      '/api/users/search',
+      { params: { q, limit, page } }
+    );
+  }
+
   getUserPosts(id: string) {
     return this.http.get<{ posts: Post[] }>(`/api/users/${id}/posts`);
   }

@@ -1,19 +1,51 @@
 <nav class="navbar">
+  <div class="navbar__backdrop" *ngIf="open()" (click)="close()"></div>
+
   <div class="container navbar__container">
     <a routerLink="/home" class="navbar__logo">CHIRP</a>
 
-    <form class="navbar__search" (submit)="$event.preventDefault()">
-      <input
-        type="search"
-        placeholder="Search"
-        name="keyword"
-        [(ngModel)]="keyword"
-        (input)="onKeywordInput()"
-      />
-      <button type="submit" aria-label="Search">
-        <mat-icon>search</mat-icon>
-      </button>
-    </form>
+    <div class="navbar__searchWrap">
+      <form class="navbar__search" (submit)="$event.preventDefault()">
+        <input
+          type="search"
+          [formControl]="search"
+          placeholder="Search users..."
+          (focus)="open.set(true)"
+          autocomplete="off"
+        />
+        <button type="button" aria-label="Search">
+          <mat-icon>search</mat-icon>
+        </button>
+      </form>
+
+      <div class="navbar__searchResults" *ngIf="open()">
+        <div class="navbar__searchLoading" *ngIf="searching()">Searching…</div>
+
+        <button
+          type="button"
+          class="navbar__searchItem"
+          *ngFor="let u of results()"
+          (click)="goToUser(u._id)"
+        >
+          <app-profile-image
+            *ngIf="u.profilePhoto"
+            [src]="u.profilePhoto"
+            size="sm"
+          ></app-profile-image>
+
+          <div class="navbar__searchText">
+            <span class="navbar__searchName">{{ u.fullName }}</span>
+          </div>
+        </button>
+
+        <div
+          class="navbar__searchEmpty"
+          *ngIf="!searching() && results().length === 0 && search.value.trim().length >= 2"
+        >
+          No users found
+        </div>
+      </div>
+    </div>
 
     <div class="navbar__right">
       <a
