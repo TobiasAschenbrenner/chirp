@@ -1,19 +1,34 @@
 <article class="feed">
   <header class="feed__header">
-    <div class="feed__header-left">
+    <a
+      class="feed__header-left"
+      *ngIf="creator() as u; else headerPlaceholder"
+      [routerLink]="['/users', u._id]"
+      aria-label="Open profile"
+    >
       <div class="feed__avatar">
         <app-profile-image
-          *ngIf="creator()?.profilePhoto"
-          [src]="creator()!.profilePhoto"
+          *ngIf="u.profilePhoto"
+          [src]="u.profilePhoto"
           size="sm"
         ></app-profile-image>
       </div>
 
       <div class="feed__header-details">
-        <h4 class="feed__name">{{ creator()?.fullName || 'User' }}</h4>
+        <h4 class="feed__name">{{ u.fullName || 'User' }}</h4>
         <small class="feed__time">{{ post.createdAt | timeAgo }}</small>
       </div>
-    </div>
+    </a>
+
+    <ng-template #headerPlaceholder>
+      <div class="feed__header-left feed__header-left--placeholder">
+        <div class="feed__avatar"></div>
+        <div class="feed__header-details">
+          <h4 class="feed__name">User</h4>
+          <small class="feed__time">{{ post.createdAt | timeAgo }}</small>
+        </div>
+      </div>
+    </ng-template>
 
     <div *ngIf="isOwner()" class="feed__header-actions">
       <button type="button" class="iconBtn" (click)="startEdit()" [disabled]="busy()">

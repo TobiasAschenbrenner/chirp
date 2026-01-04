@@ -3,7 +3,12 @@
   <p *ngIf="error()" class="error">{{ error() }}</p>
 
   <ng-container *ngIf="post() as p">
-    <header class="feed__header">
+    <a
+      class="singlePost__author feed__header"
+      *ngIf="authorId() as uid"
+      [routerLink]="['/users', uid]"
+      aria-label="Open profile"
+    >
       <app-profile-image
         *ngIf="creator()?.profilePhoto"
         [src]="creator()!.profilePhoto"
@@ -14,7 +19,7 @@
         <h4>{{ creator()?.fullName || 'User' }}</h4>
         <small>{{ p.createdAt | timeAgo }}</small>
       </div>
-    </header>
+    </a>
 
     <div class="feed__body">
       <p>{{ p.body }}</p>

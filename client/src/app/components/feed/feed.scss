@@ -14,6 +14,31 @@
   display: flex;
   gap: 0.75rem;
   align-items: center;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 0.25rem 0.35rem;
+  margin-left: -0.35rem;
+  transition: background 120ms ease;
+}
+
+.feed__header-left:hover {
+  background: #f6f6f6;
+}
+
+.feed__header-left:hover .feed__name {
+  text-decoration: underline;
+}
+
+.feed__header-left--placeholder {
+  cursor: default;
+}
+.feed__header-left--placeholder:hover {
+  background: transparent;
+}
+.feed__header-left--placeholder:hover .feed__name {
+  text-decoration: none;
 }
 
 .feed__name {
@@ -65,11 +90,14 @@
   border: none;
   padding: 0.25rem 0.4rem;
   cursor: pointer;
+
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
 }
 
-.feed__action:disabled {
-  cursor: default;
-  opacity: 0.7;
+.feed__action:hover {
+  background: #f6f6f6;
 }
 
 .feed__header-actions {
@@ -84,6 +112,11 @@
   padding: 0.25rem;
   display: grid;
   place-items: center;
+  border-radius: 8px;
+}
+
+.iconBtn:hover {
+  background: #f6f6f6;
 }
 
 .feed__edit textarea {

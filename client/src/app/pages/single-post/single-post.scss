@@ -8,6 +8,7 @@
   color: red;
 }
 
+/* Keep this if you still use it elsewhere */
 .avatar {
   width: 42px;
   height: 42px;
@@ -15,10 +16,32 @@
   object-fit: cover;
 }
 
+/* Header layout (you already had this) */
 .feed__header {
   display: flex;
   gap: 0.75rem;
   align-items: center;
+}
+
+/* ✅ Make the author header feel like a clickable link */
+.singlePost__author {
+  text-decoration: none;
+  color: inherit;
+
+  border-radius: 10px;
+  padding: 0.25rem 0.35rem;
+  margin-left: -0.35rem;
+
+  transition: background 120ms ease;
+  cursor: pointer;
+}
+
+.singlePost__author:hover {
+  background: #f6f6f6;
+}
+
+.singlePost__author:hover h4 {
+  text-decoration: underline;
 }
 
 .feed__images img {
@@ -34,9 +57,15 @@
   justify-content: space-between;
 }
 
-.actions-left {
+/* You use feed__footer-left in the template, so keep it consistent */
+.feed__footer-left {
   display: flex;
   gap: 0.75rem;
+  align-items: center;
+}
+
+.feed__footer-right {
+  display: flex;
   align-items: center;
 }
 
@@ -48,6 +77,11 @@
   border: none;
   cursor: pointer;
   padding: 0.25rem 0.4rem;
+  border-radius: 8px;
+}
+
+.feed__action:hover {
+  background: #f6f6f6;
 }
 
 .singlePost__comments {

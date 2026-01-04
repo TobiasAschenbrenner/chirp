@@ -7,6 +7,7 @@ import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { ProfileImage } from '../profile-image/profile-image';
+import { RouterModule } from '@angular/router';
 
 type CommentCreator = {
   creatorId: string;
@@ -24,7 +25,7 @@ type Comment = {
 @Component({
   selector: 'app-post-comment',
   standalone: true,
-  imports: [CommonModule, MatIconModule, TimeAgoPipe, ProfileImage],
+  imports: [CommonModule, MatIconModule, TimeAgoPipe, ProfileImage, RouterModule],
   templateUrl: './post-comment.html',
   styleUrls: ['./post-comment.scss'],
 })
@@ -49,7 +50,7 @@ export class PostComment implements OnInit {
       });
   }
 
-  private creatorId(): string | null {
+  creatorId(): string | null {
     const c = this.comment.creator;
     if (!c) return null;
     return typeof c === 'string' ? c : c.creatorId;

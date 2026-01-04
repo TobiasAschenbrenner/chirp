@@ -84,6 +84,10 @@ export class Feed implements OnInit {
     return typeof c === 'string' ? c : c._id;
   }
 
+  authorLinkId(): string | null {
+    return this.creator()?._id ?? this.creatorId();
+  }
+
   isOwner(): boolean {
     const me = this.auth.getUserId();
     const owner = this.creatorId();

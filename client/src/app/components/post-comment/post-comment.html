@@ -1,11 +1,14 @@
 <li class="comment">
-  <app-profile-image *ngIf="photoUrl()" [src]="photoUrl()!" size="sm"></app-profile-image>
-
+  <a *ngIf="creatorId() as uid" [routerLink]="['/users', uid]" class="comment__avatar">
+    <app-profile-image *ngIf="photoUrl()" [src]="photoUrl()!" size="sm"></app-profile-image>
+  </a>
   <div class="comment__body">
-    <div class="comment__meta">
-      <strong>{{ creatorName() }}</strong>
-      <small>{{ comment.createdAt | timeAgo }}</small>
-    </div>
+    <a *ngIf="creatorId() as uid" [routerLink]="['/users', uid]" class="comment__avatar">
+      <div class="comment__meta">
+        <strong>{{ creatorName() }}</strong>
+        <small>{{ comment.createdAt | timeAgo }}</small>
+      </div>
+    </a>
     <p>{{ comment.comment }}</p>
   </div>
 
