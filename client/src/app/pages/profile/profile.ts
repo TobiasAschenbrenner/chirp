@@ -2,6 +2,9 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
+
 import { Users, User } from '../../services/users/users';
 import { Post } from '../../services/posts/posts';
 
@@ -26,15 +29,29 @@ export class Profile implements OnInit {
   posts = signal<Post[]>([]);
   loading = signal(true);
   error = signal('');
+  busy = signal(false);
 
   constructor(
     private route: ActivatedRoute,
     private usersApi: Users,
     private auth: Auth,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private destroyRef: DestroyRef
   ) {}
 
-  busy = signal(false);
+  ngOnInit(): void {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const id = params.get('id');
+      if (!id) return;
+
+      this.user.set(null);
+      this.posts.set([]);
+      this.loading.set(true);
+      this.error.set('');
+
+      this.loadProfile(id);
+    });
+  }
 
   toggleFollow(): void {
     const profile = this.user();
@@ -90,13 +107,6 @@ export class Profile implements OnInit {
         this.user.set(updated);
       }
     });
-  }
-
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) return;
-
-    this.loadProfile(id);
   }
 
   private loadProfile(id: string): void {
