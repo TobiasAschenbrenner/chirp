@@ -17,6 +17,7 @@ import { ProfileImage } from '../profile-image/profile-image';
 })
 export class CreatePost implements OnInit {
   @Input() error = '';
+  @Input() loading = false;
   @Output() createPost = new EventEmitter<FormData>();
 
   body = '';
@@ -41,15 +42,17 @@ export class CreatePost implements OnInit {
 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.image = input.files[0];
-    }
+    this.image = input.files?.[0] ?? null;
   }
 
   onSubmit(): void {
-    const postData = new FormData();
-    postData.set('body', this.body);
+    if (this.loading) return;
 
+    const body = this.body.trim();
+    if (!body) return;
+
+    const postData = new FormData();
+    postData.set('body', body);
     if (this.image) postData.set('image', this.image);
 
     this.createPost.emit(postData);

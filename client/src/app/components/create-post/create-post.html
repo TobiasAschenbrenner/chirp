@@ -12,20 +12,28 @@
       ></app-profile-image>
     </div>
 
-    <textarea name="body" [(ngModel)]="body" placeholder="What's on your mind?" required></textarea>
+    <textarea
+      name="body"
+      [(ngModel)]="body"
+      placeholder="What's on your mind?"
+      required
+      [disabled]="loading"
+    ></textarea>
   </div>
 
   <div class="createPost__bottom">
     <span></span>
 
     <div class="createPost__actions">
-      <label for="image" class="icon-button" aria-label="Add image">
+      <label for="image" class="icon-button" aria-label="Add image" [class.isDisabled]="loading">
         <mat-icon>image</mat-icon>
       </label>
 
-      <input type="file" id="image" hidden (change)="onFileChange($event)" />
+      <input type="file" id="image" hidden (change)="onFileChange($event)" [disabled]="loading" />
 
-      <button type="submit">Post</button>
+      <button type="submit" [disabled]="loading || !body.trim()">
+        {{ loading ? 'Posting…' : 'Post' }}
+      </button>
     </div>
   </div>
 </form>

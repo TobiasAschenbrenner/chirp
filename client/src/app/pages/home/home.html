@@ -1,5 +1,9 @@
 <section class="forest">
-  <app-create-post [error]="error()" (createPost)="createPost($event)"></app-create-post>
+  <app-create-post
+    [error]="error()"
+    [loading]="posting()"
+    (createPost)="createPost($event)"
+  ></app-create-post>
 
   <app-for-you-or-following
     [active]="mode()"

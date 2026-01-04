@@ -23,6 +23,7 @@ export class Home implements OnInit {
   loading = signal(false);
   error = signal('');
   bookmarkedIds = signal<Set<string>>(new Set());
+  posting = signal(false);
 
   constructor(private usersApi: Users, private postsApi: Posts) {}
 
