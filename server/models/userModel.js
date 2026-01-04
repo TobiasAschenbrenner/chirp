@@ -19,4 +19,6 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+userSchema.index({ fullName: 1 });
+
 module.exports = model("User", userSchema);

@@ -227,6 +227,43 @@ const changeUserAvatar = async (req, res, next) => {
   }
 };
 
+// GET: /api/users/search?q=...&page=1&limit=10
+// PROTECTED (recommended)
+const searchUsers = async (req, res, next) => {
+  try {
+    const q = (req.query.q || "").trim();
+    const page = Math.max(parseInt(req.query.page || "1", 10), 1);
+    const limit = Math.min(
+      Math.max(parseInt(req.query.limit || "10", 10), 1),
+      20
+    );
+    const skip = (page - 1) * limit;
+
+    if (q.length < 2) {
+      return res.json({ users: [], page, limit, total: 0 });
+    }
+
+    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const filter = {
+      fullName: { $regex: escaped, $options: "i" },
+    };
+
+    const [users, total] = await Promise.all([
+      UserModel.find(filter)
+        .select("_id fullName profilePhoto bio followers following")
+        .sort({ fullName: 1 })
+        .skip(skip)
+        .limit(limit),
+      UserModel.countDocuments(filter),
+    ]);
+
+    res.json({ users, page, limit, total });
+  } catch (error) {
+    return next(new HttpError(error));
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -235,4 +272,5 @@ module.exports = {
   editUser,
   followUnfollowUser,
   changeUserAvatar,
+  searchUsers,
 };

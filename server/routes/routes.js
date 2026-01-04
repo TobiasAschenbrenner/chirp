@@ -8,6 +8,7 @@ const {
   editUser,
   followUnfollowUser,
   changeUserAvatar,
+  searchUsers,
 } = require("../controllers/userControllers");
 const {
   createPost,
@@ -37,6 +38,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 // USER ROUTES
 router.post("/users/register", registerUser);
 router.post("/users/login", loginUser);
+router.get("/users/search", authMiddleware, searchUsers);
 router.get("/users/bookmarks", authMiddleware, getUserBookmarks); // brought this route up here to avoid conflict with get users/:id
 router.get("/users/:id", authMiddleware, getUser);
 router.get("/users", authMiddleware, getUsers);
