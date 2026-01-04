@@ -2,47 +2,49 @@
   <div class="navbar__backdrop" *ngIf="open()" (click)="close()"></div>
 
   <div class="container navbar__container">
-    <a routerLink="/home" class="navbar__logo">CHIRP</a>
+    <div class="navbar__left">
+      <a routerLink="/home" class="navbar__logo">CHIRP</a>
 
-    <div class="navbar__searchWrap">
-      <form class="navbar__search" (submit)="$event.preventDefault()">
-        <input
-          type="search"
-          [formControl]="search"
-          placeholder="Search users..."
-          (focus)="open.set(true)"
-          autocomplete="off"
-        />
-        <button type="button" aria-label="Search">
-          <mat-icon>search</mat-icon>
-        </button>
-      </form>
+      <div class="navbar__searchWrap">
+        <form class="navbar__search" (submit)="$event.preventDefault()">
+          <input
+            type="search"
+            [formControl]="search"
+            placeholder="Search users..."
+            (focus)="open.set(true)"
+            autocomplete="off"
+          />
+          <button type="button" aria-label="Search">
+            <mat-icon>search</mat-icon>
+          </button>
+        </form>
 
-      <div class="navbar__searchResults" *ngIf="open()">
-        <div class="navbar__searchLoading" *ngIf="searching()">Searching…</div>
+        <div class="navbar__searchResults" *ngIf="open()">
+          <div class="navbar__searchLoading" *ngIf="searching()">Searching…</div>
 
-        <button
-          type="button"
-          class="navbar__searchItem"
-          *ngFor="let u of results()"
-          (click)="goToUser(u._id)"
-        >
-          <app-profile-image
-            *ngIf="u.profilePhoto"
-            [src]="u.profilePhoto"
-            size="sm"
-          ></app-profile-image>
+          <button
+            type="button"
+            class="navbar__searchItem"
+            *ngFor="let u of results()"
+            (click)="goToUser(u._id)"
+          >
+            <app-profile-image
+              *ngIf="u.profilePhoto"
+              [src]="u.profilePhoto"
+              size="sm"
+            ></app-profile-image>
 
-          <div class="navbar__searchText">
-            <span class="navbar__searchName">{{ u.fullName }}</span>
+            <div class="navbar__searchText">
+              <span class="navbar__searchName">{{ u.fullName }}</span>
+            </div>
+          </button>
+
+          <div
+            class="navbar__searchEmpty"
+            *ngIf="!searching() && results().length === 0 && search.value.trim().length >= 2"
+          >
+            No users found
           </div>
-        </button>
-
-        <div
-          class="navbar__searchEmpty"
-          *ngIf="!searching() && results().length === 0 && search.value.trim().length >= 2"
-        >
-          No users found
         </div>
       </div>
     </div>
@@ -54,13 +56,11 @@
         class="navbar__profile"
         aria-label="Profile"
       >
-        <div class="navbar__avatar">
-          <app-profile-image
-            *ngIf="user()?.profilePhoto"
-            [src]="user()!.profilePhoto"
-            size="sm"
-          ></app-profile-image>
-        </div>
+        <app-profile-image
+          *ngIf="user()?.profilePhoto"
+          [src]="user()!.profilePhoto"
+          size="sm"
+        ></app-profile-image>
       </a>
 
       <a *ngIf="!auth.isLoggedIn()" routerLink="/login">Login</a>

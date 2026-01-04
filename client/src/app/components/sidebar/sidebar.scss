@@ -1,38 +1,51 @@
 .sidebar {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  z-index: 10;
+
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
 
-  padding: 1rem;
-  border: 1px solid #e6e6e6;
-  border-radius: 12px;
+  background: var(--color-gray-0);
+  border: 0.2rem solid var(--color-gray-100);
+  border-radius: 3rem;
+  padding: 0.6rem 1rem;
 
-  width: 220px;
+  box-shadow: 0 -1rem 2rem rgba(0, 0, 0, 0.08);
 }
 
 .sidebar__item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  display: grid;
+  place-items: center;
 
-  padding: 0.65rem 0.75rem;
-  border-radius: 10px;
+  width: 3.7rem;
+  height: 3.7rem;
 
+  border-radius: 50%;
+  background: var(--color-gray-100);
+
+  color: var(--color-gray-900);
   text-decoration: none;
-  color: inherit;
 
-  p {
-    margin: 0;
-  }
+  transition: var(--transition);
 
   &:hover {
-    background: #f5f5f5;
+    background: var(--color-primary-variant);
   }
 }
 
+.sidebar__button {
+  border: none;
+  cursor: pointer;
+}
+
 .sidebar__icon {
-  display: flex;
-  align-items: center;
+  display: grid;
+  place-items: center;
 
   mat-icon {
     font-size: 22px;
@@ -41,15 +54,65 @@
   }
 }
 
-.active {
-  background: #ededed;
-  font-weight: 600;
+.sidebar__label {
+  display: none;
+  margin: 0;
 }
 
-/* Make the "Themes" item look like a link-row */
-.sidebar__button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
+.sidebar__item.active {
+  background: var(--color-primary);
+  color: var(--color-gray-0);
+}
+
+@media (min-width: 900px) {
+  .sidebar {
+    position: sticky;
+    top: 5rem;
+    left: 0;
+    transform: none;
+
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+
+    padding: 1rem;
+    border-radius: var(--radius-3);
+
+    width: 18rem;
+    box-shadow: none;
+  }
+
+  .sidebar__item {
+    width: auto;
+    height: auto;
+
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    padding: 1rem 0.8rem;
+    border-radius: var(--radius-3);
+
+    background: transparent;
+
+    &:hover {
+      padding-left: 1.5rem;
+      background: var(--color-primary-variant);
+    }
+  }
+
+  .sidebar__label {
+    display: block;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .sidebar__item.active {
+    background: var(--color-primary);
+    padding-left: 1.5rem;
+
+    * {
+      color: var(--color-gray-0);
+    }
+  }
 }

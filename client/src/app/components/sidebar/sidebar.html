@@ -4,23 +4,35 @@
     routerLink="/home"
     routerLinkActive="active"
     [routerLinkActiveOptions]="{ exact: true }"
+    aria-label="Forest"
   >
     <span class="sidebar__icon"><mat-icon>home</mat-icon></span>
-    <p>Forest</p>
+    <p class="sidebar__label">Forest</p>
   </a>
 
-  <a *ngIf="auth.getUserId() as userId" class="sidebar__item" [routerLink]="['/users', userId]">
-    <mat-icon>person_outline</mat-icon>
-    <span>Nest</span>
+  <a
+    *ngIf="auth.getUserId() as userId"
+    class="sidebar__item"
+    [routerLink]="['/users', userId]"
+    routerLinkActive="active"
+    aria-label="Nest"
+  >
+    <span class="sidebar__icon"><mat-icon>person_outline</mat-icon></span>
+    <p class="sidebar__label">Nest</p>
   </a>
 
-  <a class="sidebar__item" routerLink="/bookmarks" routerLinkActive="active">
+  <a class="sidebar__item" routerLink="/bookmarks" routerLinkActive="active" aria-label="Seeds">
     <span class="sidebar__icon"><mat-icon>bookmark_border</mat-icon></span>
-    <p>Seeds</p>
+    <p class="sidebar__label">Seeds</p>
   </a>
 
-  <button class="sidebar__item sidebar__button" type="button" (click)="onOpenThemes()">
+  <button
+    class="sidebar__item sidebar__button"
+    type="button"
+    (click)="onOpenThemes()"
+    aria-label="Seasons"
+  >
     <span class="sidebar__icon"><mat-icon>brush</mat-icon></span>
-    <p>Seasons</p>
+    <p class="sidebar__label">Seasons</p>
   </button>
 </menu>

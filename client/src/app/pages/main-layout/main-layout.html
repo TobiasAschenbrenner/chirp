@@ -1,9 +1,11 @@
 <section class="mainArea">
-  <div class="layout">
-    <app-sidebar (openThemes)="openThemes()"></app-sidebar>
+  <div class="container mainArea__container">
+    <div class="layout">
+      <app-sidebar (openThemes)="openThemes()"></app-sidebar>
 
-    <div class="content">
-      <router-outlet></router-outlet>
+      <main class="content">
+        <router-outlet></router-outlet>
+      </main>
     </div>
   </div>
 </section>
