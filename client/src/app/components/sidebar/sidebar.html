@@ -6,21 +6,21 @@
     [routerLinkActiveOptions]="{ exact: true }"
   >
     <span class="sidebar__icon"><mat-icon>home</mat-icon></span>
-    <p>Home</p>
+    <p>Forest</p>
   </a>
 
-  <a class="sidebar__item" routerLink="/messages" routerLinkActive="active">
-    <span class="sidebar__icon"><mat-icon>mail_outline</mat-icon></span>
-    <p>Messages</p>
+  <a *ngIf="auth.getUserId() as userId" class="sidebar__item" [routerLink]="['/users', userId]">
+    <mat-icon>person_outline</mat-icon>
+    <span>Nest</span>
   </a>
 
   <a class="sidebar__item" routerLink="/bookmarks" routerLinkActive="active">
     <span class="sidebar__icon"><mat-icon>bookmark_border</mat-icon></span>
-    <p>Bookmarks</p>
+    <p>Seeds</p>
   </a>
 
   <button class="sidebar__item sidebar__button" type="button" (click)="onOpenThemes()">
     <span class="sidebar__icon"><mat-icon>brush</mat-icon></span>
-    <p>Themes</p>
+    <p>Seasons</p>
   </button>
 </menu>
