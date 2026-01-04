@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { Users, User } from '../../services/users/users';
 
@@ -13,7 +12,7 @@ type EditProfileData = {
 @Component({
   selector: 'app-edit-profile-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './edit-profile-dialog.html',
   styleUrls: ['./edit-profile-dialog.scss'],
 })
@@ -42,9 +41,7 @@ export class EditProfileDialog {
     this.error = '';
 
     this.usersApi.updateProfile(this.form.getRawValue()).subscribe({
-      next: (updated) => {
-        this.dialogRef.close(updated);
-      },
+      next: (updated) => this.dialogRef.close(updated),
       error: (err) => {
         console.log(err);
         this.error = err?.error?.message || 'Failed to update profile.';

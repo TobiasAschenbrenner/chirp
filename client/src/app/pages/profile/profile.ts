@@ -100,6 +100,7 @@ export class Profile implements OnInit {
 
     const ref = this.dialog.open(EditProfileDialog, {
       data: { user: u },
+      panelClass: 'chirp-dialog',
     });
 
     ref.afterClosed().subscribe((updated?: User) => {

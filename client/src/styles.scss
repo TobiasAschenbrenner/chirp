@@ -3,3 +3,8 @@
 @import './styles/buttons';
 @import './styles/forms';
 @import './styles/utilities';
+
+.chirp-dialog .mat-mdc-dialog-surface {
+  background: transparent;
+  box-shadow: none;
+}
