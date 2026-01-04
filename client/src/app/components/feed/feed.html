@@ -63,4 +63,11 @@
       <app-bookmark-post [postId]="post._id" [initialBookmarked]="bookmarked"></app-bookmark-post>
     </div>
   </footer>
+
+  <app-edit-post-modal
+    *ngIf="editModalOpen()"
+    [postId]="post._id"
+    (updated)="onModalUpdated($event)"
+    (closed)="closeEditModal()"
+  ></app-edit-post-modal>
 </article>

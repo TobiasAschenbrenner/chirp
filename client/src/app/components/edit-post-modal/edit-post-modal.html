@@ -1,0 +1,12 @@
+<form class="editPost" (click)="close($event)" (submit)="submit()">
+  <div class="editPost__container">
+    <textarea
+      [value]="body()"
+      (input)="onBodyInput($event)"
+      placeholder="What's on your mind?"
+      autofocus
+    ></textarea>
+
+    <button type="submit" class="btn primary" [disabled]="loading()">Update Post</button>
+  </div>
+</form>

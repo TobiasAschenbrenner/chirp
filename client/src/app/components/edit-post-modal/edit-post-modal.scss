@@ -1,0 +1,25 @@
+.editPost {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.editPost__container {
+  background: #fff;
+  padding: 1rem;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+textarea {
+  width: 100%;
+  resize: none;
+  min-height: 100px;
+}
