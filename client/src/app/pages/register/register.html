@@ -14,8 +14,7 @@
       />
 
       <input type="email" name="email" placeholder="Email" [(ngModel)]="userData.email" />
-
-      <div class="password__controller">
+      <div class="password">
         <input
           [type]="showPassword ? 'text' : 'password'"
           name="password"
@@ -32,7 +31,8 @@
           <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
       </div>
-      <div class="password__controller">
+
+      <div class="password">
         <input
           [type]="showPassword ? 'text' : 'password'"
           name="confirmPassword"

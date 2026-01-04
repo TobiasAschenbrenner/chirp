@@ -1,60 +1,98 @@
 .register {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
   padding: 3rem 0;
+  background: var(--color-gray-100);
 }
 
 .register__container {
-  max-width: 420px;
-  margin: 0 auto;
+  width: min(35rem, 92vw);
+  background: var(--color-gray-0);
+  padding: 3rem;
+  border-radius: var(--radius-5);
 }
 
-form {
+.register__container h2 {
+  margin-bottom: 2rem;
+  color: var(--color-primary);
+}
+
+.register form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.6rem;
 }
 
-input {
-  padding: 0.75rem 0.9rem;
-  border: 1px solid #dcdcdc;
-  border-radius: 8px;
-  outline: none;
+.register form input {
+  width: 100%;
+  padding: 1rem;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-2);
+  border: 2px solid transparent;
+  color: var(--color-gray-900);
+
+  &:focus {
+    border-color: var(--color-primary);
+    background: var(--color-gray-0);
+  }
+}
+
+.password {
+  position: relative;
+}
+
+.password input {
+  padding-right: 3.25rem;
+}
+
+.password__toggle {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 2.4rem;
+  height: 2.4rem;
+  display: grid;
+  place-items: center;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-gray-900);
+
+  &:hover {
+    opacity: 0.75;
+  }
+
+  mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.register form > p {
+  margin: 0;
+}
+
+.register form > p a {
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
 .form__error-message {
-  padding: 0.75rem 0.9rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 0, 0, 0.3);
-}
-
-.password__controller {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  input {
-    flex: 1;
-  }
-
-  .password__toggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: 0.25rem;
-    color: #555;
-
-    mat-icon {
-      font-size: 22px;
-    }
-  }
+  background: var(--color-danger);
+  color: var(--color-gray-0);
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-2);
 }
 
 button.btn.primary {
-  padding: 0.75rem 0.9rem;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-3);
 }
 
 button:disabled {
