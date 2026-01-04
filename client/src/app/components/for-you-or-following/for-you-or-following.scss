@@ -1,18 +1,30 @@
 .forYouOrFollowing {
   display: flex;
-  gap: 0.5rem;
-  margin: 1rem 0;
+  background: var(--color-gray-0);
+  border-radius: var(--radius-3);
+  padding: 0.3rem;
+  margin-bottom: 0.8rem;
+  width: 100%;
+}
 
-  button {
-    border: 1px solid #dcdcdc;
-    background: none;
-    padding: 0.5rem 0.9rem;
-    border-radius: 999px;
-    cursor: pointer;
-  }
+.forYouOrFollowing button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.7rem 0;
+  border-radius: var(--radius-2);
+  font-weight: 500;
+  color: var(--color-gray-900);
+  cursor: pointer;
+  transition: var(--transition);
+}
 
-  button.active {
-    background: #ededed;
-    font-weight: 600;
-  }
+.forYouOrFollowing button:hover {
+  background: var(--color-primary-variant);
+}
+
+.forYouOrFollowing button.active {
+  background: var(--color-primary);
+  color: var(--color-gray-0);
+  font-weight: 600;
 }

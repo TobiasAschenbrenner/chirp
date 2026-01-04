@@ -1,25 +1,49 @@
 .likeButton {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.45rem;
 
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0.25rem 0.4rem;
 
-  mat-icon {
-    font-size: 22px;
-    width: 22px;
-    height: 22px;
-  }
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-3);
 
-  small {
-    opacity: 0.8;
-  }
+  color: var(--color-gray-900);
+  transition: var(--transition);
+}
+
+.likeButton:hover {
+  background: var(--color-primary-variant);
+}
+
+.likeButton:active {
+  transform: translateY(1px);
+}
+
+.likeButton__icon {
+  font-size: 1.6rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  line-height: 1;
+}
+
+.likeButton__count {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+.likeButton.liked {
+  color: var(--color-primary);
+}
+
+.likeButton.liked:hover {
+  background: var(--color-primary-variant);
 }
 
 .likeButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }

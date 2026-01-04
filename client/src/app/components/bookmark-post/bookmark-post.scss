@@ -1,26 +1,37 @@
-.feed__footer-bookmark {
+.bookmarkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   background: transparent;
   border: none;
-  padding: 0.25rem;
-  display: flex;
-  align-items: center;
   cursor: pointer;
-  color: #000;
-  transition: color 0.2s ease, transform 0.15s ease;
 
-  mat-icon {
-    font-size: 22px;
-  }
+  padding: 0.5rem;
+  border-radius: var(--radius-3);
 
-  &:hover {
-    color: #000;
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
+  color: var(--color-gray-900);
+  transition: var(--transition);
 }
 
-:host-context(.bookmarked) .feed__footer-bookmark {
-  color: #000;
+.bookmarkButton:hover {
+  background: var(--color-primary-variant);
+}
+
+.bookmarkButton:active {
+  transform: translateY(1px);
+}
+
+.bookmarkButton__icon {
+  font-size: 1.6rem;
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.bookmarkButton.bookmarked {
+  color: var(--color-primary);
+}
+
+.bookmarkButton.bookmarked:hover {
+  background: var(--color-primary-variant);
 }
