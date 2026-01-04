@@ -1,5 +1,7 @@
 <form class="editPost" (click)="close($event)" (submit)="submit()">
-  <div class="editPost__container">
+  <div class="editPost__container" (click)="$event.stopPropagation()">
+    <h3 class="editPost__title">Edit post</h3>
+
     <textarea
       [value]="body()"
       (input)="onBodyInput($event)"
@@ -7,6 +9,14 @@
       autofocus
     ></textarea>
 
-    <button type="submit" class="btn primary" [disabled]="loading()">Update Post</button>
+    <div class="editPost__actions">
+      <button type="button" class="btn" (click)="close($event)" [disabled]="loading()">
+        Cancel
+      </button>
+
+      <button type="submit" class="btn primary" [disabled]="loading()">
+        {{ loading() ? 'Updating…' : 'Update Post' }}
+      </button>
+    </div>
   </div>
 </form>
