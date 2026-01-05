@@ -1,23 +1,128 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed } from '@angular/core/testing';
 import { EditProfileDialog } from './edit-profile-dialog';
+import { vi } from 'vitest';
+import { of, throwError } from 'rxjs';
+
+import { Users } from '../../services/users/users';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+class UsersStub {
+  updateProfile(data: { fullName: string; bio: string }) {
+    return of({
+      _id: 'u1',
+      fullName: data.fullName,
+      bio: data.bio,
+    } as any);
+  }
+}
+
+class MatDialogRefStub {
+  close = vi.fn();
+}
+
+const DIALOG_DATA = {
+  user: {
+    _id: 'u1',
+    fullName: 'Tobi',
+    bio: 'Climber & dev',
+  },
+};
 
 describe('EditProfileDialog', () => {
-  let component: EditProfileDialog;
-  let fixture: ComponentFixture<EditProfileDialog>;
+  let users: UsersStub;
+  let dialogRef: MatDialogRefStub;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditProfileDialog]
-    })
-    .compileComponents();
+      imports: [EditProfileDialog],
+      providers: [
+        { provide: Users, useClass: UsersStub },
+        { provide: MatDialogRef, useClass: MatDialogRefStub },
+        { provide: MAT_DIALOG_DATA, useValue: DIALOG_DATA },
+      ],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(EditProfileDialog);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
+    users = TestBed.inject(Users) as unknown as UsersStub;
+    dialogRef = TestBed.inject(MatDialogRef) as unknown as MatDialogRefStub;
+
+    vi.spyOn(users, 'updateProfile');
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    const fixture = TestBed.createComponent(EditProfileDialog);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should initialize form with user data', () => {
+    const fixture = TestBed.createComponent(EditProfileDialog);
+    const component = fixture.componentInstance;
+
+    expect(component.form.value).toEqual({
+      fullName: 'Tobi',
+      bio: 'Climber & dev',
+    });
+  });
+
+  it('should close dialog when close() is called', () => {
+    const fixture = TestBed.createComponent(EditProfileDialog);
+    const component = fixture.componentInstance;
+
+    component.close();
+
+    expect(dialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should submit form and close dialog with updated user', () => {
+    const fixture = TestBed.createComponent(EditProfileDialog);
+    const component = fixture.componentInstance;
+
+    component.form.setValue({
+      fullName: 'Updated Name',
+      bio: 'Updated bio',
+    });
+
+    component.submit();
+
+    expect(users.updateProfile).toHaveBeenCalledWith({
+      fullName: 'Updated Name',
+      bio: 'Updated bio',
+    });
+
+    expect(dialogRef.close).toHaveBeenCalledWith(
+      expect.objectContaining({
+        fullName: 'Updated Name',
+        bio: 'Updated bio',
+      })
+    );
+
+    expect(component.saving).toBe(true);
+  });
+
+  it('should not submit when form is invalid', () => {
+    const fixture = TestBed.createComponent(EditProfileDialog);
+    const component = fixture.componentInstance;
+
+    component.form.controls.fullName.setValue('');
+    component.submit();
+
+    expect(users.updateProfile).not.toHaveBeenCalled();
+    expect(dialogRef.close).not.toHaveBeenCalled();
+  });
+
+  it('should show error message when update fails', () => {
+    vi.spyOn(users, 'updateProfile').mockReturnValueOnce(
+      throwError(() => ({
+        error: { message: 'Update failed' },
+      }))
+    );
+
+    const fixture = TestBed.createComponent(EditProfileDialog);
+    const component = fixture.componentInstance;
+
+    component.submit();
+
+    expect(component.error).toBe('Update failed');
+    expect(component.saving).toBe(false);
+    expect(dialogRef.close).not.toHaveBeenCalled();
   });
 });
