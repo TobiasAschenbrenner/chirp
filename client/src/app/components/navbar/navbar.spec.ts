@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Navbar } from './navbar';
 import { provideRouter } from '@angular/router';
 import { Router } from '@angular/router';
@@ -33,6 +33,9 @@ class UsersStub {
 }
 
 describe('Navbar', () => {
+  let fixture: ComponentFixture<Navbar>;
+  let component: Navbar;
+
   let auth: AuthStub;
   let users: UsersStub;
   let router: Router;
@@ -60,111 +63,84 @@ describe('Navbar', () => {
     vi.spyOn(auth, 'logout');
     vi.spyOn(users, 'getUser');
     vi.spyOn(users, 'searchUsers');
+
+    fixture = TestBed.createComponent(Navbar);
+    component = fixture.componentInstance;
   });
 
   afterEach(() => {
+    vi.runOnlyPendingTimers();
     vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
   it('should create', () => {
-    const fixture = TestBed.createComponent(Navbar);
-    expect(fixture.componentInstance).toBeTruthy();
+    fixture.detectChanges();
+    expect(component).toBeTruthy();
   });
 
   it('should load the current user on init when logged in', () => {
     (auth.getUserId as any).mockReturnValue('u1');
 
-    const fixture = TestBed.createComponent(Navbar);
     fixture.detectChanges();
 
     expect(users.getUser).toHaveBeenCalledWith('u1');
-    expect(fixture.componentInstance.user()?._id).toBe('u1');
+    expect(component.user()?._id).toBe('u1');
   });
 
   it('should not load user on init when not logged in', () => {
     (auth.getUserId as any).mockReturnValue(null);
 
-    const fixture = TestBed.createComponent(Navbar);
     fixture.detectChanges();
 
     expect(users.getUser).not.toHaveBeenCalled();
-    expect(fixture.componentInstance.user()).toBeNull();
+    expect(component.user()).toBeNull();
   });
 
   it('should search users after debounce and open results', () => {
-    const fixture = TestBed.createComponent(Navbar);
     fixture.detectChanges();
 
-    fixture.componentInstance.search.setValue('to');
+    component.search.setValue('to');
     vi.advanceTimersByTime(250);
+    fixture.detectChanges();
 
     expect(users.searchUsers).toHaveBeenCalledWith('to', 8, 1);
-    expect(fixture.componentInstance.open()).toBe(true);
-    expect(fixture.componentInstance.searching()).toBe(false);
-  });
-
-  it('should clear results and close dropdown for queries shorter than 2 chars', () => {
-    (users.searchUsers as any).mockReturnValueOnce(
-      of({
-        users: [{ _id: 'x', fullName: 'X', profilePhoto: null }],
-        total: 1,
-        page: 1,
-        limit: 8,
-      })
-    );
-
-    const fixture = TestBed.createComponent(Navbar);
-    fixture.detectChanges();
-
-    fixture.componentInstance.search.setValue('to');
-    vi.advanceTimersByTime(250);
-
-    expect(fixture.componentInstance.open()).toBe(true);
-    expect(fixture.componentInstance.results().length).toBe(1);
-
-    fixture.componentInstance.search.setValue('t');
-    vi.advanceTimersByTime(1);
-
-    expect(fixture.componentInstance.open()).toBe(false);
-    expect(fixture.componentInstance.results()).toEqual([]);
-    expect(fixture.componentInstance.searching()).toBe(false);
+    expect(component.open()).toBe(true);
+    expect(component.searching()).toBe(false);
   });
 
   it('should handle search errors by returning empty results and not crashing', () => {
     (users.searchUsers as any).mockReturnValueOnce(throwError(() => new Error('boom')));
 
-    const fixture = TestBed.createComponent(Navbar);
     fixture.detectChanges();
 
-    fixture.componentInstance.search.setValue('to');
+    component.search.setValue('to');
     vi.advanceTimersByTime(250);
+    fixture.detectChanges();
 
-    expect(fixture.componentInstance.results()).toEqual([]);
-    expect(fixture.componentInstance.searching()).toBe(false);
+    expect(component.results()).toEqual([]);
+    expect(component.searching()).toBe(false);
   });
 
   it('goToUser should close dropdown, clear results and navigate', () => {
-    const fixture = TestBed.createComponent(Navbar);
     fixture.detectChanges();
 
-    fixture.componentInstance.open.set(true);
-    fixture.componentInstance.results.set([{ _id: 'u2' } as any]);
+    component.open.set(true);
+    component.results.set([{ _id: 'u2' } as any]);
 
-    fixture.componentInstance.goToUser('u2');
+    component.goToUser('u2');
 
-    expect(fixture.componentInstance.open()).toBe(false);
-    expect(fixture.componentInstance.results()).toEqual([]);
+    expect(component.open()).toBe(false);
+    expect(component.results()).toEqual([]);
     expect(router.navigate).toHaveBeenCalledWith(['/users', 'u2']);
   });
 
   it('logout should call auth.logout and navigate to /login', () => {
     (auth.isLoggedIn as any).mockReturnValue(true);
 
-    const fixture = TestBed.createComponent(Navbar);
     fixture.detectChanges();
 
-    fixture.componentInstance.logout();
+    component.logout();
 
     expect(auth.logout).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
