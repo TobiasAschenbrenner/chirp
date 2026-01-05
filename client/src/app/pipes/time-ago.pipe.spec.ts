@@ -1,44 +1,38 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { TimeAgoPipe } from './time-ago.pipe';
 
-@Pipe({
-  name: 'timeAgo',
-  standalone: true,
-  pure: true,
-})
-export class TimeAgoPipe implements PipeTransform {
-  transform(value?: string | Date | null): string {
-    if (!value) return '';
+describe('TimeAgoPipe', () => {
+  const pipe = new TimeAgoPipe();
 
-    const date = value instanceof Date ? value : new Date(value);
-    const diffMs = date.getTime() - Date.now();
-    const diffSec = Math.round(diffMs / 1000);
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
 
-    const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+  it('should return empty string for null/undefined', () => {
+    expect(pipe.transform(undefined)).toBe('');
+    expect(pipe.transform(null)).toBe('');
+  });
 
-    const absSec = Math.abs(diffSec);
-    if (absSec < 60) return rtf.format(diffSec, 'second');
+  it('should format seconds ago', () => {
+    vi.spyOn(Date, 'now').mockReturnValue(new Date('2026-01-05T12:00:00.000Z').getTime());
 
-    const diffMin = Math.round(diffSec / 60);
-    const absMin = Math.abs(diffMin);
-    if (absMin < 60) return rtf.format(diffMin, 'minute');
+    const tenSecondsAgo = new Date('2026-01-05T11:59:50.000Z');
+    const result = pipe.transform(tenSecondsAgo);
 
-    const diffHr = Math.round(diffMin / 60);
-    const absHr = Math.abs(diffHr);
-    if (absHr < 24) return rtf.format(diffHr, 'hour');
+    expect(result).toBeTruthy();
+  });
 
-    const diffDay = Math.round(diffHr / 24);
-    const absDay = Math.abs(diffDay);
-    if (absDay < 7) return rtf.format(diffDay, 'day');
+  it('should handle ISO string input', () => {
+    vi.spyOn(Date, 'now').mockReturnValue(new Date('2026-01-05T12:00:00.000Z').getTime());
 
-    const diffWeek = Math.round(diffDay / 7);
-    const absWeek = Math.abs(diffWeek);
-    if (absWeek < 4) return rtf.format(diffWeek, 'week');
+    const oneMinuteAgoIso = '2026-01-05T11:59:00.000Z';
+    expect(pipe.transform(oneMinuteAgoIso)).toBeTruthy();
+  });
 
-    const diffMonth = Math.round(diffDay / 30);
-    const absMonth = Math.abs(diffMonth);
-    if (absMonth < 12) return rtf.format(diffMonth, 'month');
+  it('should handle future dates', () => {
+    vi.spyOn(Date, 'now').mockReturnValue(new Date('2026-01-05T12:00:00.000Z').getTime());
 
-    const diffYear = Math.round(diffDay / 365);
-    return rtf.format(diffYear, 'year');
-  }
-}
+    const inTwoHours = new Date('2026-01-05T14:00:00.000Z');
+    expect(pipe.transform(inTwoHours)).toBeTruthy();
+  });
+});
