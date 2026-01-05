@@ -14,6 +14,9 @@ class AuthStub {
   isLoggedIn() {
     return false;
   }
+  getUserId() {
+    return null as string | null;
+  }
 }
 
 class UsersStub {
@@ -41,6 +44,7 @@ describe('MainLayout', () => {
 
     vi.spyOn(auth, 'getToken');
     vi.spyOn(auth, 'isLoggedIn');
+    vi.spyOn(auth, 'getUserId');
     vi.spyOn(users, 'loadBookmarks');
   });
 
@@ -50,8 +54,8 @@ describe('MainLayout', () => {
   });
 
   it('should not load bookmarks when not logged in', () => {
-    vi.spyOn(auth, 'getToken').mockReturnValue(null);
-    vi.spyOn(auth, 'isLoggedIn').mockReturnValue(false);
+    (auth.getToken as any).mockReturnValue(null);
+    (auth.isLoggedIn as any).mockReturnValue(false);
 
     const fixture = TestBed.createComponent(MainLayout);
     fixture.detectChanges();
@@ -60,28 +64,28 @@ describe('MainLayout', () => {
   });
 
   it('should load bookmarks when token exists', () => {
-    vi.spyOn(auth, 'getToken').mockReturnValue('token');
-    vi.spyOn(auth, 'isLoggedIn').mockReturnValue(false);
+    (auth.getToken as any).mockReturnValue('token');
+    (auth.isLoggedIn as any).mockReturnValue(false);
 
     const fixture = TestBed.createComponent(MainLayout);
     fixture.detectChanges();
 
-    expect(users.loadBookmarks).toHaveBeenCalled();
+    expect(users.loadBookmarks).toHaveBeenCalledTimes(1);
   });
 
   it('should load bookmarks when isLoggedIn is true', () => {
-    vi.spyOn(auth, 'getToken').mockReturnValue(null);
-    vi.spyOn(auth, 'isLoggedIn').mockReturnValue(true);
+    (auth.getToken as any).mockReturnValue(null);
+    (auth.isLoggedIn as any).mockReturnValue(true);
 
     const fixture = TestBed.createComponent(MainLayout);
     fixture.detectChanges();
 
-    expect(users.loadBookmarks).toHaveBeenCalled();
+    expect(users.loadBookmarks).toHaveBeenCalledTimes(1);
   });
 
   it('should swallow loadBookmarks errors', () => {
-    vi.spyOn(auth, 'getToken').mockReturnValue('token');
-    vi.spyOn(users, 'loadBookmarks').mockReturnValueOnce(throwError(() => new Error('fail')));
+    (auth.getToken as any).mockReturnValue('token');
+    (users.loadBookmarks as any).mockReturnValueOnce(throwError(() => new Error('fail')));
 
     const fixture = TestBed.createComponent(MainLayout);
 
