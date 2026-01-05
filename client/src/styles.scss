@@ -1,8 +1,4 @@
-@import './styles/variables';
-@import './styles/base';
-@import './styles/buttons';
-@import './styles/forms';
-@import './styles/utilities';
+@use './styles/index' as *;
 
 .chirp-dialog .mat-mdc-dialog-surface {
   background: transparent;
