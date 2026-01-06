@@ -19,9 +19,6 @@ export interface RegisterPayload {
   confirmPassword: string;
 }
 
-const TOKEN_KEY = 'chirp_token';
-const USER_ID_KEY = 'chirp_user_id';
-
 @Injectable({ providedIn: 'root' })
 export class Auth {
   constructor(private http: HttpClient) {}
@@ -35,25 +32,28 @@ export class Auth {
     );
   }
 
+  private static readonly TOKEN_KEY = 'chirp_token';
+  private static readonly USER_ID_KEY = 'chirp_user_id';
+
   logout(): void {
-    this.remove(TOKEN_KEY);
-    this.remove(USER_ID_KEY);
+    this.remove(Auth.TOKEN_KEY);
+    this.remove(Auth.USER_ID_KEY);
   }
 
   getToken(): string | null {
-    return this.read(TOKEN_KEY);
+    return this.read(Auth.TOKEN_KEY);
   }
 
   getUserId(): string | null {
-    return this.read(USER_ID_KEY);
+    return this.read(Auth.USER_ID_KEY);
   }
 
   private setToken(token: string): void {
-    this.write(TOKEN_KEY, token);
+    this.write(Auth.TOKEN_KEY, token);
   }
 
   private setUserId(id: string): void {
-    this.write(USER_ID_KEY, id);
+    this.write(Auth.USER_ID_KEY, id);
   }
 
   register(payload: RegisterPayload): Observable<unknown> {
