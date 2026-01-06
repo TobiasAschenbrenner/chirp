@@ -52,4 +52,8 @@ export class BookmarkPost {
       this.changed.emit({ postId: this.postId, bookmarked: isOn });
     }
   }
+
+  get ariaLabel(): string {
+    return this.bookmarked() ? 'Remove bookmark' : 'Bookmark post';
+  }
 }

@@ -4,7 +4,7 @@
   [class.bookmarked]="bookmarked()"
   (click)="toggleBookmark()"
   [disabled]="busy()"
-  aria-label="Bookmark post"
+  [attr.aria-label]="ariaLabel"
 >
   <mat-icon class="bookmarkButton__icon">
     {{ bookmarked() ? 'bookmark' : 'bookmark_border' }}
