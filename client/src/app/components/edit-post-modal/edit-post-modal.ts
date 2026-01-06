@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output, OnInit, signal, DestroyRef } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { Posts as PostsApi, Post } from '../../services/posts/posts';
 
 type ApiError = {
@@ -33,26 +34,6 @@ export class EditPostModal implements OnInit {
     this.loadPost();
   }
 
-  private loadPost(): void {
-    this.loading.set(true);
-    this.error.set('');
-
-    this.postsApi
-      .getPost(this.postId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (post: Post) => {
-          this.body.set(post.body || '');
-          this.loading.set(false);
-        },
-        error: (err: ApiError) => {
-          console.log(err);
-          this.error.set(err?.error?.message || 'Failed to load post.');
-          this.loading.set(false);
-        },
-      });
-  }
-
   submit(): void {
     const body = this.body().trim();
     if (!body) return;
@@ -64,7 +45,7 @@ export class EditPostModal implements OnInit {
       .editPost(this.postId, body)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (post: Post) => {
+        next: (post) => {
           this.updated.emit(post);
           this.closed.emit();
           this.loading.set(false);
@@ -86,5 +67,25 @@ export class EditPostModal implements OnInit {
     if (e.target === e.currentTarget) {
       this.closed.emit();
     }
+  }
+
+  private loadPost(): void {
+    this.loading.set(true);
+    this.error.set('');
+
+    this.postsApi
+      .getPost(this.postId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (post) => {
+          this.body.set(post.body || '');
+          this.loading.set(false);
+        },
+        error: (err: ApiError) => {
+          console.log(err);
+          this.error.set(err?.error?.message || 'Failed to load post.');
+          this.loading.set(false);
+        },
+      });
   }
 }
