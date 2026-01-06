@@ -3,6 +3,7 @@
   class="bookmarkButton"
   [class.bookmarked]="bookmarked()"
   (click)="toggleBookmark()"
+  [disabled]="busy()"
   aria-label="Bookmark post"
 >
   <mat-icon class="bookmarkButton__icon">

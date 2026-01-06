@@ -16,6 +16,7 @@ export class BookmarkPost {
   @Input({ required: true }) postId!: string;
 
   bookmarked = signal(false);
+  busy = signal(false);
 
   @Input() set initialBookmarked(value: boolean) {
     this.bookmarked.set(!!value);
@@ -26,6 +27,10 @@ export class BookmarkPost {
   constructor(private postsApi: Posts, private usersApi: Users) {}
 
   toggleBookmark(): void {
+    if (!this.postId || this.busy()) return;
+
+    this.busy.set(true);
+
     this.postsApi.toggleBookmark(this.postId).subscribe({
       next: (res) => {
         const isOn = res.bookmarks.includes(this.postId);
@@ -34,8 +39,12 @@ export class BookmarkPost {
         this.usersApi.setBookmarked(this.postId, isOn);
 
         this.changed.emit({ postId: this.postId, bookmarked: isOn });
+        this.busy.set(false);
       },
-      error: (err) => console.error(err),
+      error: (err) => {
+        console.error(err);
+        this.busy.set(false);
+      },
     });
   }
 }
