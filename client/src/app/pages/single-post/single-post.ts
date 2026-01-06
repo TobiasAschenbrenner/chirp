@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { Posts, Post, Comment, PostUser } from '../../services/posts/posts';
 import { Comments as CommentsApi } from '../../services/comments/comments';
-import { LikeDislikePost } from '../../components/like-dislike-post/like-dislike-post';
+import { LikePost } from '../../components/like-dislike-post/like-post';
 import { PostComment } from '../../components/post-comment/post-comment';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { BookmarkPost } from '../../components/bookmark-post/bookmark-post';
@@ -21,7 +21,7 @@ import { Users } from '../../services/users/users';
     RouterModule,
     FormsModule,
     MatIconModule,
-    LikeDislikePost,
+    LikePost,
     PostComment,
     TimeAgoPipe,
     BookmarkPost,

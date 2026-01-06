@@ -3,11 +3,11 @@ import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
-import { LikeDislikePost } from './like-dislike-post';
+import { LikePost } from './like-post';
 import { Posts } from '../../services/posts/posts';
 import { Auth } from '../../services/auth/auth';
 
-describe('LikeDislikePost', () => {
+describe('LikePost', () => {
   const postsApi = {
     likePost: vi.fn(),
   };
@@ -31,7 +31,7 @@ describe('LikeDislikePost', () => {
     auth.getUserId.mockReset();
 
     await TestBed.configureTestingModule({
-      imports: [LikeDislikePost],
+      imports: [LikePost],
       providers: [
         { provide: Posts, useValue: postsApi },
         { provide: Auth, useValue: auth },
@@ -42,7 +42,7 @@ describe('LikeDislikePost', () => {
   it('should create', () => {
     auth.getUserId.mockReturnValue('me');
 
-    const fixture = TestBed.createComponent(LikeDislikePost);
+    const fixture = TestBed.createComponent(LikePost);
     fixture.componentInstance.post = makePost();
     fixture.detectChanges();
 
@@ -52,7 +52,7 @@ describe('LikeDislikePost', () => {
   it('should render likes count', () => {
     auth.getUserId.mockReturnValue('me');
 
-    const fixture = TestBed.createComponent(LikeDislikePost);
+    const fixture = TestBed.createComponent(LikePost);
     fixture.componentInstance.post = makePost({ likes: ['a', 'b', 'c'] });
     fixture.detectChanges();
 
@@ -63,7 +63,7 @@ describe('LikeDislikePost', () => {
   it('liked() should be true when current user is in likes', () => {
     auth.getUserId.mockReturnValue('me');
 
-    const fixture = TestBed.createComponent(LikeDislikePost);
+    const fixture = TestBed.createComponent(LikePost);
     fixture.componentInstance.post = makePost({ likes: ['me'] });
     fixture.detectChanges();
 
@@ -79,7 +79,7 @@ describe('LikeDislikePost', () => {
   it('liked() should be false when no userId', () => {
     auth.getUserId.mockReturnValue(null);
 
-    const fixture = TestBed.createComponent(LikeDislikePost);
+    const fixture = TestBed.createComponent(LikePost);
     fixture.componentInstance.post = makePost({ likes: ['someone'] });
     fixture.detectChanges();
 
@@ -92,7 +92,7 @@ describe('LikeDislikePost', () => {
     const updated = makePost({ _id: 'p1', likes: ['me'] });
     postsApi.likePost.mockReturnValue(of(updated));
 
-    const fixture = TestBed.createComponent(LikeDislikePost);
+    const fixture = TestBed.createComponent(LikePost);
     fixture.componentInstance.post = makePost({ _id: 'p1', likes: [] });
 
     const emitted: any[] = [];
@@ -112,7 +112,7 @@ describe('LikeDislikePost', () => {
   it('should not call likePost when post has no _id', () => {
     auth.getUserId.mockReturnValue('me');
 
-    const fixture = TestBed.createComponent(LikeDislikePost);
+    const fixture = TestBed.createComponent(LikePost);
     fixture.componentInstance.post = makePost({ _id: undefined });
     fixture.detectChanges();
 
@@ -126,7 +126,7 @@ describe('LikeDislikePost', () => {
 
     postsApi.likePost.mockReturnValue(of(makePost()));
 
-    const fixture = TestBed.createComponent(LikeDislikePost);
+    const fixture = TestBed.createComponent(LikePost);
     fixture.componentInstance.post = makePost({ _id: 'p1' });
     fixture.detectChanges();
 
@@ -141,7 +141,7 @@ describe('LikeDislikePost', () => {
 
     postsApi.likePost.mockReturnValue(throwError(() => ({ error: { message: 'Boom' } })));
 
-    const fixture = TestBed.createComponent(LikeDislikePost);
+    const fixture = TestBed.createComponent(LikePost);
     fixture.componentInstance.post = makePost({ _id: 'p1' });
 
     const emitted = vi.fn();
@@ -158,7 +158,7 @@ describe('LikeDislikePost', () => {
   it('should disable button when busy', () => {
     auth.getUserId.mockReturnValue('me');
 
-    const fixture = TestBed.createComponent(LikeDislikePost);
+    const fixture = TestBed.createComponent(LikePost);
     fixture.componentInstance.post = makePost({ _id: 'p1' });
     fixture.detectChanges();
 

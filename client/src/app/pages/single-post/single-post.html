@@ -30,10 +30,7 @@
 
     <footer class="feed__footer">
       <div class="feed__footer-left">
-        <app-like-dislike-post
-          [post]="p"
-          (postUpdated)="onPostUpdated($event)"
-        ></app-like-dislike-post>
+        <app-like-post [post]="p" (postUpdated)="onPostUpdated($event)"></app-like-post>
 
         <button type="button" class="feed__action" aria-label="Comments">
           <mat-icon>chat_bubble_outline</mat-icon>

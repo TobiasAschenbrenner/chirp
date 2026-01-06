@@ -9,7 +9,7 @@ import { Post, Posts as PostsApi } from '../../services/posts/posts';
 import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 
-import { LikeDislikePost } from '../like-dislike-post/like-dislike-post';
+import { LikePost } from '../like-dislike-post/like-post';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { ProfileImage } from '../profile-image/profile-image';
 import { BookmarkPost } from '../bookmark-post/bookmark-post';
@@ -31,7 +31,7 @@ type ApiError = {
     MatIconModule,
     FormsModule,
     RouterModule,
-    LikeDislikePost,
+    LikePost,
     TimeAgoPipe,
     ProfileImage,
     BookmarkPost,

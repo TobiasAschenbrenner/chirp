@@ -13,13 +13,13 @@ type ApiError = {
 };
 
 @Component({
-  selector: 'app-like-dislike-post',
+  selector: 'app-like-post',
   standalone: true,
   imports: [CommonModule, MatIconModule],
-  templateUrl: './like-dislike-post.html',
-  styleUrls: ['./like-dislike-post.scss'],
+  templateUrl: './like-post.html',
+  styleUrls: ['./like-post.scss'],
 })
-export class LikeDislikePost {
+export class LikePost {
   @Input({ required: true }) post!: Post;
   @Output() postUpdated = new EventEmitter<Post>();
 

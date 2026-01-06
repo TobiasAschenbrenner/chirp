@@ -63,10 +63,7 @@
 
   <footer class="feed__footer">
     <div class="feed__footer-left">
-      <app-like-dislike-post
-        [post]="post"
-        (postUpdated)="emitUpdatedPost($event)"
-      ></app-like-dislike-post>
+      <app-like-post [post]="post" (postUpdated)="emitUpdatedPost($event)"></app-like-post>
 
       <a class="feed__action" [routerLink]="['/posts', post._id]" aria-label="Comments">
         <mat-icon>chat_bubble_outline</mat-icon>
