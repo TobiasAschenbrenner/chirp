@@ -84,10 +84,9 @@ export class Navbar implements OnInit {
   }
 
   ngOnInit(): void {
+    this.setupSearch();
     const userId = this.auth.getUserId();
     if (!userId) return;
-
-    this.setupSearch();
 
     this.usersApi
       .getUser(userId)
