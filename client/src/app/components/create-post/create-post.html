@@ -25,7 +25,14 @@
         <mat-icon>image</mat-icon>
       </label>
 
-      <input type="file" id="image" hidden (change)="onFileChange($event)" [disabled]="loading" />
+      <input
+        #imageInput
+        type="file"
+        id="image"
+        hidden
+        (change)="onFileChange($event)"
+        [disabled]="loading"
+      />
 
       <button type="submit" [disabled]="!canSubmit">
         {{ loading ? 'Posting…' : 'Post' }}

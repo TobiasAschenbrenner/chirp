@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, Output, OnInit, signal, DestroyRef } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,6 +35,8 @@ export class CreatePost implements OnInit {
   @Input() error = '';
   @Input() loading = false;
   @Output() createPost = new EventEmitter<FormData>();
+
+  @ViewChild('imageInput') imageInput?: ElementRef<HTMLInputElement>;
 
   body = '';
   image: File | null = null;
@@ -58,16 +70,14 @@ export class CreatePost implements OnInit {
   onSubmit(): void {
     if (!this.canSubmit) return;
 
-    const body = this.body.trim();
-    if (!body) return;
-
     const postData = new FormData();
-    postData.set('body', body);
+    postData.set('body', this.body.trim());
     if (this.image) postData.set('image', this.image);
 
     this.createPost.emit(postData);
 
     this.body = '';
     this.image = null;
+    if (this.imageInput?.nativeElement) this.imageInput.nativeElement.value = '';
   }
 }
