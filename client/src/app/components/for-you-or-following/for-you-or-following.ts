@@ -14,6 +14,11 @@ export class ForYouOrFollowing {
   @Input() active: FeedMode = 'foryou';
   @Output() modeChange = new EventEmitter<FeedMode>();
 
+  readonly modes: ReadonlyArray<{ key: FeedMode; label: string }> = [
+    { key: 'foryou', label: 'For you' },
+    { key: 'following', label: 'Following' },
+  ];
+
   setMode(mode: FeedMode): void {
     if (mode === this.active) return;
     this.modeChange.emit(mode);

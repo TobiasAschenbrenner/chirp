@@ -1,9 +1,10 @@
 <div class="forYouOrFollowing">
-  <button type="button" [class.active]="active === 'foryou'" (click)="setMode('foryou')">
-    For you
-  </button>
-
-  <button type="button" [class.active]="active === 'following'" (click)="setMode('following')">
-    Following
+  <button
+    *ngFor="let m of modes"
+    type="button"
+    [class.active]="active === m.key"
+    (click)="setMode(m.key)"
+  >
+    {{ m.label }}
   </button>
 </div>
