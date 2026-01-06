@@ -1,21 +1,17 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-
+import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DestroyRef } from '@angular/core';
 
+import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 import { Post } from '../../services/posts/posts';
 
 import { Feeds } from '../../components/feeds/feeds';
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
 import { UserProfile } from '../../components/user-profile/user-profile';
-
-import { MatDialog } from '@angular/material/dialog';
 import { EditProfileDialog } from '../../components/edit-profile-dialog/edit-profile-dialog';
-
-import { Auth } from '../../services/auth/auth';
 
 @Component({
   selector: 'app-profile',
