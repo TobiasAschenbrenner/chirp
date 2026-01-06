@@ -37,7 +37,19 @@ export class Navbar implements OnInit {
     private usersApi: Users,
     private router: Router,
     private destroyRef: DestroyRef
-  ) {
+  ) {}
+
+  goToUser(userId: string) {
+    this.open.set(false);
+    this.results.set([]);
+    this.router.navigate(['/users', userId]);
+  }
+
+  close() {
+    this.open.set(false);
+  }
+
+  private setupSearch(): void {
     this.search.valueChanges
       .pipe(
         debounceTime(250),
@@ -71,19 +83,11 @@ export class Navbar implements OnInit {
       });
   }
 
-  goToUser(userId: string) {
-    this.open.set(false);
-    this.results.set([]);
-    this.router.navigate(['/users', userId]);
-  }
-
-  close() {
-    this.open.set(false);
-  }
-
   ngOnInit(): void {
     const userId = this.auth.getUserId();
     if (!userId) return;
+
+    this.setupSearch();
 
     this.usersApi
       .getUser(userId)
