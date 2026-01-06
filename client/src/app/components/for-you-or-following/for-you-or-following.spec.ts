@@ -51,7 +51,8 @@ describe('ForYouOrFollowing', () => {
   it('should emit "foryou" when clicking "For you"', () => {
     const fixture = TestBed.createComponent(ForYouOrFollowing);
 
-    const emitted: any[] = [];
+    fixture.componentInstance.active = 'following';
+    const emitted: Array<'foryou' | 'following'> = [];
     fixture.componentInstance.modeChange.subscribe((v) => emitted.push(v));
 
     fixture.detectChanges();
@@ -65,7 +66,7 @@ describe('ForYouOrFollowing', () => {
   it('should emit "following" when clicking "Following"', () => {
     const fixture = TestBed.createComponent(ForYouOrFollowing);
 
-    const emitted: any[] = [];
+    const emitted: Array<'foryou' | 'following'> = [];
     fixture.componentInstance.modeChange.subscribe((v) => emitted.push(v));
 
     fixture.detectChanges();
@@ -74,5 +75,19 @@ describe('ForYouOrFollowing', () => {
     followingBtn.nativeElement.click();
 
     expect(emitted).toEqual(['following']);
+  });
+
+  it('should not emit when clicking the active mode', () => {
+    const fixture = TestBed.createComponent(ForYouOrFollowing);
+
+    const emitted: Array<'foryou' | 'following'> = [];
+    fixture.componentInstance.modeChange.subscribe((v) => emitted.push(v));
+
+    fixture.detectChanges();
+
+    const [forYouBtn] = fixture.debugElement.queryAll(By.css('button'));
+    forYouBtn.nativeElement.click();
+
+    expect(emitted).toEqual([]);
   });
 });
