@@ -4,14 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 
 import { Auth } from '../../services/auth/auth';
-import { User } from '../../services/users/users';
+import { User } from '../../models/user.model';
 import { ProfileImage } from '../profile-image/profile-image';
-
-type FollowerRef = string | { _id: string };
-
-type UserWithFollows = User & {
-  followers?: FollowerRef[];
-};
 
 @Component({
   selector: 'app-user-profile',
@@ -23,19 +17,19 @@ type UserWithFollows = User & {
 export class UserProfile {
   @Input() busy = false;
 
+  private readonly _user = signal<User | null>(null);
+
   @Input({ required: true })
-  set user(value: UserWithFollows) {
+  set user(value: User) {
     this._user.set(value);
   }
-  get user(): UserWithFollows {
-    return this._user() as UserWithFollows;
+  get user(): User {
+    return this._user() as User;
   }
 
   @Output() editProfile = new EventEmitter<void>();
   @Output() followToggle = new EventEmitter<void>();
   @Output() avatarChange = new EventEmitter<File>();
-
-  private readonly _user = signal<UserWithFollows | null>(null);
 
   avatarTouched = signal(false);
   pendingAvatar = signal<File | null>(null);
@@ -44,7 +38,8 @@ export class UserProfile {
 
   readonly isOwnProfile = computed(() => {
     const u = this._user();
-    return !!u && this.auth.getUserId() === u._id;
+    const me = this.auth.getUserId();
+    return !!u && !!me && me === u._id;
   });
 
   readonly followerCount = computed(() => this._user()?.followers?.length ?? 0);
@@ -56,8 +51,8 @@ export class UserProfile {
     const me = this.auth.getUserId();
     if (!u || !me) return false;
 
-    const followers: ReadonlyArray<FollowerRef> = u.followers ?? [];
-    return followers.some((f) => (typeof f === 'string' ? f === me : f._id === me));
+    const followerIds = u.followers ?? [];
+    return followerIds.includes(me);
   });
 
   onEditProfile(): void {
