@@ -2,25 +2,13 @@ import { Component, EventEmitter, Input, Output, OnInit, DestroyRef, signal } fr
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterModule } from '@angular/router';
 
 import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { ProfileImage } from '../profile-image/profile-image';
-import { RouterModule } from '@angular/router';
-
-type CommentCreator = {
-  creatorId: string;
-  creatorName: string;
-  creatorPhoto: string;
-};
-
-type Comment = {
-  _id: string;
-  comment: string;
-  createdAt?: string;
-  creator: CommentCreator | string;
-};
+import { PostCommentModel } from '../../models/Post-comment.model';
 
 @Component({
   selector: 'app-post-comment',
@@ -30,7 +18,7 @@ type Comment = {
   styleUrls: ['./post-comment.scss'],
 })
 export class PostComment implements OnInit {
-  @Input({ required: true }) comment!: Comment;
+  @Input({ required: true }) comment!: PostCommentModel;
   @Output() delete = new EventEmitter<string>();
 
   liveCreator = signal<User | null>(null);
