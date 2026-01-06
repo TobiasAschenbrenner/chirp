@@ -8,6 +8,12 @@ import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 import { ProfileImage } from '../profile-image/profile-image';
 
+type ApiError = {
+  error?: {
+    message?: string;
+  };
+};
+
 @Component({
   selector: 'app-create-post',
   standalone: true,
@@ -36,7 +42,7 @@ export class CreatePost implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (u) => this.user.set(u),
-        error: (err) => console.log(err),
+        error: (err: ApiError) => console.log(err),
       });
   }
 
