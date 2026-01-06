@@ -20,12 +20,4 @@ export class Feeds {
   @Output() bookmarkChanged = new EventEmitter<{ postId: string; bookmarked: boolean }>();
 
   constructor(public usersApi: Users) {}
-
-  onPostDeleted(id: string): void {
-    this.postDeleted.emit(id);
-  }
-
-  onPostUpdated(updated: Post): void {
-    this.postUpdated.emit(updated);
-  }
 }
