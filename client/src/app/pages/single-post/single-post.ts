@@ -51,10 +51,9 @@ export class SinglePost implements OnInit {
   }
 
   authorId(): string | null {
-    const p = this.post();
-    const c: any = p?.creator;
-    if (!c) return null;
-    return typeof c === 'string' ? c : c._id;
+    const creator = this.post()?.creator;
+    if (!creator) return null;
+    return typeof creator === 'string' ? creator : creator._id;
   }
 
   private loadPost(id: string): void {
