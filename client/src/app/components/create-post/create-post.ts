@@ -33,6 +33,10 @@ export class CreatePost implements OnInit {
 
   constructor(private auth: Auth, private usersApi: Users, private destroyRef: DestroyRef) {}
 
+  get canSubmit(): boolean {
+    return !this.loading && this.body.trim().length > 0;
+  }
+
   ngOnInit(): void {
     const userId = this.auth.getUserId();
     if (!userId) return;
@@ -52,7 +56,7 @@ export class CreatePost implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.loading) return;
+    if (!this.canSubmit) return;
 
     const body = this.body.trim();
     if (!body) return;

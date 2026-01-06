@@ -27,7 +27,7 @@
 
       <input type="file" id="image" hidden (change)="onFileChange($event)" [disabled]="loading" />
 
-      <button type="submit" [disabled]="loading || !body.trim()">
+      <button type="submit" [disabled]="!canSubmit">
         {{ loading ? 'Posting…' : 'Post' }}
       </button>
     </div>
