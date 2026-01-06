@@ -7,7 +7,6 @@ import { finalize } from 'rxjs';
 
 import { Posts, Post, Comment, PostUser } from '../../services/posts/posts';
 import { Comments as CommentsApi } from '../../services/comments/comments';
-import { LikePost } from '../../components/like-post/like-post';
 import { PostComment } from '../../components/post-comment/post-comment';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { BookmarkPost } from '../../components/bookmark-post/bookmark-post';
@@ -23,7 +22,6 @@ import { ApiError } from '../../models/api-error.model';
     RouterModule,
     FormsModule,
     MatIconModule,
-    LikePost,
     PostComment,
     TimeAgoPipe,
     BookmarkPost,
