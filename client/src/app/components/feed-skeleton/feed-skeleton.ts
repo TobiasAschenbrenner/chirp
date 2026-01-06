@@ -10,9 +10,9 @@ import { CommonModule } from '@angular/common';
 })
 export class FeedSkeleton {
   @Input() count = 3;
-  items: number[] = [];
+  items: ReadonlyArray<number> = [];
 
-  private buildItems(): number[] {
+  private buildItems(): ReadonlyArray<number> {
     return Array.from({ length: this.count }, (_, i) => i);
   }
 
