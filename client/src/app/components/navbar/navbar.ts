@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, signal, DestroyRef } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -25,6 +25,8 @@ import { ProfileImage } from '../profile-image/profile-image';
   styleUrls: ['./navbar.scss'],
 })
 export class Navbar implements OnInit {
+  readonly minQueryLength = 2;
+
   search = new FormControl<string>('', { nonNullable: true });
 
   results = signal<User[]>([]);
@@ -39,14 +41,32 @@ export class Navbar implements OnInit {
     private destroyRef: DestroyRef
   ) {}
 
-  goToUser(userId: string) {
-    this.open.set(false);
-    this.results.set([]);
+  get canShowEmpty(): boolean {
+    return (
+      !this.searching() &&
+      this.results().length === 0 &&
+      this.search.value.trim().length >= this.minQueryLength
+    );
+  }
+
+  goToUser(userId: string): void {
+    this.resetSearchUi();
     this.router.navigate(['/users', userId]);
   }
 
-  close() {
+  close(): void {
     this.open.set(false);
+  }
+
+  private resetSearchUi(): void {
+    this.results.set([]);
+    this.searching.set(false);
+    this.open.set(false);
+  }
+
+  private openSearchUi(): void {
+    this.searching.set(true);
+    this.open.set(true);
   }
 
   private setupSearch(): void {
@@ -55,18 +75,10 @@ export class Navbar implements OnInit {
         debounceTime(250),
         distinctUntilChanged(),
         tap((q) => {
-          const trimmed = q.trim();
-          if (trimmed.length < 2) {
-            this.results.set([]);
-            this.searching.set(false);
-            this.open.set(false);
-          }
+          if (q.trim().length < this.minQueryLength) this.resetSearchUi();
         }),
-        filter((q) => q.trim().length >= 2),
-        tap(() => {
-          this.searching.set(true);
-          this.open.set(true);
-        }),
+        filter((q) => q.trim().length >= this.minQueryLength),
+        tap(() => this.openSearchUi()),
         switchMap((q) =>
           this.usersApi.searchUsers(q.trim(), 8, 1).pipe(
             catchError((err) => {

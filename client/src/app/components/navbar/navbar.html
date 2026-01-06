@@ -31,12 +31,7 @@
           <span class="navbar__searchName">{{ u.fullName }}</span>
         </button>
 
-        <div
-          class="navbar__searchEmpty"
-          *ngIf="!searching() && results().length === 0 && search.value.trim().length >= 2"
-        >
-          No users found
-        </div>
+        <div class="navbar__searchEmpty" *ngIf="canShowEmpty">No users found</div>
       </div>
     </div>
 
