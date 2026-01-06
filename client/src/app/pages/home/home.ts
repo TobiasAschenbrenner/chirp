@@ -32,10 +32,6 @@ export class Home implements OnInit {
     this.loadBookmarks();
   }
 
-  openThemes(): void {
-    console.log('Open themes modal (todo)');
-  }
-
   onPostUpdated(updated: Post): void {
     this.posts.update((list) => list.map((p) => (p._id === updated._id ? updated : p)));
   }
