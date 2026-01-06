@@ -3,8 +3,9 @@
     <h3 class="editPost__title">Edit post</h3>
 
     <textarea
-      [value]="body()"
-      (input)="onBodyInput($event)"
+      name="body"
+      [ngModel]="body()"
+      (ngModelChange)="body.set($event)"
       placeholder="What's on your mind?"
       autofocus
     ></textarea>

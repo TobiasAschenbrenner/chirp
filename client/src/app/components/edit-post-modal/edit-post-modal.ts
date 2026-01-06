@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnInit, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
+import { FormsModule } from '@angular/forms';
 import { Posts as PostsApi, Post } from '../../services/posts/posts';
 
 type ApiError = {
@@ -13,7 +13,7 @@ type ApiError = {
 @Component({
   selector: 'app-edit-post-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './edit-post-modal.html',
   styleUrls: ['./edit-post-modal.scss'],
 })
@@ -31,12 +31,6 @@ export class EditPostModal implements OnInit {
 
   ngOnInit(): void {
     this.loadPost();
-  }
-
-  onBodyInput(event: Event): void {
-    const el = event.target as HTMLTextAreaElement | null;
-    if (!el) return;
-    this.body.set(el.value);
   }
 
   private loadPost(): void {
