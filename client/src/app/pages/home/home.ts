@@ -79,9 +79,11 @@ export class Home implements OnInit {
 
   createPost(data: FormData): void {
     this.error.set('');
+    this.posting.set(true);
 
     this.postsApi.createPost(data).subscribe({
       next: (newPost) => {
+        this.posting.set(false);
         if (this.mode() === 'foryou') {
           this.posts.update((current) => [newPost, ...current]);
         } else {
@@ -89,6 +91,7 @@ export class Home implements OnInit {
         }
       },
       error: (err) => {
+        this.posting.set(false);
         const msg = err?.error?.message || 'Failed to create post.';
         this.error.set(
           msg === "TypeError: Cannot read properties of null (reading 'image')"
