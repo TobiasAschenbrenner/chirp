@@ -25,9 +25,6 @@ import { ProfileImage } from '../profile-image/profile-image';
   styleUrls: ['./navbar.scss'],
 })
 export class Navbar implements OnInit {
-  keyword = '';
-  @Output() keywordChange = new EventEmitter<string>();
-
   search = new FormControl<string>('', { nonNullable: true });
 
   results = signal<User[]>([]);
@@ -95,10 +92,6 @@ export class Navbar implements OnInit {
         next: (u) => this.user.set(u),
         error: (err) => console.log(err),
       });
-  }
-
-  onKeywordInput(): void {
-    this.keywordChange.emit(this.keyword);
   }
 
   logout(): void {
