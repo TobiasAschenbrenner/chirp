@@ -1,18 +1,18 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { finalize } from 'rxjs';
 
-import { Posts, Post, Comment, PostUser } from '../../services/posts/posts';
-import { Comments as CommentsApi } from '../../services/comments/comments';
-import { PostComment } from '../../components/post-comment/post-comment';
-import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { BookmarkPost } from '../../components/bookmark-post/bookmark-post';
+import { PostComment } from '../../components/post-comment/post-comment';
 import { ProfileImage } from '../../components/profile-image/profile-image';
-import { Users } from '../../services/users/users';
 import { ApiError } from '../../models/api-error.model';
+import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
+import { Comments as CommentsApi } from '../../services/comments/comments';
+import { Comment, Post, Posts, PostUser } from '../../services/posts/posts';
+import { Users } from '../../services/users/users';
 
 @Component({
   selector: 'app-single-post',
@@ -31,30 +31,74 @@ import { ApiError } from '../../models/api-error.model';
   styleUrls: ['./single-post.scss'],
 })
 export class SinglePost implements OnInit {
-  post = signal<Post | null>(null);
-  loading = signal(false);
-  error = signal('');
+  readonly post = signal<Post | null>(null);
+  readonly loading = signal(false);
+  readonly error = signal('');
 
-  commentText = signal('');
+  readonly commentText = signal('');
+
+  readonly creator = computed<PostUser | null>(() => {
+    const c = this.post()?.creator;
+    return !c || typeof c === 'string' ? null : c;
+  });
+
+  readonly authorId = computed<string | null>(() => {
+    const c = this.post()?.creator;
+    if (!c) return null;
+    return typeof c === 'string' ? c : c._id;
+  });
+
+  readonly comments = computed<Comment[]>(() => {
+    const list = this.post()?.comments ?? [];
+    return list.filter((c): c is Comment => typeof c !== 'string');
+  });
 
   constructor(
-    private route: ActivatedRoute,
-    private postsApi: Posts,
-    private commentsApi: CommentsApi,
-    protected usersApi: Users
+    private readonly route: ActivatedRoute,
+    private readonly postsApi: Posts,
+    private readonly commentsApi: CommentsApi,
+    protected readonly usersApi: Users
   ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) return;
+
     this.loadPost(id);
   }
 
-  readonly authorId = computed(() => {
-    const c = this.post()?.creator;
-    if (!c) return null;
-    return typeof c === 'string' ? c : c._id;
-  });
+  createComment(): void {
+    const p = this.post();
+    if (!p) return;
+
+    const text = this.commentText().trim();
+    if (!text) return;
+
+    this.error.set('');
+
+    this.commentsApi.createComment(p._id, text).subscribe({
+      next: (newComment) => {
+        this.post.update((old) => (old ? this.addComment(old, newComment) : old));
+        this.commentText.set('');
+      },
+      error: (err) => this.error.set(this.errorMessage(err, 'Failed to create comment.')),
+    });
+  }
+
+  deleteComment(commentId: string): void {
+    this.error.set('');
+
+    this.commentsApi.deleteComment(commentId).subscribe({
+      next: () => {
+        this.post.update((old) => (old ? this.removeComment(old, commentId) : old));
+      },
+      error: (err) => this.error.set(this.errorMessage(err, 'Failed to delete comment.')),
+    });
+  }
+
+  onPostUpdated(updated: Post): void {
+    this.post.set(updated);
+  }
 
   private loadPost(id: string): void {
     this.loading.set(true);
@@ -69,55 +113,19 @@ export class SinglePost implements OnInit {
       });
   }
 
-  readonly creator = computed(() => {
-    const c = this.post()?.creator;
-    return !c || typeof c === 'string' ? null : c;
-  });
-
-  readonly comments = computed(() => {
-    const list = this.post()?.comments || [];
-    return list.filter((c): c is Comment => typeof c !== 'string');
-  });
-
-  createComment(): void {
-    const p = this.post();
-    if (!p) return;
-
-    const text = this.commentText().trim();
-    if (!text) return;
-
-    this.commentsApi.createComment(p._id, text).subscribe({
-      next: (newComment) => {
-        this.post.update((old) => {
-          if (!old) return old;
-          return { ...old, comments: [newComment, ...(old.comments || [])] };
-        });
-
-        this.commentText.set('');
-      },
-      error: (err) => {
-        this.error.set(this.errorMessage(err, 'Failed to create comment.'));
-      },
-    });
+  private addComment(post: Post, newComment: Comment): Post {
+    return {
+      ...post,
+      comments: [newComment, ...(post.comments ?? [])],
+    };
   }
 
-  deleteComment(commentId: string): void {
-    this.commentsApi.deleteComment(commentId).subscribe({
-      next: () => {
-        this.post.update((old) => {
-          if (!old) return old;
-          const nextComments = this.comments().filter((c) => c._id !== commentId);
-          return { ...old, comments: nextComments };
-        });
-      },
-      error: (err) => {
-        this.error.set(this.errorMessage(err, 'Failed to delete comment.'));
-      },
-    });
-  }
+  private removeComment(post: Post, commentId: string): Post {
+    const nextComments = (post.comments ?? []).filter(
+      (c) => typeof c === 'string' || c._id !== commentId
+    );
 
-  onPostUpdated(updated: Post): void {
-    this.post.set(updated);
+    return { ...post, comments: nextComments };
   }
 
   private errorMessage(err: unknown, fallback: string): string {
