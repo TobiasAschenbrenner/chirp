@@ -78,7 +78,12 @@ export class EditPostModal implements OnInit {
   }
 
   close(e?: MouseEvent): void {
-    if (!e || (e.target as HTMLElement).classList.contains('editPost')) {
+    if (!e) {
+      this.closed.emit();
+      return;
+    }
+
+    if (e.target === e.currentTarget) {
       this.closed.emit();
     }
   }
