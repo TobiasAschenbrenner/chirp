@@ -29,17 +29,6 @@ describe('Sidebar', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should emit openThemes event when onOpenThemes is called', () => {
-    const fixture = TestBed.createComponent(Sidebar);
-    const component = fixture.componentInstance;
-
-    const emitSpy = vi.spyOn(component.openThemes, 'emit');
-
-    component.onOpenThemes();
-
-    expect(emitSpy).toHaveBeenCalled();
-  });
-
   it('should expose auth to the template', () => {
     const fixture = TestBed.createComponent(Sidebar);
     fixture.detectChanges();

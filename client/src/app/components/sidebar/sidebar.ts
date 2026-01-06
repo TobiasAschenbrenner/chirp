@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,11 +13,5 @@ import { Auth } from '../../services/auth/auth';
   styleUrls: ['./sidebar.scss'],
 })
 export class Sidebar {
-  @Output() openThemes = new EventEmitter<void>();
-
   constructor(public auth: Auth) {}
-
-  onOpenThemes(): void {
-    this.openThemes.emit();
-  }
 }
