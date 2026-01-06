@@ -66,18 +66,21 @@ export class EditPostModal implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    this.postsApi.editPost(this.postId, body).subscribe({
-      next: (post: Post) => {
-        this.updated.emit(post);
-        this.closed.emit();
-        this.loading.set(false);
-      },
-      error: (err: ApiError) => {
-        console.log(err);
-        this.error.set(err?.error?.message || 'Failed to update post.');
-        this.loading.set(false);
-      },
-    });
+    this.postsApi
+      .editPost(this.postId, body)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (post: Post) => {
+          this.updated.emit(post);
+          this.closed.emit();
+          this.loading.set(false);
+        },
+        error: (err: ApiError) => {
+          console.log(err);
+          this.error.set(err?.error?.message || 'Failed to update post.');
+          this.loading.set(false);
+        },
+      });
   }
 
   close(e?: MouseEvent): void {
