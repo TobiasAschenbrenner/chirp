@@ -12,11 +12,15 @@ export class FeedSkeleton {
   @Input() count = 3;
   items: number[] = [];
 
+  private buildItems(): number[] {
+    return Array.from({ length: this.count }, (_, i) => i);
+  }
+
   ngOnChanges(): void {
-    this.items = Array.from({ length: this.count }, (_, i) => i);
+    this.items = this.buildItems();
   }
 
   ngOnInit(): void {
-    this.items = Array.from({ length: this.count }, (_, i) => i);
+    this.items = this.buildItems();
   }
 }
