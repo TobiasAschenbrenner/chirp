@@ -58,33 +58,20 @@ export class Profile implements OnInit {
   }
 
   toggleFollow(): void {
-    const profile = this.user();
-    if (!profile?._id || this.busy()) return;
+    const profileId = this.user()?._id;
+    if (!profileId || this.busy()) return;
 
-    const myId = this.auth.getUserId();
+    const myId = this.getMyUserId();
     if (!myId) return;
 
     this.busy.set(true);
 
-    this.usersApi.followUnfollow(profile._id).subscribe({
+    this.usersApi.followUnfollow(profileId).subscribe({
       next: () => {
-        this.user.update((u) => {
-          if (!u) return u;
-
-          type FollowerRef = string | { _id: string };
-          const followers: ReadonlyArray<FollowerRef> = u.followers ?? [];
-
-          const ids = followers.map((f) => (typeof f === 'string' ? f : f._id));
-
-          const hasMe = ids.includes(myId);
-          const nextIds = hasMe ? ids.filter((id) => id !== myId) : [myId, ...ids];
-
-          return { ...u, followers: nextIds };
-        });
-
+        this.applyFollowToggle(myId);
         this.busy.set(false);
       },
-      error: (err) => {
+      error: (err: ApiError) => {
         console.log(err);
         this.busy.set(false);
       },
@@ -167,5 +154,29 @@ export class Profile implements OnInit {
     this.posts.set([]);
     this.loading.set(true);
     this.error.set('');
+  }
+
+  private getMyUserId(): string | null {
+    return this.auth.getUserId();
+  }
+
+  private followerIdsOf(user: UserWithFollowers): string[] {
+    const followers: ReadonlyArray<FollowerRef> = user.followers ?? [];
+    return followers.map((f) => (typeof f === 'string' ? f : f._id));
+  }
+
+  private toggleId(ids: readonly string[], id: string): string[] {
+    return ids.includes(id) ? ids.filter((x) => x !== id) : [id, ...ids];
+  }
+
+  private applyFollowToggle(myId: string): void {
+    this.user.update((u) => {
+      if (!u) return u;
+
+      const ids = this.followerIdsOf(u);
+      const nextIds = this.toggleId(ids, myId);
+
+      return { ...u, followers: nextIds };
+    });
   }
 }
