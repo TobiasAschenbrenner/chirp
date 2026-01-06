@@ -11,6 +11,12 @@ import { Feeds } from '../../components/feeds/feeds';
 
 type FeedMode = 'foryou' | 'following';
 
+type ApiError = {
+  error?: {
+    message?: string;
+  };
+};
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -57,7 +63,7 @@ export class Home implements OnInit {
         this.posts.set(posts);
         this.loading.set(false);
       },
-      error: (err) => {
+      error: (err: ApiError) => {
         console.log('Load posts failed:', err);
         this.loading.set(false);
       },
@@ -70,7 +76,7 @@ export class Home implements OnInit {
         const ids = new Set<string>(res.bookmarks.map((p) => p._id));
         this.bookmarkedIds.set(ids);
       },
-      error: (err) => console.log(err),
+      error: (err: ApiError) => console.log(err),
     });
   }
 
@@ -87,9 +93,8 @@ export class Home implements OnInit {
           this.loadPosts();
         }
       },
-      error: (err) => {
-        this.posting.set(false);
-        const msg = err?.error?.message || 'Failed to create post.';
+      error: (err: ApiError) => {
+        const msg = err.error?.message || 'Failed to create post.';
         this.error.set(
           msg === "TypeError: Cannot read properties of null (reading 'image')"
             ? 'Please upload an image'
