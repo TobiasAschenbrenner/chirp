@@ -17,6 +17,12 @@ import { EditPostModal } from '../edit-post-modal/edit-post-modal';
 
 type PostCreator = string | { _id: string };
 
+type ApiError = {
+  error?: {
+    message?: string;
+  };
+};
+
 @Component({
   selector: 'app-feed',
   standalone: true,
@@ -73,7 +79,7 @@ export class Feed implements OnInit {
           this.creator.set(user);
           this.creatorLoading.set(false);
         },
-        error: (err) => {
+        error: (err: ApiError) => {
           console.log(err);
           this.creatorLoading.set(false);
         },
@@ -131,7 +137,7 @@ export class Feed implements OnInit {
         this.editing.set(false);
         this.busy.set(false);
       },
-      error: (err) => {
+      error: (err: ApiError) => {
         console.log(err);
         this.busy.set(false);
       },
@@ -148,7 +154,7 @@ export class Feed implements OnInit {
         this.postDeleted.emit(this.post._id);
         this.busy.set(false);
       },
-      error: (err) => {
+      error: (err: ApiError) => {
         console.log(err);
         this.busy.set(false);
       },
