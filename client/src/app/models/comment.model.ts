@@ -4,7 +4,7 @@ export interface CommentCreator {
   creatorPhoto: string;
 }
 
-export interface PostCommentModel {
+export interface CommentModel {
   _id: string;
   comment: string;
   createdAt?: string;

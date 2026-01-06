@@ -60,7 +60,7 @@ export class Auth {
     localStorage.setItem(USER_ID_KEY, id);
   }
 
-  register(payload: RegisterPayload): Observable<void> {
-    return this.http.post<void>('/api/users/register', payload);
+  register(payload: RegisterPayload) {
+    return this.http.post('/api/users/register', payload);
   }
 }
