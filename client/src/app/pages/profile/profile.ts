@@ -19,11 +19,11 @@ type ApiError = {
   };
 };
 
-type UserWithFollowers = User & {
-  followers?: Array<string | { _id: string }>;
-};
-
 type FollowerRef = string | { _id: string };
+
+type UserWithFollowers = User & {
+  followers?: FollowerRef[];
+};
 
 @Component({
   selector: 'app-profile',
@@ -95,10 +95,16 @@ export class Profile implements OnInit {
     });
 
     ref.afterClosed().subscribe((updated?: User) => {
-      if (updated) {
-        this.user.set(updated);
-      }
+      if (updated) this.user.set(updated);
     });
+  }
+
+  onPostUpdated(updated: Post): void {
+    this.posts.update((list) => list.map((p) => (p._id === updated._id ? updated : p)));
+  }
+
+  onPostDeleted(postId: string): void {
+    this.posts.update((list) => list.filter((p) => p._id !== postId));
   }
 
   private loadProfile(id: string): void {
@@ -141,14 +147,6 @@ export class Profile implements OnInit {
     });
   }
 
-  onPostUpdated(updated: Post): void {
-    this.posts.update((list) => list.map((p) => (p._id === updated._id ? updated : p)));
-  }
-
-  onPostDeleted(postId: string): void {
-    this.posts.update((list) => list.filter((p) => p._id !== postId));
-  }
-
   private resetState(): void {
     this.user.set(null);
     this.posts.set([]);
@@ -160,15 +158,6 @@ export class Profile implements OnInit {
     return this.auth.getUserId();
   }
 
-  private followerIdsOf(user: UserWithFollowers): string[] {
-    const followers: ReadonlyArray<FollowerRef> = user.followers ?? [];
-    return followers.map((f) => (typeof f === 'string' ? f : f._id));
-  }
-
-  private toggleId(ids: readonly string[], id: string): string[] {
-    return ids.includes(id) ? ids.filter((x) => x !== id) : [id, ...ids];
-  }
-
   private applyFollowToggle(myId: string): void {
     this.user.update((u) => {
       if (!u) return u;
@@ -178,5 +167,14 @@ export class Profile implements OnInit {
 
       return { ...u, followers: nextIds };
     });
+  }
+
+  private followerIdsOf(user: UserWithFollowers): string[] {
+    const followers: ReadonlyArray<FollowerRef> = user.followers ?? [];
+    return followers.map((f) => (typeof f === 'string' ? f : f._id));
+  }
+
+  private toggleId(ids: readonly string[], id: string): string[] {
+    return ids.includes(id) ? ids.filter((x) => x !== id) : [id, ...ids];
   }
 }
