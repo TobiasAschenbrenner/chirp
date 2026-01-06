@@ -11,7 +11,6 @@ type FollowerRef = string | { _id: string };
 
 type UserWithFollows = User & {
   followers?: FollowerRef[];
-  following?: FollowerRef[];
 };
 
 @Component({
