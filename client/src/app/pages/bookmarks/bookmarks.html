@@ -10,7 +10,7 @@
 
     <app-feeds
       *ngIf="hasBookmarks()"
-      [posts]="bookmarks()"
+      [posts]="posts()"
       [bookmarkedIds]="bookmarkedIds()"
       (bookmarkChanged)="onBookmarkChanged($event)"
     ></app-feeds>

@@ -17,12 +17,11 @@ import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
   styleUrls: ['./bookmarks.scss'],
 })
 export class Bookmarks implements OnInit {
-  bookmarks = signal<Post[]>([]);
+  posts = signal<Post[]>([]);
   loading = signal(true);
   error = signal('');
 
-  bookmarkedIds = computed(() => new Set(this.bookmarks().map((p) => p._id)));
-
+  bookmarkedIds = computed(() => new Set(this.posts().map((p) => p._id)));
   constructor(private usersApi: Users, private destroyRef: DestroyRef) {}
 
   ngOnInit(): void {
@@ -41,7 +40,7 @@ export class Bookmarks implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          this.bookmarks.set(res.bookmarks || []);
+          this.posts.set(res.bookmarks || []);
         },
         error: (err) => {
           console.log(err);
@@ -51,19 +50,19 @@ export class Bookmarks implements OnInit {
   }
 
   onPostUpdated(updated: Post): void {
-    this.bookmarks.update((list) => list.map((p) => (p._id === updated._id ? updated : p)));
+    this.posts.update((list) => list.map((p) => (p._id === updated._id ? updated : p)));
   }
 
   onPostDeleted(postId: string): void {
-    this.bookmarks.update((list) => list.filter((p) => p._id !== postId));
+    this.posts.update((list) => list.filter((p) => p._id !== postId));
   }
 
   onBookmarkChanged(e: { postId: string; bookmarked: boolean }): void {
     if (!e.bookmarked) {
-      this.bookmarks.update((list) => list.filter((p) => p._id !== e.postId));
+      this.posts.update((list) => list.filter((p) => p._id !== e.postId));
     }
   }
 
-  readonly isEmpty = computed(() => !this.loading() && this.bookmarks().length === 0);
-  readonly hasBookmarks = computed(() => this.bookmarks().length > 0);
+  readonly isEmpty = computed(() => !this.loading() && this.posts().length === 0);
+  readonly hasBookmarks = computed(() => this.posts().length > 0);
 }
