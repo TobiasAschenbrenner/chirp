@@ -5,6 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { Post, Posts } from '../../services/posts/posts';
 import { Auth } from '../../services/auth/auth';
 
+type ApiError = {
+  error?: {
+    message?: string;
+  };
+};
+
 @Component({
   selector: 'app-like-dislike-post',
   standalone: true,
@@ -39,7 +45,7 @@ export class LikeDislikePost {
         this.postUpdated.emit(updated);
         this.busy.set(false);
       },
-      error: (err) => {
+      error: (err: ApiError) => {
         console.log(err);
         this.busy.set(false);
       },
