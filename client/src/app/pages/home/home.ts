@@ -49,13 +49,13 @@ export class Home implements OnInit {
     this.loadPosts();
   }
 
+  private getPostsRequest() {
+    return this.mode() === 'foryou' ? this.postsApi.getPosts() : this.postsApi.getFollowingPosts();
+  }
+
   private loadPosts(): void {
     this.loading.set(true);
-
-    const request$ =
-      this.mode() === 'foryou' ? this.postsApi.getPosts() : this.postsApi.getFollowingPosts();
-
-    request$.subscribe({
+    this.getPostsRequest().subscribe({
       next: (posts) => {
         this.posts.set(posts);
         this.loading.set(false);
