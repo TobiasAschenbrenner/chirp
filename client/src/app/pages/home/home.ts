@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 
 import { CreatePost } from '../../components/create-post/create-post';
 import { ForYouOrFollowing } from '../../components/for-you-or-following/for-you-or-following';
-import { Posts, Post } from '../../services/posts/posts';
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
-import { Users } from '../../services/users/users';
 import { Feeds } from '../../components/feeds/feeds';
+
+import { Posts, Post } from '../../services/posts/posts';
+import { Users } from '../../services/users/users';
 
 type FeedMode = 'foryou' | 'following';
 
@@ -27,16 +28,22 @@ type ApiError = {
 export class Home implements OnInit {
   mode = signal<FeedMode>('foryou');
   posts = signal<Post[]>([]);
-  loading = signal(false);
-  error = signal('');
   bookmarkedIds = signal<ReadonlySet<string>>(new Set<string>());
+
+  loading = signal(false);
   posting = signal(false);
+  error = signal('');
 
   constructor(private usersApi: Users, private postsApi: Posts) {}
 
   ngOnInit(): void {
     this.loadPosts();
     this.loadBookmarks();
+  }
+
+  onModeChange(mode: FeedMode): void {
+    this.mode.set(mode);
+    this.loadPosts();
   }
 
   onPostUpdated(updated: Post): void {
@@ -47,9 +54,31 @@ export class Home implements OnInit {
     this.posts.update((posts) => posts.filter((p) => p._id !== postId));
   }
 
-  onModeChange(mode: FeedMode): void {
-    this.mode.set(mode);
-    this.loadPosts();
+  createPost(data: FormData): void {
+    this.error.set('');
+    this.posting.set(true);
+
+    this.postsApi.createPost(data).subscribe({
+      next: (newPost) => {
+        this.posting.set(false);
+
+        if (this.mode() === 'foryou') {
+          this.posts.update((posts) => [newPost, ...posts]);
+        } else {
+          this.loadPosts();
+        }
+      },
+      error: (err: ApiError) => {
+        this.posting.set(false);
+
+        const msg = err.error?.message || 'Failed to create post.';
+        this.error.set(
+          msg === "TypeError: Cannot read properties of null (reading 'image')"
+            ? 'Please upload an image'
+            : msg
+        );
+      },
+    });
   }
 
   private getPostsRequest(): Observable<Post[]> {
@@ -58,6 +87,7 @@ export class Home implements OnInit {
 
   private loadPosts(): void {
     this.loading.set(true);
+
     this.getPostsRequest().subscribe({
       next: (posts) => {
         this.posts.set(posts);
@@ -77,30 +107,6 @@ export class Home implements OnInit {
         this.bookmarkedIds.set(ids);
       },
       error: (err: ApiError) => console.log(err),
-    });
-  }
-
-  createPost(data: FormData): void {
-    this.error.set('');
-    this.posting.set(true);
-
-    this.postsApi.createPost(data).subscribe({
-      next: (newPost) => {
-        this.posting.set(false);
-        if (this.mode() === 'foryou') {
-          this.posts.update((current) => [newPost, ...current]);
-        } else {
-          this.loadPosts();
-        }
-      },
-      error: (err: ApiError) => {
-        const msg = err.error?.message || 'Failed to create post.';
-        this.error.set(
-          msg === "TypeError: Cannot read properties of null (reading 'image')"
-            ? 'Please upload an image'
-            : msg
-        );
-      },
     });
   }
 }
