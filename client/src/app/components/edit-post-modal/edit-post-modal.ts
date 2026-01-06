@@ -4,12 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Posts as PostsApi, Post } from '../../services/posts/posts';
-
-type ApiError = {
-  error?: {
-    message?: string;
-  };
-};
+import { ApiError } from '../../models/api-error.model';
 
 @Component({
   selector: 'app-edit-post-modal',

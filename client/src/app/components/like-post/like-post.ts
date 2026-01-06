@@ -5,12 +5,7 @@ import { finalize } from 'rxjs/operators';
 
 import { Post, Posts } from '../../services/posts/posts';
 import { Auth } from '../../services/auth/auth';
-
-type ApiError = {
-  error?: {
-    message?: string;
-  };
-};
+import { ApiError } from '../../models/api-error.model';
 
 @Component({
   selector: 'app-like-post',

@@ -9,14 +9,9 @@ import { Feeds } from '../../components/feeds/feeds';
 
 import { Posts, Post } from '../../services/posts/posts';
 import { Users } from '../../services/users/users';
+import { ApiError } from '../../models/api-error.model';
 
 type FeedMode = 'foryou' | 'following';
-
-type ApiError = {
-  error?: {
-    message?: string;
-  };
-};
 
 @Component({
   selector: 'app-home',

@@ -17,12 +17,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 import { ProfileImage } from '../profile-image/profile-image';
-
-type ApiError = {
-  error?: {
-    message?: string;
-  };
-};
+import { ApiError } from '../../models/api-error.model';
 
 @Component({
   selector: 'app-create-post',

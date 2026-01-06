@@ -12,12 +12,7 @@ import { Feeds } from '../../components/feeds/feeds';
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
 import { UserProfile } from '../../components/user-profile/user-profile';
 import { EditProfileDialog } from '../../components/edit-profile-dialog/edit-profile-dialog';
-
-type ApiError = {
-  error?: {
-    message?: string;
-  };
-};
+import { ApiError } from '../../models/api-error.model';
 
 type FollowerRef = string | { _id: string };
 

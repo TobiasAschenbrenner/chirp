@@ -14,14 +14,9 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { ProfileImage } from '../profile-image/profile-image';
 import { BookmarkPost } from '../bookmark-post/bookmark-post';
 import { EditPostModal } from '../edit-post-modal/edit-post-modal';
+import { ApiError } from '../../models/api-error.model';
 
 type PostCreator = string | { _id: string };
-
-type ApiError = {
-  error?: {
-    message?: string;
-  };
-};
 
 @Component({
   selector: 'app-feed',

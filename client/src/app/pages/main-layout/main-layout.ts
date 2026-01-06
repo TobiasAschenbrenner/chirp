@@ -6,12 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Sidebar } from '../../components/sidebar/sidebar';
 import { Auth } from '../../services/auth/auth';
 import { Users } from '../../services/users/users';
-
-type ApiError = {
-  error?: {
-    message?: string;
-  };
-};
+import { ApiError } from '../../models/api-error.model';
 
 @Component({
   selector: 'app-main-layout',
