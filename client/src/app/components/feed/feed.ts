@@ -15,6 +15,8 @@ import { ProfileImage } from '../profile-image/profile-image';
 import { BookmarkPost } from '../bookmark-post/bookmark-post';
 import { EditPostModal } from '../edit-post-modal/edit-post-modal';
 
+type PostCreator = string | { _id: string };
+
 @Component({
   selector: 'app-feed',
   standalone: true,
@@ -58,7 +60,7 @@ export class Feed implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const creatorId = this.creatorId();
+    const creatorId = this.getCreatorId();
     if (!creatorId) return;
 
     this.creatorLoading.set(true);
@@ -78,19 +80,19 @@ export class Feed implements OnInit {
       });
   }
 
-  private creatorId(): string | null {
-    const c: any = this.post?.creator;
-    if (!c) return null;
-    return typeof c === 'string' ? c : c._id;
+  private getCreatorId(): string | null {
+    const creator = this.post?.creator as PostCreator | undefined;
+    if (!creator) return null;
+    return typeof creator === 'string' ? creator : creator._id;
   }
 
   authorLinkId(): string | null {
-    return this.creator()?._id ?? this.creatorId();
+    return this.creator()?._id ?? this.getCreatorId();
   }
 
   isOwner(): boolean {
     const me = this.auth.getUserId();
-    const owner = this.creatorId();
+    const owner = this.getCreatorId();
     return !!me && !!owner && me === owner;
   }
 
