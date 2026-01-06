@@ -1,6 +1,7 @@
 import { Component, DestroyRef, computed, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs/operators';
 
 import { Users } from '../../services/users/users';
 import { Post } from '../../services/posts/posts';
@@ -34,16 +35,17 @@ export class Bookmarks implements OnInit {
 
     this.usersApi
       .getBookmarks()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false))
+      )
       .subscribe({
         next: (res) => {
           this.bookmarks.set(res.bookmarks || []);
-          this.loading.set(false);
         },
         error: (err) => {
           console.log(err);
           this.error.set(err?.error?.message || 'Failed to load bookmarks.');
-          this.loading.set(false);
         },
       });
   }
