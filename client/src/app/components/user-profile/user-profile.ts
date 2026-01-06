@@ -7,7 +7,6 @@ import { User } from '../../services/users/users';
 import { Auth } from '../../services/auth/auth';
 import { ProfileImage } from '../profile-image/profile-image';
 
-type IdRef = { _id: string };
 type FollowerRef = string | { _id: string };
 
 type UserWithFollows = User & {
