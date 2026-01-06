@@ -7,6 +7,12 @@ import { Sidebar } from '../../components/sidebar/sidebar';
 import { Auth } from '../../services/auth/auth';
 import { Users } from '../../services/users/users';
 
+type ApiError = {
+  error?: {
+    message?: string;
+  };
+};
+
 @Component({
   selector: 'app-main-layout',
   standalone: true,
@@ -20,6 +26,11 @@ export class MainLayout implements OnInit {
   ngOnInit(): void {
     if (!this.auth.isLoggedIn()) return;
 
-    this.usersApi.loadBookmarks().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+    this.usersApi
+      .loadBookmarks()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (err: ApiError) => console.log('loadBookmarks failed:', err),
+      });
   }
 }
