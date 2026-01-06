@@ -1,26 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  token: string;
-  id: string;
-}
-
-export interface RegisterPayload {
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+import { LoginPayload, LoginResponse, RegisterPayload } from '../../models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class Auth {
+  private static readonly TOKEN_KEY = 'chirp_token';
+  private static readonly USER_ID_KEY = 'chirp_user_id';
+
   constructor(private http: HttpClient) {}
 
   login(payload: LoginPayload): Observable<LoginResponse> {
@@ -29,12 +16,17 @@ export class Auth {
       .pipe(tap((res) => this.persistSession(res)));
   }
 
-  private static readonly TOKEN_KEY = 'chirp_token';
-  private static readonly USER_ID_KEY = 'chirp_user_id';
+  register(payload: RegisterPayload): Observable<unknown> {
+    return this.http.post('/api/users/register', payload);
+  }
 
   logout(): void {
     this.remove(Auth.TOKEN_KEY);
     this.remove(Auth.USER_ID_KEY);
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
   }
 
   getToken(): string | null {
@@ -45,16 +37,17 @@ export class Auth {
     return this.read(Auth.USER_ID_KEY);
   }
 
+  private persistSession(res: LoginResponse): void {
+    this.setToken(res.token);
+    this.setUserId(res.id);
+  }
+
   private setToken(token: string): void {
     this.write(Auth.TOKEN_KEY, token);
   }
 
   private setUserId(id: string): void {
     this.write(Auth.USER_ID_KEY, id);
-  }
-
-  register(payload: RegisterPayload): Observable<unknown> {
-    return this.http.post('/api/users/register', payload);
   }
 
   private read(key: string): string | null {
@@ -67,10 +60,5 @@ export class Auth {
 
   private remove(key: string): void {
     localStorage.removeItem(key);
-  }
-
-  private persistSession(res: LoginResponse): void {
-    this.setToken(res.token);
-    this.setUserId(res.id);
   }
 }
