@@ -13,6 +13,12 @@ import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
 import { UserProfile } from '../../components/user-profile/user-profile';
 import { EditProfileDialog } from '../../components/edit-profile-dialog/edit-profile-dialog';
 
+type ApiError = {
+  error?: {
+    message?: string;
+  };
+};
+
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -73,7 +79,7 @@ export class Profile implements OnInit {
         });
         this.busy.set(false);
       },
-      error: (err) => {
+      error: (err: ApiError) => {
         console.log(err);
         this.busy.set(false);
       },
@@ -83,7 +89,7 @@ export class Profile implements OnInit {
   changeAvatar(file: File): void {
     this.usersApi.changeAvatar(file).subscribe({
       next: (updated) => this.user.set(updated),
-      error: (err) => console.log(err),
+      error: (err: ApiError) => console.log(err),
     });
   }
 
@@ -109,7 +115,7 @@ export class Profile implements OnInit {
 
     this.usersApi.getUser(id).subscribe({
       next: (u) => this.user.set(u),
-      error: (err) => {
+      error: (err: ApiError) => {
         console.log(err);
         this.error.set(err?.error?.message || 'Failed to load user.');
       },
@@ -120,7 +126,7 @@ export class Profile implements OnInit {
         this.posts.set(res.posts || []);
         this.loading.set(false);
       },
-      error: (err) => {
+      error: (err: ApiError) => {
         console.log(err);
         this.error.set(err?.error?.message || 'Failed to load posts.');
         this.loading.set(false);
