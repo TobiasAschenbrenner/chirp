@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output, OnInit, signal, DestroyRef } fr
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Post, Posts as PostsApi } from '../../services/posts/posts';
 import { Auth } from '../../services/auth/auth';
@@ -30,9 +30,9 @@ type ApiError = {
     CommonModule,
     MatIconModule,
     FormsModule,
+    RouterModule,
     LikeDislikePost,
     TimeAgoPipe,
-    RouterModule,
     ProfileImage,
     BookmarkPost,
     EditPostModal,
@@ -46,17 +46,19 @@ export class Feed implements OnInit {
 
   @Output() postUpdated = new EventEmitter<Post>();
   @Output() postDeleted = new EventEmitter<string>();
-
-  @Output() bookmarkChanged = new EventEmitter<{ postId: string; bookmarked: boolean }>();
+  @Output() bookmarkChanged = new EventEmitter<{
+    postId: string;
+    bookmarked: boolean;
+  }>();
 
   creator = signal<User | null>(null);
   creatorLoading = signal(false);
 
   editing = signal(false);
   editBody = signal('');
-  busy = signal(false);
-
   editModalOpen = signal(false);
+
+  busy = signal(false);
 
   constructor(
     private usersApi: Users,
@@ -84,12 +86,6 @@ export class Feed implements OnInit {
           this.creatorLoading.set(false);
         },
       });
-  }
-
-  private getCreatorId(): string | null {
-    const creator = this.post?.creator as PostCreator | undefined;
-    if (!creator) return null;
-    return typeof creator === 'string' ? creator : creator._id;
   }
 
   authorLinkId(): string | null {
@@ -163,5 +159,11 @@ export class Feed implements OnInit {
 
   emitUpdatedPost(updated: Post): void {
     this.postUpdated.emit(updated);
+  }
+
+  private getCreatorId(): string | null {
+    const creator = this.post?.creator as PostCreator | undefined;
+    if (!creator) return null;
+    return typeof creator === 'string' ? creator : creator._id;
   }
 }
