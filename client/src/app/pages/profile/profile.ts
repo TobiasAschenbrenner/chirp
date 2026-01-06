@@ -49,12 +49,11 @@ export class Profile implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      const id = params.get('id');
-      if (!id) return;
+      const profileId = params.get('id');
+      if (!profileId) return;
 
       this.resetState();
-
-      this.loadProfile(id);
+      this.loadProfile(profileId);
     });
   }
 
