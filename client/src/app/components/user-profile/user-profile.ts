@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output, signal, computed } from '@angular/core';
+import { Component, EventEmitter, Input, Output, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 
-import { User } from '../../services/users/users';
 import { Auth } from '../../services/auth/auth';
+import { User } from '../../services/users/users';
 import { ProfileImage } from '../profile-image/profile-image';
 
 type FollowerRef = string | { _id: string };
@@ -22,7 +22,7 @@ type UserWithFollows = User & {
   styleUrls: ['./user-profile.scss'],
 })
 export class UserProfile {
-  private _user = signal<UserWithFollows | null>(null);
+  @Input() busy = false;
 
   @Input({ required: true })
   set user(value: UserWithFollows) {
@@ -32,40 +32,33 @@ export class UserProfile {
     return this._user() as UserWithFollows;
   }
 
-  @Input() busy = false;
-
   @Output() editProfile = new EventEmitter<void>();
   @Output() followToggle = new EventEmitter<void>();
   @Output() avatarChange = new EventEmitter<File>();
+
+  private readonly _user = signal<UserWithFollows | null>(null);
 
   avatarTouched = signal(false);
   pendingAvatar = signal<File | null>(null);
 
   constructor(public auth: Auth) {}
 
-  isOwnProfile = computed(() => {
+  readonly isOwnProfile = computed(() => {
     const u = this._user();
     return !!u && this.auth.getUserId() === u._id;
   });
 
-  followsUser = computed(() => {
+  readonly followerCount = computed(() => this._user()?.followers?.length ?? 0);
+
+  readonly followingCount = computed(() => this._user()?.following?.length ?? 0);
+
+  readonly followsUser = computed(() => {
     const u = this._user();
     const me = this.auth.getUserId();
     if (!u || !me) return false;
 
-    const followers: ReadonlyArray<FollowerRef> = this.user.followers ?? [];
-
+    const followers: ReadonlyArray<FollowerRef> = u.followers ?? [];
     return followers.some((f) => (typeof f === 'string' ? f === me : f._id === me));
-  });
-
-  followerCount = computed(() => {
-    const u = this._user();
-    return u?.followers?.length ?? 0;
-  });
-
-  followingCount = computed(() => {
-    const u = this._user();
-    return u?.following?.length ?? 0;
   });
 
   onEditProfile(): void {
@@ -77,8 +70,7 @@ export class UserProfile {
   }
 
   onPickAvatar(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
+    const file = this.getFirstFile(event.target);
     if (!file) return;
 
     this.pendingAvatar.set(file);
@@ -92,5 +84,10 @@ export class UserProfile {
     this.avatarChange.emit(file);
     this.avatarTouched.set(false);
     this.pendingAvatar.set(null);
+  }
+
+  private getFirstFile(target: EventTarget | null): File | null {
+    const input = target as HTMLInputElement | null;
+    return input?.files?.[0] ?? null;
   }
 }
