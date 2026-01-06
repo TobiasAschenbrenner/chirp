@@ -9,7 +9,7 @@ import { Post, Posts as PostsApi } from '../../services/posts/posts';
 import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 
-import { LikePost } from '../like-dislike-post/like-post';
+import { LikePost } from '../like-post/like-post';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { ProfileImage } from '../profile-image/profile-image';
 import { BookmarkPost } from '../bookmark-post/bookmark-post';
