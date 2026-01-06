@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, DestroyRef } from '@angular/core';
+import { Component, DestroyRef, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -24,7 +24,7 @@ type ApiError = {
   styleUrls: ['./navbar.scss'],
 })
 export class Navbar implements OnInit {
-  readonly minQueryLength = 2;
+  private readonly minQueryLength = 2;
 
   search = new FormControl<string>('', { nonNullable: true });
 
@@ -40,12 +40,9 @@ export class Navbar implements OnInit {
     private destroyRef: DestroyRef
   ) {}
 
-  get canShowEmpty(): boolean {
-    return (
-      !this.searching() &&
-      this.results().length === 0 &&
-      this.search.value.trim().length >= this.minQueryLength
-    );
+  ngOnInit(): void {
+    this.setupSearch();
+    this.loadCurrentUser();
   }
 
   goToUser(userId: string): void {
@@ -57,15 +54,17 @@ export class Navbar implements OnInit {
     this.open.set(false);
   }
 
-  private resetSearchUi(): void {
-    this.results.set([]);
-    this.searching.set(false);
-    this.open.set(false);
+  get showEmptyState(): boolean {
+    return (
+      !this.searching() &&
+      this.results().length === 0 &&
+      this.search.value.trim().length >= this.minQueryLength
+    );
   }
 
-  private openSearchUi(): void {
-    this.searching.set(true);
-    this.open.set(true);
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
   }
 
   private setupSearch(): void {
@@ -77,7 +76,10 @@ export class Navbar implements OnInit {
           if (q.trim().length < this.minQueryLength) this.resetSearchUi();
         }),
         filter((q) => q.trim().length >= this.minQueryLength),
-        tap(() => this.openSearchUi()),
+        tap(() => {
+          this.searching.set(true);
+          this.open.set(true);
+        }),
         switchMap((q) =>
           this.usersApi.searchUsers(q.trim(), 8, 1).pipe(
             catchError((err: ApiError) => {
@@ -94,11 +96,6 @@ export class Navbar implements OnInit {
       });
   }
 
-  ngOnInit(): void {
-    this.setupSearch();
-    this.loadCurrentUser();
-  }
-
   private loadCurrentUser(): void {
     const userId = this.auth.getUserId();
     if (!userId) return;
@@ -112,8 +109,9 @@ export class Navbar implements OnInit {
       });
   }
 
-  logout(): void {
-    this.auth.logout();
-    this.router.navigate(['/login']);
+  private resetSearchUi(): void {
+    this.results.set([]);
+    this.searching.set(false);
+    this.open.set(false);
   }
 }
