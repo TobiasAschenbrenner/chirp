@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { finalize } from 'rxjs/operators';
 
 import { Post, Posts } from '../../services/posts/posts';
 import { Auth } from '../../services/auth/auth';
@@ -40,15 +41,12 @@ export class LikeDislikePost {
 
     this.busy.set(true);
 
-    this.postsApi.likePost(this.post._id).subscribe({
-      next: (updated) => {
-        this.postUpdated.emit(updated);
-        this.busy.set(false);
-      },
-      error: (err: ApiError) => {
-        console.log(err);
-        this.busy.set(false);
-      },
-    });
+    this.postsApi
+      .likePost(this.post._id)
+      .pipe(finalize(() => this.busy.set(false)))
+      .subscribe({
+        next: (updated) => this.postUpdated.emit(updated),
+        error: (err: ApiError) => console.log(err),
+      });
   }
 }
