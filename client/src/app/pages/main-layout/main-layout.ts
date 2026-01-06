@@ -23,8 +23,4 @@ export class MainLayout implements OnInit {
       error: () => {},
     });
   }
-
-  openThemes(): void {
-    console.log('Open themes modal (todo)');
-  }
 }
