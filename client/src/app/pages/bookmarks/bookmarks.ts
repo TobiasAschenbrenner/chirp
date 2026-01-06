@@ -1,4 +1,5 @@
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, computed, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 
 import { Users } from '../../services/users/users';
@@ -21,7 +22,7 @@ export class Bookmarks implements OnInit {
 
   bookmarkedIds = computed(() => new Set(this.bookmarks().map((p) => p._id)));
 
-  constructor(private usersApi: Users) {}
+  constructor(private usersApi: Users, private destroyRef: DestroyRef) {}
 
   ngOnInit(): void {
     this.loadBookmarks();
@@ -31,17 +32,20 @@ export class Bookmarks implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    this.usersApi.getBookmarks().subscribe({
-      next: (res) => {
-        this.bookmarks.set(res.bookmarks || []);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.log(err);
-        this.error.set(err?.error?.message || 'Failed to load bookmarks.');
-        this.loading.set(false);
-      },
-    });
+    this.usersApi
+      .getBookmarks()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.bookmarks.set(res.bookmarks || []);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          console.log(err);
+          this.error.set(err?.error?.message || 'Failed to load bookmarks.');
+          this.loading.set(false);
+        },
+      });
   }
 
   onPostUpdated(updated: Post): void {
