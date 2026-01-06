@@ -14,7 +14,7 @@ import { Users } from '../../services/users/users';
 })
 export class Feeds {
   @Input() posts: Post[] = [];
-  @Input() bookmarkedIds: Set<string> = new Set();
+  @Input() bookmarkedIds: ReadonlySet<string> = new Set<string>();
   @Output() postUpdated = new EventEmitter<Post>();
   @Output() postDeleted = new EventEmitter<string>();
   @Output() bookmarkChanged = new EventEmitter<{ postId: string; bookmarked: boolean }>();

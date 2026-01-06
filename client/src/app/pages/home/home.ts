@@ -23,7 +23,7 @@ export class Home implements OnInit {
   posts = signal<Post[]>([]);
   loading = signal(false);
   error = signal('');
-  bookmarkedIds = signal<Set<string>>(new Set());
+  bookmarkedIds = signal<ReadonlySet<string>>(new Set<string>());
   posting = signal(false);
 
   constructor(private usersApi: Users, private postsApi: Posts) {}
@@ -67,7 +67,7 @@ export class Home implements OnInit {
   private loadBookmarks(): void {
     this.usersApi.getBookmarks().subscribe({
       next: (res) => {
-        const ids = new Set(res.bookmarks.map((p) => p._id));
+        const ids = new Set<string>(res.bookmarks.map((p) => p._id));
         this.bookmarkedIds.set(ids);
       },
       error: (err) => console.log(err),
