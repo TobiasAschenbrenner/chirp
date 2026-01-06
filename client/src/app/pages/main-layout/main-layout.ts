@@ -17,11 +17,11 @@ export class MainLayout implements OnInit {
   constructor(private auth: Auth, private usersApi: Users) {}
 
   ngOnInit(): void {
-    if (this.auth.getToken?.() || this.auth.isLoggedIn?.()) {
-      this.usersApi.loadBookmarks().subscribe({
-        error: () => {},
-      });
-    }
+    if (!this.auth.isLoggedIn()) return;
+
+    this.usersApi.loadBookmarks().subscribe({
+      error: () => {},
+    });
   }
 
   openThemes(): void {
