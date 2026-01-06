@@ -63,4 +63,7 @@ export class Bookmarks implements OnInit {
       this.bookmarks.update((list) => list.filter((p) => p._id !== e.postId));
     }
   }
+
+  readonly isEmpty = computed(() => !this.loading() && this.bookmarks().length === 0);
+  readonly hasBookmarks = computed(() => this.bookmarks().length > 0);
 }

@@ -6,10 +6,10 @@
   <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
 
   <ng-container *ngIf="!loading()">
-    <p class="center" *ngIf="bookmarks().length < 1">No posts bookmarked</p>
+    <p class="center" *ngIf="isEmpty()">No posts bookmarked</p>
 
     <app-feeds
-      *ngIf="bookmarks().length > 0"
+      *ngIf="hasBookmarks()"
       [posts]="bookmarks()"
       [bookmarkedIds]="bookmarkedIds()"
       (bookmarkChanged)="onBookmarkChanged($event)"
