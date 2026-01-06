@@ -24,12 +24,9 @@ export class Auth {
   constructor(private http: HttpClient) {}
 
   login(payload: LoginPayload): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`/api/users/login`, payload).pipe(
-      tap((res) => {
-        this.setToken(res.token);
-        this.setUserId(res.id);
-      })
-    );
+    return this.http
+      .post<LoginResponse>(`/api/users/login`, payload)
+      .pipe(tap((res) => this.persistSession(res)));
   }
 
   private static readonly TOKEN_KEY = 'chirp_token';
@@ -70,5 +67,10 @@ export class Auth {
 
   private remove(key: string): void {
     localStorage.removeItem(key);
+  }
+
+  private persistSession(res: LoginResponse): void {
+    this.setToken(res.token);
+    this.setUserId(res.id);
   }
 }
