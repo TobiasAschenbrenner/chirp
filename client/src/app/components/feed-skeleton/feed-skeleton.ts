@@ -19,8 +19,4 @@ export class FeedSkeleton {
   ngOnChanges(): void {
     this.items = this.buildItems();
   }
-
-  ngOnInit(): void {
-    this.items = this.buildItems();
-  }
 }
