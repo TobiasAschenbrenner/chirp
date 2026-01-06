@@ -12,6 +12,7 @@ import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { BookmarkPost } from '../../components/bookmark-post/bookmark-post';
 import { ProfileImage } from '../../components/profile-image/profile-image';
 import { Users } from '../../services/users/users';
+import { ApiError } from '../../models/api-error.model';
 
 @Component({
   selector: 'app-single-post',
@@ -65,8 +66,7 @@ export class SinglePost implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        console.log(err);
-        this.error.set(err?.error?.message || 'Failed to load post.');
+        this.error.set(this.errorMessage(err, 'Failed to load post.'));
         this.loading.set(false);
       },
     });
@@ -101,8 +101,7 @@ export class SinglePost implements OnInit {
         this.commentText.set('');
       },
       error: (err) => {
-        console.log(err);
-        this.error.set(err?.error?.message || 'Failed to create comment.');
+        this.error.set(this.errorMessage(err, 'Failed to create comment.'));
       },
     });
   }
@@ -117,13 +116,17 @@ export class SinglePost implements OnInit {
         });
       },
       error: (err) => {
-        console.log(err);
-        this.error.set(err?.error?.message || 'Failed to delete comment.');
+        this.error.set(this.errorMessage(err, 'Failed to delete comment.'));
       },
     });
   }
 
   onPostUpdated(updated: Post): void {
     this.post.set(updated);
+  }
+
+  private errorMessage(err: unknown, fallback: string): string {
+    const e = err as ApiError | null;
+    return e?.error?.message || fallback;
   }
 }
