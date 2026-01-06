@@ -19,6 +19,12 @@ type ApiError = {
   };
 };
 
+type UserWithFollowers = User & {
+  followers?: Array<string | { _id: string }>;
+};
+
+type FollowerRef = string | { _id: string };
+
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -27,7 +33,7 @@ type ApiError = {
   styleUrls: ['./profile.scss'],
 })
 export class Profile implements OnInit {
-  user = signal<User | null>(null);
+  user = signal<UserWithFollowers | null>(null);
   posts = signal<Post[]>([]);
   loading = signal(true);
   error = signal('');
@@ -66,20 +72,20 @@ export class Profile implements OnInit {
         this.user.update((u) => {
           if (!u) return u;
 
-          const followers = Array.isArray((u as any).followers) ? [...(u as any).followers] : [];
+          type FollowerRef = string | { _id: string };
+          const followers: ReadonlyArray<FollowerRef> = u.followers ?? [];
 
-          const ids = followers
-            .map((f: any) => (typeof f === 'string' ? f : f?._id))
-            .filter(Boolean) as string[];
+          const ids = followers.map((f) => (typeof f === 'string' ? f : f._id));
 
           const hasMe = ids.includes(myId);
           const nextIds = hasMe ? ids.filter((id) => id !== myId) : [myId, ...ids];
 
-          return { ...(u as any), followers: nextIds } as any;
+          return { ...u, followers: nextIds };
         });
+
         this.busy.set(false);
       },
-      error: (err: ApiError) => {
+      error: (err) => {
         console.log(err);
         this.busy.set(false);
       },
