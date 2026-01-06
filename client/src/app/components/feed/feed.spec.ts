@@ -17,6 +17,7 @@ class UsersStub {
       profilePhoto: null,
     } as any);
   }
+  setBookmarked(postId: string, bookmarked: boolean): void {}
 }
 
 class PostsStub {

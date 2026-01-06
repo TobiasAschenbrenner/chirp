@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
+import { vi } from 'vitest';
 
 import { Bookmarks } from './bookmarks';
 import { Users } from '../../services/users/users';
@@ -13,6 +14,7 @@ describe('Bookmarks', () => {
   let usersApi: {
     getBookmarks: ReturnType<typeof vi.fn>;
     isBookmarked: ReturnType<typeof vi.fn>;
+    setBookmarked: ReturnType<typeof vi.fn>;
   };
 
   const mockPosts: Post[] = [
@@ -24,6 +26,7 @@ describe('Bookmarks', () => {
     usersApi = {
       getBookmarks: vi.fn(),
       isBookmarked: vi.fn(() => false),
+      setBookmarked: vi.fn(),
     };
 
     await TestBed.configureTestingModule({

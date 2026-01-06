@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 import { SinglePost } from './single-post';
 import { Posts } from '../../services/posts/posts';
@@ -8,8 +9,16 @@ import { Comments as CommentsApi } from '../../services/comments/comments';
 import { Users } from '../../services/users/users';
 
 describe('SinglePost', () => {
-  let postsApi: any;
-  let commentsApi: any;
+  let postsApi: { getPost: ReturnType<typeof vi.fn> };
+  let commentsApi: {
+    createComment: ReturnType<typeof vi.fn>;
+    deleteComment: ReturnType<typeof vi.fn>;
+  };
+  let usersApi: {
+    isBookmarked: ReturnType<typeof vi.fn>;
+    setBookmarked: ReturnType<typeof vi.fn>;
+    getUser: ReturnType<typeof vi.fn>;
+  };
 
   const mockPost = {
     _id: 'p1',
@@ -29,11 +38,18 @@ describe('SinglePost', () => {
       deleteComment: vi.fn(),
     };
 
+    usersApi = {
+      isBookmarked: vi.fn().mockReturnValue(false),
+      setBookmarked: vi.fn(),
+      getUser: vi.fn().mockReturnValue(of({ _id: 'u1', fullName: 'User', profilePhoto: null })),
+    };
+
     await TestBed.configureTestingModule({
       imports: [SinglePost],
       providers: [
         { provide: Posts, useValue: postsApi },
         { provide: CommentsApi, useValue: commentsApi },
+        { provide: Users, useValue: usersApi },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -44,17 +60,12 @@ describe('SinglePost', () => {
             },
           },
         },
-        {
-          provide: Users,
-          useValue: {
-            isBookmarked: vi.fn().mockReturnValue(false),
-            getUser: vi
-              .fn()
-              .mockReturnValue(of({ _id: 'u1', fullName: 'User', profilePhoto: null })),
-          },
-        },
       ],
     }).compileComponents();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('should create', () => {

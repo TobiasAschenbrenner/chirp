@@ -14,6 +14,7 @@ class UsersStub {
       bio: data.bio,
     } as any);
   }
+  setBookmarked(postId: string, bookmarked: boolean): void {}
 }
 
 class MatDialogRefStub {

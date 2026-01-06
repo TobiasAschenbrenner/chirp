@@ -21,6 +21,7 @@ class UsersStub {
       profilePhoto: 'https://example.com/avatar.png',
     } as any);
   }
+  setBookmarked(postId: string, bookmarked: boolean): void {}
 }
 
 const BASE_COMMENT = {

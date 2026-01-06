@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { Auth } from '../../services/auth/auth';
 import { User } from '../../models/user.model';
 import { ProfileImage } from '../profile-image/profile-image';
+import { FollowerRef } from '../../models/api-user.model';
 
 @Component({
   selector: 'app-user-profile',
@@ -46,13 +47,17 @@ export class UserProfile {
 
   readonly followingCount = computed(() => this._user()?.following?.length ?? 0);
 
+  private followerId(ref: FollowerRef): string {
+    return typeof ref === 'string' ? ref : ref._id;
+  }
+
   readonly followsUser = computed(() => {
     const u = this._user();
     const me = this.auth.getUserId();
     if (!u || !me) return false;
 
-    const followerIds = u.followers ?? [];
-    return followerIds.includes(me);
+    const followers = u.followers ?? [];
+    return followers.map((f) => this.followerId(f)).includes(me);
   });
 
   onEditProfile(): void {

@@ -30,6 +30,7 @@ class UsersStub {
       profilePhoto: 'https://example.com/p.png',
     } as any);
   }
+  setBookmarked(postId: string, bookmarked: boolean): void {}
 }
 
 describe('Navbar', () => {

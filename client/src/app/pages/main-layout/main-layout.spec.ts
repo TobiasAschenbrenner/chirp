@@ -23,6 +23,7 @@ class UsersStub {
   loadBookmarks() {
     return of(void 0);
   }
+  setBookmarked(postId: string, bookmarked: boolean): void {}
 }
 
 describe('MainLayout', () => {
