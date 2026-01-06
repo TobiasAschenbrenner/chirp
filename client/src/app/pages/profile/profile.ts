@@ -110,26 +110,41 @@ export class Profile implements OnInit {
   }
 
   private loadProfile(id: string): void {
+    let userDone = false;
+    let postsDone = false;
+
     this.loading.set(true);
     this.error.set('');
 
+    const finishLoadingIfDone = () => {
+      if (userDone && postsDone) this.loading.set(false);
+    };
+
     this.usersApi.getUser(id).subscribe({
-      next: (u) => this.user.set(u),
+      next: (u) => {
+        this.user.set(u);
+        userDone = true;
+        finishLoadingIfDone();
+      },
       error: (err: ApiError) => {
         console.log(err);
-        this.error.set(err?.error?.message || 'Failed to load user.');
+        this.error.set(err.error?.message || 'Failed to load user.');
+        userDone = true;
+        finishLoadingIfDone();
       },
     });
 
     this.usersApi.getUserPosts(id).subscribe({
       next: (res) => {
         this.posts.set(res.posts || []);
-        this.loading.set(false);
+        postsDone = true;
+        finishLoadingIfDone();
       },
       error: (err: ApiError) => {
         console.log(err);
-        this.error.set(err?.error?.message || 'Failed to load posts.');
-        this.loading.set(false);
+        this.error.set(err.error?.message || 'Failed to load posts.');
+        postsDone = true;
+        finishLoadingIfDone();
       },
     });
   }
