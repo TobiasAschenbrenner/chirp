@@ -19,7 +19,7 @@ export class BookmarkPost {
   busy = signal(false);
 
   @Input() set initialBookmarked(value: boolean) {
-    this.bookmarked.set(!!value);
+    this.setBookmarkedState(!!value, { emit: false });
   }
 
   @Output() changed = new EventEmitter<{ postId: string; bookmarked: boolean }>();
@@ -34,11 +34,7 @@ export class BookmarkPost {
     this.postsApi.toggleBookmark(this.postId).subscribe({
       next: (res) => {
         const isOn = res.bookmarks.includes(this.postId);
-
-        this.bookmarked.set(isOn);
-        this.usersApi.setBookmarked(this.postId, isOn);
-
-        this.changed.emit({ postId: this.postId, bookmarked: isOn });
+        this.setBookmarkedState(isOn, { emit: true });
         this.busy.set(false);
       },
       error: (err) => {
@@ -46,5 +42,14 @@ export class BookmarkPost {
         this.busy.set(false);
       },
     });
+  }
+
+  private setBookmarkedState(isOn: boolean, opts: { emit: boolean }): void {
+    this.bookmarked.set(isOn);
+    this.usersApi.setBookmarked(this.postId, isOn);
+
+    if (opts.emit) {
+      this.changed.emit({ postId: this.postId, bookmarked: isOn });
+    }
   }
 }
