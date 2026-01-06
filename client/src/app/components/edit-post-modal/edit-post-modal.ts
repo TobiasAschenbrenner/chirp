@@ -4,6 +4,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Posts as PostsApi, Post } from '../../services/posts/posts';
 
+type ApiError = {
+  error?: {
+    message?: string;
+  };
+};
+
 @Component({
   selector: 'app-edit-post-modal',
   standalone: true,
@@ -45,7 +51,7 @@ export class EditPostModal implements OnInit {
           this.body.set(post.body || '');
           this.loading.set(false);
         },
-        error: (err: any) => {
+        error: (err: ApiError) => {
           console.log(err);
           this.error.set(err?.error?.message || 'Failed to load post.');
           this.loading.set(false);
@@ -66,7 +72,7 @@ export class EditPostModal implements OnInit {
         this.closed.emit();
         this.loading.set(false);
       },
-      error: (err: any) => {
+      error: (err: ApiError) => {
         console.log(err);
         this.error.set(err?.error?.message || 'Failed to update post.');
         this.loading.set(false);
