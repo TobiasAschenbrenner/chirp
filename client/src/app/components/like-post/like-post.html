@@ -4,7 +4,7 @@
   [class.liked]="liked()"
   (click)="toggleLike()"
   [disabled]="busy()"
-  aria-label="Like or unlike post"
+  [attr.aria-label]="ariaLabel"
 >
   <mat-icon class="likeButton__icon">
     {{ liked() ? 'favorite' : 'favorite_border' }}
