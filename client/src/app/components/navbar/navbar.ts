@@ -1,26 +1,25 @@
 import { Component, OnInit, signal, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { debounceTime, distinctUntilChanged, filter, switchMap, catchError, of, tap } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, of, switchMap, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 import { ProfileImage } from '../profile-image/profile-image';
 
+type ApiError = {
+  error?: {
+    message?: string;
+  };
+};
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    MatIconModule,
-    ProfileImage,
-    ReactiveFormsModule,
-  ],
+  imports: [CommonModule, RouterModule, MatIconModule, ProfileImage, ReactiveFormsModule],
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.scss'],
 })
@@ -81,7 +80,7 @@ export class Navbar implements OnInit {
         tap(() => this.openSearchUi()),
         switchMap((q) =>
           this.usersApi.searchUsers(q.trim(), 8, 1).pipe(
-            catchError((err) => {
+            catchError((err: ApiError) => {
               console.log(err);
               return of({ users: [], total: 0, page: 1, limit: 8 });
             })
@@ -105,7 +104,7 @@ export class Navbar implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (u) => this.user.set(u),
-        error: (err) => console.log(err),
+        error: (err: ApiError) => console.log(err),
       });
   }
 
