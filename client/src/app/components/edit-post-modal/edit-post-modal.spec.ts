@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { By } from '@angular/platform-browser';
 
 import { EditPostModal } from './edit-post-modal';
 import { Posts, Post } from '../../services/posts/posts';
@@ -14,6 +15,17 @@ describe('EditPostModal', () => {
       body: 'Hello',
       ...overrides,
     } as Post);
+
+  function createFixture(postOverrides: Partial<Post> = {}) {
+    const fixture = TestBed.createComponent(EditPostModal);
+
+    fixture.componentRef.setInput('postId', 'p1');
+    postsApi.getPost.mockReturnValue(of(makePost(postOverrides)));
+
+    fixture.detectChanges();
+
+    return fixture;
+  }
 
   beforeEach(() => {
     postsApi = {
@@ -63,19 +75,13 @@ describe('EditPostModal', () => {
     expect(fixture.componentInstance.error()).toBe('Boom');
   });
 
-  it('onBodyInput should update body signal', () => {
-    const fixture = TestBed.createComponent(EditPostModal);
-    fixture.componentRef.setInput('postId', 'p1');
+  it('should update body signal when typing in textarea', () => {
+    const fixture = createFixture();
 
-    postsApi.getPost.mockReturnValue(of(makePost({ body: '' })));
+    const textareaDe = fixture.debugElement.query(By.css('textarea'));
+    textareaDe.triggerEventHandler('ngModelChange', 'New text');
 
     fixture.detectChanges();
-
-    const textarea = fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement;
-    textarea.value = 'New text';
-    textarea.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
-
     expect(fixture.componentInstance.body()).toBe('New text');
   });
 
@@ -144,12 +150,9 @@ describe('EditPostModal', () => {
   });
 
   it('close should emit closed when called without event', () => {
-    const fixture = TestBed.createComponent(EditPostModal);
-    fixture.componentRef.setInput('postId', 'p1');
-    postsApi.getPost.mockReturnValue(of(makePost()));
+    const fixture = createFixture();
 
     const closedSpy = vi.fn();
-    fixture.detectChanges();
     fixture.componentInstance.closed.subscribe(closedSpy);
 
     fixture.componentInstance.close();
@@ -157,34 +160,51 @@ describe('EditPostModal', () => {
     expect(closedSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('close should emit closed when clicking backdrop (target has class "editPost")', () => {
-    const fixture = TestBed.createComponent(EditPostModal);
-    fixture.componentRef.setInput('postId', 'p1');
-    postsApi.getPost.mockReturnValue(of(makePost()));
+  it('should emit closed when clicking backdrop', () => {
+    const fixture = createFixture();
 
     const closedSpy = vi.fn();
-    fixture.detectChanges();
     fixture.componentInstance.closed.subscribe(closedSpy);
 
-    const el = document.createElement('div');
-    el.classList.add('editPost');
+    const backdrop = document.createElement('form');
 
-    fixture.componentInstance.close({ target: el } as unknown as MouseEvent);
+    fixture.componentInstance.close({
+      target: backdrop,
+      currentTarget: backdrop,
+    } as unknown as MouseEvent);
 
     expect(closedSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('close should NOT emit closed when click target is not the backdrop', () => {
-    const fixture = TestBed.createComponent(EditPostModal);
-    fixture.componentRef.setInput('postId', 'p1');
-    postsApi.getPost.mockReturnValue(of(makePost()));
+  it('should not emit closed when clicking inside modal content', () => {
+    const fixture = createFixture();
 
     const closedSpy = vi.fn();
-    fixture.detectChanges();
+    fixture.componentInstance.closed.subscribe(closedSpy);
+
+    const backdrop = document.createElement('form');
+    const inner = document.createElement('div');
+
+    fixture.componentInstance.close({
+      target: inner,
+      currentTarget: backdrop,
+    } as unknown as MouseEvent);
+
+    expect(closedSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('close should NOT emit closed when click target is not the backdrop', () => {
+    const fixture = createFixture();
+
+    const closedSpy = vi.fn();
     fixture.componentInstance.closed.subscribe(closedSpy);
 
     const el = document.createElement('div');
-    fixture.componentInstance.close({ target: el } as unknown as MouseEvent);
+
+    fixture.componentInstance.close({
+      target: el,
+      currentTarget: document.createElement('form'),
+    } as unknown as MouseEvent);
 
     expect(closedSpy).not.toHaveBeenCalled();
   });
