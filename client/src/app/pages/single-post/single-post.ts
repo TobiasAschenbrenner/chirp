@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -52,11 +52,11 @@ export class SinglePost implements OnInit {
     this.loadPost(id);
   }
 
-  authorId(): string | null {
-    const creator = this.post()?.creator;
-    if (!creator) return null;
-    return typeof creator === 'string' ? creator : creator._id;
-  }
+  readonly authorId = computed(() => {
+    const c = this.post()?.creator;
+    if (!c) return null;
+    return typeof c === 'string' ? c : c._id;
+  });
 
   private loadPost(id: string): void {
     this.loading.set(true);
@@ -71,17 +71,15 @@ export class SinglePost implements OnInit {
       });
   }
 
-  creator(): PostUser | null {
-    const p = this.post();
-    if (!p) return null;
-    return typeof p.creator === 'string' ? null : p.creator;
-  }
+  readonly creator = computed(() => {
+    const c = this.post()?.creator;
+    return !c || typeof c === 'string' ? null : c;
+  });
 
-  comments(): Comment[] {
-    const p = this.post();
-    if (!p) return [];
-    return (p.comments || []).filter((c): c is Comment => typeof c !== 'string');
-  }
+  readonly comments = computed(() => {
+    const list = this.post()?.comments || [];
+    return list.filter((c): c is Comment => typeof c !== 'string');
+  });
 
   createComment(): void {
     const p = this.post();
