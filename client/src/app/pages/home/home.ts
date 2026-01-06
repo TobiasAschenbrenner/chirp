@@ -33,11 +33,11 @@ export class Home implements OnInit {
   }
 
   onPostUpdated(updated: Post): void {
-    this.posts.update((list) => list.map((p) => (p._id === updated._id ? updated : p)));
+    this.posts.update((posts) => posts.map((p) => (p._id === updated._id ? updated : p)));
   }
 
   onPostDeleted(postId: string): void {
-    this.posts.update((list) => list.filter((p) => p._id !== postId));
+    this.posts.update((posts) => posts.filter((p) => p._id !== postId));
   }
 
   onModeChange(mode: FeedMode): void {
