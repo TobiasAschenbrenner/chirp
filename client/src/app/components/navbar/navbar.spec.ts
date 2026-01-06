@@ -97,11 +97,13 @@ describe('Navbar', () => {
     expect(component.user()).toBeNull();
   });
 
-  it('should search users after debounce and open results', () => {
-    fixture.detectChanges();
+  it('should search users after debounce and open results', async () => {
+    fixture.detectChanges(); // ngOnInit → setupSearch()
 
     component.search.setValue('to');
+
     vi.advanceTimersByTime(250);
+    await vi.runAllTimersAsync(); // ✅ Vitest-compatible
     fixture.detectChanges();
 
     expect(users.searchUsers).toHaveBeenCalledWith('to', 8, 1);
