@@ -13,7 +13,7 @@ import { Users } from '../../services/users/users';
   styleUrls: ['./feeds.scss'],
 })
 export class Feeds {
-  @Input() posts: Post[] = [];
+  @Input() posts: ReadonlyArray<Post> = [];
   @Input() bookmarkedIds: ReadonlySet<string> = new Set<string>();
   @Output() postUpdated = new EventEmitter<Post>();
   @Output() postDeleted = new EventEmitter<string>();
