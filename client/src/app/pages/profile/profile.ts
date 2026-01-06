@@ -5,20 +5,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Auth } from '../../services/auth/auth';
-import { Users, User } from '../../services/users/users';
+import { Users } from '../../services/users/users';
 import { Post } from '../../services/posts/posts';
 
 import { Feeds } from '../../components/feeds/feeds';
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
 import { UserProfile } from '../../components/user-profile/user-profile';
 import { EditProfileDialog } from '../../components/edit-profile-dialog/edit-profile-dialog';
+
 import { ApiError } from '../../models/api-error.model';
-
-type FollowerRef = string | { _id: string };
-
-type UserWithFollowers = User & {
-  followers?: FollowerRef[];
-};
+import { ApiUser } from '../../models/api-user.model';
+import { User } from '../../models/user.model';
+import { normalizeUser } from '../../utils/normalize-user';
 
 @Component({
   selector: 'app-profile',
@@ -28,7 +26,7 @@ type UserWithFollowers = User & {
   styleUrls: ['./profile.scss'],
 })
 export class Profile implements OnInit {
-  user = signal<UserWithFollowers | null>(null);
+  user = signal<User | null>(null);
   posts = signal<Post[]>([]);
   loading = signal(true);
   error = signal('');
@@ -75,7 +73,7 @@ export class Profile implements OnInit {
 
   changeAvatar(file: File): void {
     this.usersApi.changeAvatar(file).subscribe({
-      next: (updated) => this.user.set(updated),
+      next: (updated: ApiUser) => this.user.set(normalizeUser(updated)),
       error: (err: ApiError) => console.log(err),
     });
   }
@@ -89,8 +87,12 @@ export class Profile implements OnInit {
       panelClass: 'chirp-dialog',
     });
 
-    ref.afterClosed().subscribe((updated?: User) => {
-      if (updated) this.user.set(updated);
+    ref.afterClosed().subscribe((updated?: ApiUser | User) => {
+      if (!updated) return;
+
+      // If the dialog returns ApiUser, normalize. If it returns User, keep it.
+      const normalized = 'email' in updated || 'profilePhoto' in updated ? (updated as User) : null;
+      this.user.set(normalized ?? normalizeUser(updated as ApiUser));
     });
   }
 
@@ -114,8 +116,8 @@ export class Profile implements OnInit {
     };
 
     this.usersApi.getUser(id).subscribe({
-      next: (u) => {
-        this.user.set(u);
+      next: (u: ApiUser) => {
+        this.user.set(normalizeUser(u));
         userDone = true;
         finishLoadingIfDone();
       },
@@ -157,16 +159,11 @@ export class Profile implements OnInit {
     this.user.update((u) => {
       if (!u) return u;
 
-      const ids = this.followerIdsOf(u);
-      const nextIds = this.toggleId(ids, myId);
+      const followers = u.followers ?? [];
+      const nextFollowers = this.toggleId(followers, myId);
 
-      return { ...u, followers: nextIds };
+      return { ...u, followers: nextFollowers };
     });
-  }
-
-  private followerIdsOf(user: UserWithFollowers): string[] {
-    const followers: ReadonlyArray<FollowerRef> = user.followers ?? [];
-    return followers.map((f) => (typeof f === 'string' ? f : f._id));
   }
 
   private toggleId(ids: readonly string[], id: string): string[] {
