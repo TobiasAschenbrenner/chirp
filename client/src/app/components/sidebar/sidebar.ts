@@ -14,4 +14,8 @@ import { Auth } from '../../services/auth/auth';
 })
 export class Sidebar {
   constructor(public auth: Auth) {}
+
+  get userId(): string | null {
+    return this.auth.getUserId();
+  }
 }

@@ -11,7 +11,7 @@
   </a>
 
   <a
-    *ngIf="auth.getUserId() as userId"
+    *ngIf="userId as userId"
     class="sidebar__item"
     [routerLink]="['/users', userId]"
     routerLinkActive="active"
