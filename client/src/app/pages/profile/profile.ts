@@ -40,10 +40,7 @@ export class Profile implements OnInit {
       const id = params.get('id');
       if (!id) return;
 
-      this.user.set(null);
-      this.posts.set([]);
-      this.loading.set(true);
-      this.error.set('');
+      this.resetState();
 
       this.loadProfile(id);
     });
@@ -137,5 +134,12 @@ export class Profile implements OnInit {
 
   onPostDeleted(postId: string): void {
     this.posts.update((list) => list.filter((p) => p._id !== postId));
+  }
+
+  private resetState(): void {
+    this.user.set(null);
+    this.posts.set([]);
+    this.loading.set(true);
+    this.error.set('');
   }
 }
