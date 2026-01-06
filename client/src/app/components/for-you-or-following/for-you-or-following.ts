@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-type FeedMode = 'foryou' | 'following';
+import { FeedMode } from '../../models/feed-mode.model';
 
 @Component({
   selector: 'app-for-you-or-following',
