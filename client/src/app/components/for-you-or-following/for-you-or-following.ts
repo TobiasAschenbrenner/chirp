@@ -15,6 +15,7 @@ export class ForYouOrFollowing {
   @Output() modeChange = new EventEmitter<FeedMode>();
 
   setMode(mode: FeedMode): void {
+    if (mode === this.active) return;
     this.modeChange.emit(mode);
   }
 }
