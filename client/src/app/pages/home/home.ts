@@ -1,11 +1,12 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
+
 import { CreatePost } from '../../components/create-post/create-post';
 import { ForYouOrFollowing } from '../../components/for-you-or-following/for-you-or-following';
 import { Posts, Post } from '../../services/posts/posts';
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
 import { Users } from '../../services/users/users';
-
 import { Feeds } from '../../components/feeds/feeds';
 
 type FeedMode = 'foryou' | 'following';
@@ -45,7 +46,7 @@ export class Home implements OnInit {
     this.loadPosts();
   }
 
-  private getPostsRequest() {
+  private getPostsRequest(): Observable<Post[]> {
     return this.mode() === 'foryou' ? this.postsApi.getPosts() : this.postsApi.getFollowingPosts();
   }
 
