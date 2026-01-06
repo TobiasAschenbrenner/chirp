@@ -36,31 +36,39 @@ export class Auth {
   }
 
   logout(): void {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_ID_KEY);
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
+    this.remove(TOKEN_KEY);
+    this.remove(USER_ID_KEY);
   }
 
   getToken(): string | null {
-    return localStorage.getItem(TOKEN_KEY);
+    return this.read(TOKEN_KEY);
   }
 
   getUserId(): string | null {
-    return localStorage.getItem(USER_ID_KEY);
+    return this.read(USER_ID_KEY);
   }
 
   private setToken(token: string): void {
-    localStorage.setItem(TOKEN_KEY, token);
+    this.write(TOKEN_KEY, token);
   }
 
   private setUserId(id: string): void {
-    localStorage.setItem(USER_ID_KEY, id);
+    this.write(USER_ID_KEY, id);
   }
 
   register(payload: RegisterPayload): Observable<unknown> {
     return this.http.post('/api/users/register', payload);
+  }
+
+  private read(key: string): string | null {
+    return localStorage.getItem(key);
+  }
+
+  private write(key: string, value: string): void {
+    localStorage.setItem(key, value);
+  }
+
+  private remove(key: string): void {
+    localStorage.removeItem(key);
   }
 }
