@@ -7,6 +7,14 @@ import { User } from '../../services/users/users';
 import { Auth } from '../../services/auth/auth';
 import { ProfileImage } from '../profile-image/profile-image';
 
+type IdRef = { _id: string };
+type FollowerRef = string | { _id: string };
+
+type UserWithFollows = User & {
+  followers?: FollowerRef[];
+  following?: FollowerRef[];
+};
+
 @Component({
   selector: 'app-user-profile',
   standalone: true,
@@ -15,14 +23,14 @@ import { ProfileImage } from '../profile-image/profile-image';
   styleUrls: ['./user-profile.scss'],
 })
 export class UserProfile {
-  private _user = signal<User | null>(null);
+  private _user = signal<UserWithFollows | null>(null);
 
   @Input({ required: true })
-  set user(value: User) {
+  set user(value: UserWithFollows) {
     this._user.set(value);
   }
-  get user(): User {
-    return this._user() as User;
+  get user(): UserWithFollows {
+    return this._user() as UserWithFollows;
   }
 
   @Input() busy = false;
@@ -46,22 +54,19 @@ export class UserProfile {
     const me = this.auth.getUserId();
     if (!u || !me) return false;
 
-    const followers = (u as any).followers;
-    if (!Array.isArray(followers)) return false;
+    const followers: ReadonlyArray<FollowerRef> = this.user.followers ?? [];
 
-    return followers.some((f: any) => (typeof f === 'string' ? f === me : f?._id === me));
+    return followers.some((f) => (typeof f === 'string' ? f === me : f._id === me));
   });
 
   followerCount = computed(() => {
     const u = this._user();
-    const followers = u ? (u as any).followers : null;
-    return Array.isArray(followers) ? followers.length : 0;
+    return u?.followers?.length ?? 0;
   });
 
   followingCount = computed(() => {
     const u = this._user();
-    const following = u ? (u as any).following : null;
-    return Array.isArray(following) ? following.length : 0;
+    return u?.following?.length ?? 0;
   });
 
   onEditProfile(): void {
