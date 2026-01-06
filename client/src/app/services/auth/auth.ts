@@ -60,7 +60,7 @@ export class Auth {
     localStorage.setItem(USER_ID_KEY, id);
   }
 
-  register(payload: RegisterPayload) {
+  register(payload: RegisterPayload): Observable<unknown> {
     return this.http.post('/api/users/register', payload);
   }
 }
