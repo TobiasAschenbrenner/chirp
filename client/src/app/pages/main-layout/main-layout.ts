@@ -19,8 +19,6 @@ export class MainLayout implements OnInit {
   ngOnInit(): void {
     if (!this.auth.isLoggedIn()) return;
 
-    this.usersApi.loadBookmarks().subscribe({
-      error: () => {},
-    });
+    this.usersApi.loadBookmarks().subscribe();
   }
 }
