@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { finalize } from 'rxjs';
 
 import { Posts, Post, Comment, PostUser } from '../../services/posts/posts';
 import { Comments as CommentsApi } from '../../services/comments/comments';
@@ -59,17 +60,15 @@ export class SinglePost implements OnInit {
 
   private loadPost(id: string): void {
     this.loading.set(true);
+    this.error.set('');
 
-    this.postsApi.getPost(id).subscribe({
-      next: (p) => {
-        this.post.set(p);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set(this.errorMessage(err, 'Failed to load post.'));
-        this.loading.set(false);
-      },
-    });
+    this.postsApi
+      .getPost(id)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (p) => this.post.set(p),
+        error: (err) => this.error.set(this.errorMessage(err, 'Failed to load post.')),
+      });
   }
 
   creator(): PostUser | null {
