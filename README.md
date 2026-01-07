@@ -126,6 +126,10 @@ The analysis follows the STRIDE framework and documents identified threats, impl
 
 ---
 
+## Data Model
+
+---
+
 ## 🎓 Project Context
 
 This application was built as a **university project** to learn about:
