@@ -4,12 +4,12 @@ const commentSchema = new Schema(
   {
     creator: {
       type: {
-        creatorId: { type: Schema.Types.ObjectId, ref: "User" },
+        creatorId: { type: Schema.Types.ObjectId, ref: "User", required: true },
         creatorName: { type: String, required: true },
         creatorPhoto: { type: String, required: true },
       },
     },
-    postId: { type: Schema.Types.ObjectId, ref: "Post" },
+    postId: { type: Schema.Types.ObjectId, ref: "Post", required: true },
     comment: { type: String, required: true },
   },
   { timestamps: true }
