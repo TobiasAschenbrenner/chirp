@@ -13,48 +13,66 @@ const path = require("path");
 const createPost = async (req, res, next) => {
   try {
     const { body } = req.body;
+
     if (!body) {
       return next(new HttpError("Fill in text field", 422));
     }
-    if (!req.files.image) {
-      return next(new HttpError("Please choose an image", 422));
-    } else {
-      const { image } = req.files;
-      // image should be less then 1mb
-      if (image.size > 1000000) {
-        return next(new HttpError("Image size should be less then 1MB", 422));
+
+    let imageUrl;
+
+    const imageFile = req.files?.image;
+
+    if (imageFile) {
+      const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedMimeTypes.includes(imageFile.mimetype)) {
+        return next(
+          new HttpError("Only JPG, PNG, and WEBP images are allowed", 422)
+        );
       }
-      // rename image
-      let fileName = image.name;
-      fileName = fileName.split(" ");
-      fileName = fileName[0] + uuid() + "." + fileName[fileName.length - 1];
-      await image.mv(
-        path.join(__dirname, "..", "uploads", fileName),
-        async (err) => {
-          if (err) {
-            return next(new HttpError(err));
-          }
-          // upload to cloudinary
-          const result = await cloudinary.uploader.upload(
-            path.join(__dirname, "..", "uploads", fileName),
-            { resource_type: "image" }
-          );
-          if (!result.secure_url) {
-            return next(new HttpError("Image upload failed", 422));
-          }
-          // save post to db
-          const newPost = await PostModel.create({
-            creator: req.user.id,
-            body,
-            image: result.secure_url,
-          });
-          await UserModel.findByIdAndUpdate(newPost.creator, {
-            $push: { posts: newPost?._id },
-          });
-          res.json(newPost);
+
+      if (imageFile.size > 1_000_000) {
+        return next(new HttpError("Image size must be less than 1MB", 422));
+      }
+
+      const fileExt = path.extname(imageFile.name);
+      const tempFilename = `${uuid()}${fileExt}`;
+      const tempFilePath = path.join(__dirname, "..", "uploads", tempFilename);
+
+      await new Promise((resolve, reject) => {
+        imageFile.mv(tempFilePath, (err) => (err ? reject(err) : resolve()));
+      });
+
+      try {
+        const result = await cloudinary.uploader.upload(tempFilePath, {
+          resource_type: "image",
+          strip_metadata: true,
+        });
+
+        if (!result?.secure_url) {
+          return next(new HttpError("Image upload failed", 422));
         }
-      );
+
+        imageUrl = result.secure_url;
+      } catch (uploadError) {
+        return next(new HttpError("Cloudinary upload failed", 500));
+      } finally {
+        if (fs.existsSync(tempFilePath)) {
+          fs.unlinkSync(tempFilePath);
+        }
+      }
     }
+
+    const newPost = await PostModel.create({
+      creator: req.user.id,
+      body,
+      ...(imageUrl ? { image: imageUrl } : {}),
+    });
+
+    await UserModel.findByIdAndUpdate(newPost.creator, {
+      $push: { posts: newPost._id },
+    });
+
+    return res.status(201).json(newPost);
   } catch (error) {
     return next(new HttpError(error));
   }

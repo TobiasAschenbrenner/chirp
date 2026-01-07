@@ -185,43 +185,57 @@ const followUnfollowUser = async (req, res, next) => {
 // PROTECTED
 const changeUserAvatar = async (req, res, next) => {
   try {
-    if (!req.files.avatar) {
+    if (!req.files || !req.files.avatar) {
       return next(new HttpError("Please choose an image", 422));
     }
+
     const { avatar } = req.files;
-    // check file size
-    if (avatar.size > 500000) {
-      return next(new HttpError("File size must be less than 5MB"));
+
+    const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedMimeTypes.includes(avatar.mimetype)) {
+      return next(
+        new HttpError("Only JPG, PNG, and WEBP images are allowed", 422)
+      );
     }
-    let fileName = avatar.name;
-    let splittedFilename = fileName.split(".");
-    let newFilename =
-      splittedFilename[0] +
-      uuid() +
-      "." +
-      splittedFilename[splittedFilename.length - 1];
-    avatar.mv(
-      path.join(__dirname, "..", "uploads", newFilename),
-      async (err) => {
-        if (err) {
-          return next(new HttpError(err));
-        }
-        // upload to cloudinary
-        const result = await cloudinary.uploader.upload(
-          path.join(__dirname, "..", "uploads", newFilename),
-          { resource_type: "image" }
-        );
-        if (!result.secure_url) {
+
+    if (avatar.size > 500_000) {
+      return next(new HttpError("File size must be less than 500KB", 422));
+    }
+
+    const fileExt = path.extname(avatar.name);
+    const newFilename = `${uuid()}${fileExt}`;
+    const tempFilePath = path.join(__dirname, "..", "uploads", newFilename);
+
+    avatar.mv(tempFilePath, async (err) => {
+      if (err) {
+        return next(new HttpError("Failed to save uploaded file", 500));
+      }
+
+      try {
+        const result = await cloudinary.uploader.upload(tempFilePath, {
+          resource_type: "image",
+          strip_metadata: true,
+        });
+
+        if (!result?.secure_url) {
           return next(new HttpError("Image upload failed", 422));
         }
+
         const updatedUser = await UserModel.findByIdAndUpdate(
           req.user.id,
-          { profilePhoto: result?.secure_url },
+          { profilePhoto: result.secure_url },
           { new: true }
         );
-        res.json(updatedUser).status(200);
+
+        res.status(200).json(updatedUser);
+      } catch (uploadError) {
+        return next(new HttpError("Cloudinary upload failed", 500));
+      } finally {
+        if (fs.existsSync(tempFilePath)) {
+          fs.unlinkSync(tempFilePath);
+        }
       }
-    );
+    });
   } catch (error) {
     return next(new HttpError(error));
   }
