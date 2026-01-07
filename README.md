@@ -39,8 +39,8 @@ It allows users to share short posts, interact with others, and manage personal 
 
 ## 📁 Project Structure
 
-chirp/
-├── client/ # Angular frontend
+chirp/ <br />
+├── client/ # Angular frontend <br />
 └── server/ # Node.js / Express backend
 
 ---
