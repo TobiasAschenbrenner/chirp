@@ -39,9 +39,11 @@ It allows users to share short posts, interact with others, and manage personal 
 
 ## 📁 Project Structure
 
-chirp/ <br />
-├── client/ # Angular frontend <br />
+```
+chirp/
+├── client/ # Angular frontend
 └── server/ # Node.js / Express backend
+```
 
 ---
 
@@ -58,11 +60,12 @@ chirp/ <br />
 
 ## 🔧 Environment Variables
 
-The backend requires a `.env` file inside the `server` folder.  
+The backend requires a `.env` file inside the `server` folder.
 This file is **ignored by Git** and must be created manually.
 
 ### `server/.env`
 
+```
 PORT=3000
 MONGO_URL=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
@@ -70,6 +73,7 @@ JWT_SECRET=your_jwt_secret
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+```
 
 ---
 
@@ -77,22 +81,26 @@ CLOUDINARY_API_SECRET=your_api_secret
 
 ### Backend
 
+```
 cd server
 npm install
 npm run dev
+```
 
-Backend runs on:  
+Backend runs on:
 👉 http://localhost:3000
 
 ---
 
 ### Frontend
 
+```
 cd client
 npm install
 npm start
+```
 
-Frontend runs on:  
+Frontend runs on:
 👉 http://localhost:4200
 
 ---
@@ -101,10 +109,20 @@ Frontend runs on:
 
 Frontend tests are executed from the `client` folder:
 
+```
 npm run test
+```
 
-yaml
-Code kopieren
+---
+
+## 🔐 Security Considerations
+
+A dedicated threat model was created to systematically assess security risks within the application.
+
+The analysis follows the STRIDE framework and documents identified threats, implemented mitigations, known limitations, and potential future improvements.
+
+📄 Detailed analysis:  
+[THREAT_MODEL.md](./THREAT_MODEL.md)
 
 ---
 
@@ -116,3 +134,4 @@ This application was built as a **university project** to learn about:
 - NoSQL databases (MongoDB)
 - Clean code and modular Angular components
 - Testing and maintainability
+- Identifying and mitigating common web application security threats
