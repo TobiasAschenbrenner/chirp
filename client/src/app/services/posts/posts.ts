@@ -3,39 +3,43 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Post } from '../../models/post.model';
 
+import { environment } from '../../../environments/environment';
+
 @Injectable({ providedIn: 'root' })
 export class Posts {
+  private readonly baseUrl = environment.apiUrl;
+
   constructor(private http: HttpClient) {}
 
   createPost(data: FormData): Observable<Post> {
-    return this.http.post<Post>('/api/posts', data);
+    return this.http.post<Post>(`${this.baseUrl}/posts`, data);
   }
 
   getPosts() {
-    return this.http.get<Post[]>('/api/posts');
+    return this.http.get<Post[]>(`${this.baseUrl}/posts`);
   }
 
   getFollowingPosts() {
-    return this.http.get<Post[]>('/api/posts/following');
+    return this.http.get<Post[]>(`${this.baseUrl}/posts/following`);
   }
 
   likePost(postId: string) {
-    return this.http.get<Post>(`/api/posts/${postId}/like`);
+    return this.http.get<Post>(`${this.baseUrl}/posts/${postId}/like`);
   }
 
   getPost(id: string) {
-    return this.http.get<Post>(`/api/posts/${id}`);
+    return this.http.get<Post>(`${this.baseUrl}/posts/${id}`);
   }
 
   deletePost(postId: string) {
-    return this.http.delete<{ message?: string }>(`/api/posts/${postId}`);
+    return this.http.delete<{ message?: string }>(`${this.baseUrl}/posts/${postId}`);
   }
 
   editPost(postId: string, body: string) {
-    return this.http.patch<Post>(`/api/posts/${postId}`, { body });
+    return this.http.patch<Post>(`${this.baseUrl}/posts/${postId}`, { body });
   }
 
   toggleBookmark(postId: string) {
-    return this.http.get<{ bookmarks: string[] }>(`/api/posts/${postId}/bookmarks`);
+    return this.http.get<{ bookmarks: string[] }>(`${this.baseUrl}/posts/${postId}/bookmarks`);
   }
 }

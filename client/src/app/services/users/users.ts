@@ -5,11 +5,14 @@ import { Observable, shareReplay } from 'rxjs';
 
 import { Post } from '../../models/post.model';
 import { User } from '../../models/user.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class Users {
   private cache = new Map<string, Observable<User>>();
   private bookmarkIdsSig = signal<Set<string>>(new Set());
+
+  private readonly baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
@@ -17,38 +20,39 @@ export class Users {
     const cached = this.cache.get(id);
     if (cached) return cached;
 
-    const req$ = this.http.get<User>(`/api/users/${id}`).pipe(shareReplay(1));
+    const req$ = this.http.get<User>(`${this.baseUrl}/users/${id}`).pipe(shareReplay(1));
+
     this.cache.set(id, req$);
     return req$;
   }
 
   searchUsers(q: string, limit = 8, page = 1) {
     return this.http.get<{ users: User[]; total: number; page: number; limit: number }>(
-      '/api/users/search',
+      `${this.baseUrl}/users/search`,
       { params: { q, limit, page } }
     );
   }
 
   getUserPosts(id: string) {
-    return this.http.get<{ posts: Post[] }>(`/api/users/${id}/posts`);
+    return this.http.get<{ posts: Post[] }>(`${this.baseUrl}/users/${id}/posts`);
   }
 
   followUnfollow(userId: string) {
-    return this.http.get<User>(`/api/users/${userId}/follow-unfollow`);
+    return this.http.get<User>(`${this.baseUrl}/users/${userId}/follow-unfollow`);
   }
 
   changeAvatar(file: File) {
     const fd = new FormData();
     fd.set('avatar', file);
-    return this.http.post<User>(`/api/users/avatar`, fd);
+    return this.http.post<User>(`${this.baseUrl}/users/avatar`, fd);
   }
 
   updateProfile(data: { fullName: string; bio: string }) {
-    return this.http.patch<User>(`/api/users/edit`, data);
+    return this.http.patch<User>(`${this.baseUrl}/users/edit`, data);
   }
 
   getBookmarks() {
-    return this.http.get<{ bookmarks: Post[] }>(`/api/users/bookmarks`);
+    return this.http.get<{ bookmarks: Post[] }>(`${this.baseUrl}/users/bookmarks`);
   }
 
   loadBookmarks(): Observable<Set<string>> {

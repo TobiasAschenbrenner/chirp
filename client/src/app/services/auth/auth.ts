@@ -2,22 +2,25 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { LoginPayload, LoginResponse, RegisterPayload } from '../../models/auth.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class Auth {
   private static readonly TOKEN_KEY = 'chirp_token';
   private static readonly USER_ID_KEY = 'chirp_user_id';
 
+  private readonly baseUrl = environment.apiUrl;
+
   constructor(private http: HttpClient) {}
 
   login(payload: LoginPayload): Observable<LoginResponse> {
     return this.http
-      .post<LoginResponse>(`/api/users/login`, payload)
+      .post<LoginResponse>(`${this.baseUrl}/users/login`, payload)
       .pipe(tap((res) => this.persistSession(res)));
   }
 
   register(payload: RegisterPayload): Observable<unknown> {
-    return this.http.post('/api/users/register', payload);
+    return this.http.post(`${this.baseUrl}/users/register`, payload);
   }
 
   logout(): void {
