@@ -8,7 +8,7 @@ import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { ProfileImage } from '../profile-image/profile-image';
-import { CommentModel } from '../../models/comment.model';
+import { Comment } from '../../models/comment.model';
 
 @Component({
   selector: 'app-post-comment',
@@ -18,7 +18,7 @@ import { CommentModel } from '../../models/comment.model';
   styleUrls: ['./post-comment.scss'],
 })
 export class PostComment implements OnInit {
-  @Input({ required: true }) comment!: CommentModel;
+  @Input({ required: true }) comment!: Comment;
   @Output() delete = new EventEmitter<string>();
 
   liveCreator = signal<User | null>(null);

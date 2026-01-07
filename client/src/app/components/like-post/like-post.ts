@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { finalize } from 'rxjs/operators';
 
-import { Post, Posts } from '../../services/posts/posts';
+import { Posts } from '../../services/posts/posts';
+import { Post } from '../../models/post.model';
 import { Auth } from '../../services/auth/auth';
 import { ApiError } from '../../models/api-error.model';
 

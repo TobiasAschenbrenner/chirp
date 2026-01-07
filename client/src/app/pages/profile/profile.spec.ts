@@ -10,7 +10,6 @@ import { Users } from '../../services/users/users';
 import { Auth } from '../../services/auth/auth';
 import { MatDialog } from '@angular/material/dialog';
 
-// ---- Stub child components ----
 @Component({
   selector: 'app-user-profile',
   standalone: true,

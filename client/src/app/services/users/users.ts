@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, tap } from 'rxjs/operators';
 import { Observable, shareReplay } from 'rxjs';
 
-import { Post } from '../posts/posts';
+import { Post } from '../../models/post.model';
 
 export interface User {
   _id: string;

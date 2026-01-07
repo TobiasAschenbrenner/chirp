@@ -6,7 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Auth } from '../../services/auth/auth';
 import { Users } from '../../services/users/users';
-import { Post } from '../../services/posts/posts';
+import { Post } from '../../models/post.model';
 
 import { Feeds } from '../../components/feeds/feeds';
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';

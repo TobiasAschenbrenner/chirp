@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs/operators';
 
 import { Users } from '../../services/users/users';
-import { Post } from '../../services/posts/posts';
+import { Post } from '../../models/post.model';
 
 import { Feeds } from '../../components/feeds/feeds';
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';

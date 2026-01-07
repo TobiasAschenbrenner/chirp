@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
-import { Auth, LoginPayload, LoginResponse, RegisterPayload } from './auth';
+import { Auth } from './auth';
+import { LoginPayload, LoginResponse, RegisterPayload } from '../../models/auth.model';
 
 describe('Auth service', () => {
   let service: Auth;

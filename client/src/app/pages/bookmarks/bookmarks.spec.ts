@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 
 import { Bookmarks } from './bookmarks';
 import { Users } from '../../services/users/users';
-import { Post } from '../../services/posts/posts';
+import { Post } from '../../models/post.model';
 
 describe('Bookmarks', () => {
   let fixture: ComponentFixture<Bookmarks>;

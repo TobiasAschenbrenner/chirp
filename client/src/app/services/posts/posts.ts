@@ -1,36 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface PostUser {
-  _id: string;
-  fullName: string;
-  profilePhoto: string;
-}
-
-export interface Comment {
-  _id: string;
-  comment: string;
-  createdAt?: string;
-  creator: string | CommentCreator;
-}
-
-export interface Post {
-  _id: string;
-  creator: string | PostUser;
-  body: string;
-  image: string;
-  likes: string[];
-  comments: (string | Comment)[];
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface CommentCreator {
-  creatorId: string;
-  creatorName: string;
-  creatorPhoto: string;
-}
+import { Post } from '../../models/post.model';
 
 @Injectable({ providedIn: 'root' })
 export class Posts {

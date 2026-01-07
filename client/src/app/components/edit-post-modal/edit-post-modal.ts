@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { Posts as PostsApi, Post } from '../../services/posts/posts';
+import { Posts as PostsApi } from '../../services/posts/posts';
+import { Post } from '../../models/post.model';
 import { ApiError } from '../../models/api-error.model';
 
 @Component({

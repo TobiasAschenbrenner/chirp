@@ -7,7 +7,7 @@ import { of, throwError } from 'rxjs';
 import { Users } from '../../services/users/users';
 import { Posts } from '../../services/posts/posts';
 import { Auth } from '../../services/auth/auth';
-import type { Post } from '../../services/posts/posts';
+import type { Post } from '../../models/post.model';
 
 class UsersStub {
   getUser(id: string) {

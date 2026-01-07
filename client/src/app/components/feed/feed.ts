@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { Post, Posts as PostsApi } from '../../services/posts/posts';
+import { Posts as PostsApi } from '../../services/posts/posts';
+import { Post } from '../../models/post.model';
 import { Auth } from '../../services/auth/auth';
 import { Users, User } from '../../services/users/users';
 

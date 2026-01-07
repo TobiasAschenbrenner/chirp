@@ -11,8 +11,10 @@ import { ProfileImage } from '../../components/profile-image/profile-image';
 import { ApiError } from '../../models/api-error.model';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 import { Comments as CommentsApi } from '../../services/comments/comments';
-import { Comment, Post, Posts, PostUser } from '../../services/posts/posts';
+import { Posts } from '../../services/posts/posts';
 import { Users } from '../../services/users/users';
+import { Post, PostUser } from '../../models/post.model';
+import { Comment } from '../../models/comment.model';
 
 @Component({
   selector: 'app-single-post',

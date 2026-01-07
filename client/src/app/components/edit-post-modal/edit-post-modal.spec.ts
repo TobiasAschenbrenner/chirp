@@ -4,7 +4,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { By } from '@angular/platform-browser';
 
 import { EditPostModal } from './edit-post-modal';
-import { Posts, Post } from '../../services/posts/posts';
+import { Posts } from '../../services/posts/posts';
+import { Post } from '../../models/post.model';
 
 describe('EditPostModal', () => {
   let postsApi: { getPost: any; editPost: any };

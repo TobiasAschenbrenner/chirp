@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Feed } from '../feed/feed';
-import { Post } from '../../services/posts/posts';
+import { Post } from '../../models/post.model';
 import { Users } from '../../services/users/users';
 
 @Component({

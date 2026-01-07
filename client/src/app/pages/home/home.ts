@@ -7,7 +7,8 @@ import { ForYouOrFollowing } from '../../components/for-you-or-following/for-you
 import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
 import { Feeds } from '../../components/feeds/feeds';
 
-import { Posts, Post } from '../../services/posts/posts';
+import { Posts } from '../../services/posts/posts';
+import { Post } from '../../models/post.model';
 import { Users } from '../../services/users/users';
 import { ApiError } from '../../models/api-error.model';
 import { FeedMode } from '../../models/feed-mode.model';

@@ -4,9 +4,9 @@ export interface CommentCreator {
   creatorPhoto: string;
 }
 
-export interface CommentModel {
+export interface Comment {
   _id: string;
   comment: string;
   createdAt?: string;
-  creator: CommentCreator | string;
+  creator: string | CommentCreator;
 }
