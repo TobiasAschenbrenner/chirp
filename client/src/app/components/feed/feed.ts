@@ -8,7 +8,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Posts as PostsApi } from '../../services/posts/posts';
 import { Post } from '../../models/post.model';
 import { Auth } from '../../services/auth/auth';
-import { Users, User } from '../../services/users/users';
+import { Users } from '../../services/users/users';
+import { User } from '../../models/user.model';
 
 import { LikePost } from '../like-post/like-post';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';

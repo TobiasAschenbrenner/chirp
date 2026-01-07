@@ -15,7 +15,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Auth } from '../../services/auth/auth';
-import { Users, User } from '../../services/users/users';
+import { Users } from '../../services/users/users';
+import { User } from '../../models/user.model';
 import { ProfileImage } from '../profile-image/profile-image';
 import { ApiError } from '../../models/api-error.model';
 

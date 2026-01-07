@@ -4,17 +4,7 @@ import { map, tap } from 'rxjs/operators';
 import { Observable, shareReplay } from 'rxjs';
 
 import { Post } from '../../models/post.model';
-
-export interface User {
-  _id: string;
-  fullName: string;
-  email: string;
-  profilePhoto: string;
-  bio?: string;
-  followers?: string[];
-  following?: string[];
-  posts?: string[];
-}
+import { User } from '../../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class Users {

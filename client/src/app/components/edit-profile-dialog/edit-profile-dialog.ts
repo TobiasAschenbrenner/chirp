@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { Users, User } from '../../services/users/users';
+import { Users } from '../../services/users/users';
+import { User } from '../../models/user.model';
 
 type EditProfileData = {
   user: User;
