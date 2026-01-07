@@ -5,7 +5,11 @@
 
   <div class="createPost__top">
     <div class="createPost__avatar">
-      <app-profile-image *ngIf="user() as u" [src]="u.profilePhoto" size="md"></app-profile-image>
+      <app-profile-image
+        *ngIf="user() as u"
+        [src]="u.profilePhoto ?? ''"
+        size="md"
+      ></app-profile-image>
     </div>
 
     <textarea

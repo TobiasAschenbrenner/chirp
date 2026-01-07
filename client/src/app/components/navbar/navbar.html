@@ -42,7 +42,11 @@
         class="navbar__profile"
         aria-label="Profile"
       >
-        <app-profile-image *ngIf="user()?.profilePhoto" [src]="user()!.profilePhoto" size="sm" />
+        <app-profile-image
+          *ngIf="user()?.profilePhoto"
+          [src]="user()!.profilePhoto ?? ''"
+          size="sm"
+        ></app-profile-image>
       </a>
 
       <button *ngIf="auth.isLoggedIn()" type="button" class="linkish" (click)="logout()">
