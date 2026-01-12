@@ -1,7 +1,14 @@
 # Chirp 🐦
 
-Chirp is a social media–style web application inspired by platforms like Twitter.  
+Chirp is a social media–style web application inspired by platforms like Twitter/X.  
 It allows users to share short posts, interact with others, and manage personal profiles.
+
+---
+
+## 🌍 Live Demo
+
+A live version of the application is available at:  
+👉 https://chirp.blog
 
 ---
 
