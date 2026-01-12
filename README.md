@@ -53,7 +53,7 @@ chirp/
 
 - Node.js (v18+ recommended)
 - npm
-- MongoDB Atlas account (or local MongoDB)
+- MongoDB Atlas account
 - Cloudinary account
 
 ---
@@ -132,6 +132,22 @@ The analysis follows the STRIDE framework and documents identified threats, impl
 
 ---
 
+## 📊 Data
+
+The database was populated using a custom **seed script** that generates realistic demo data.
+
+The generated dataset contains approximately:
+
+- 50 users
+- 500 posts
+- 2500 comments
+- 100 conversations
+- 800 messages
+
+This dataset was used to validate the NoSQL data model and query patterns.
+
+---
+
 ## 🎓 Project Context
 
 This application was built as a **university project** to learn about:
@@ -141,3 +157,11 @@ This application was built as a **university project** to learn about:
 - Clean code and modular Angular components
 - Testing and maintainability
 - Identifying and mitigating common web application security threats
+
+---
+
+## 🤖 Use of AI Tools
+
+AI tools were used in a supportive and limited manner during the development of this project. They were primarily used for code completion, discussing project structure and architectural decisions, understanding error messages, and reasoning about the NoSQL database model.
+
+AI assistance was also used while writing parts of this README, including explanations of the data model, development setup, and diagrams. All core implementation decisions, code integration, and final validation were performed by the author.
