@@ -135,7 +135,7 @@ The analysis follows the STRIDE framework and documents identified threats, impl
 
 ## Data Model
 
-<img width="2095" height="1038" alt="chirp" src="https://github.com/user-attachments/assets/4bbdae17-8128-4432-90bc-705823e87393" />
+<img width="2062" height="1174" alt="chirp" src="https://github.com/user-attachments/assets/fffa5b9b-ceba-4208-bc08-dc80f3808be0" />
 
 ---
 
