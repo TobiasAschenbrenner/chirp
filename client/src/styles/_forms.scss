@@ -1,6 +1,16 @@
 input,
 textarea {
   font: inherit;
+  background: var(--color-gray-100);
+  color: var(--color-gray-900);
+  border-radius: var(--radius-2);
+  transition: var(--transition);
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--color-primary);
+  background: var(--color-gray-0);
 }
 
 input::placeholder,

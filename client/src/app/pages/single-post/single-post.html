@@ -47,7 +47,7 @@
     <ul class="singlePost__comments">
       <form class="singlePost__comments-form" (ngSubmit)="createComment()">
         <textarea
-          placeholder="Enter your comment..."
+          placeholder="Post your reply"
           name="comment"
           [ngModel]="commentText()"
           (ngModelChange)="commentText.set($event)"

@@ -15,6 +15,7 @@
 
 html {
   font-size: 12px;
+  color-scheme: light dark;
 }
 
 body {
@@ -61,14 +62,16 @@ h6 {
 }
 
 a {
-  color: var(--color-gray-700);
+  color: var(--color-primary);
   transition: var(--transition);
 }
 
 button {
   background: transparent;
+  color: inherit;
   transition: var(--transition);
   cursor: pointer;
+  font-family: inherit;
 }
 
 .container {
