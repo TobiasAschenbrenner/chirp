@@ -1,4 +1,6 @@
-import { Component, DestroyRef, OnInit, signal } from '@angular/core';
+import {
+  afterNextRender, Component, DestroyRef, ElementRef, inject, Injector, OnInit, signal, ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -21,12 +23,17 @@ import { ApiError } from '../../models/api-error.model';
 })
 export class Navbar implements OnInit {
   private readonly minQueryLength = 2;
+  private readonly injector = inject(Injector);
+
+  @ViewChild('userSearch') private searchInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('mobileSearchToggle') private mobileSearchToggle?: ElementRef<HTMLButtonElement>;
 
   search = new FormControl<string>('', { nonNullable: true });
 
   results = signal<User[]>([]);
   searching = signal(false);
   open = signal(false);
+  mobileSearchOpen = signal(false);
   user = signal<User | null>(null);
 
   constructor(
@@ -42,12 +49,31 @@ export class Navbar implements OnInit {
   }
 
   goToUser(userId: string): void {
+    this.mobileSearchOpen.set(false);
+    this.search.setValue('');
     this.resetSearchUi();
     this.router.navigate(['/users', userId]);
   }
 
   close(): void {
     this.open.set(false);
+  }
+
+  openMobileSearch(): void {
+    this.mobileSearchOpen.set(true);
+    afterNextRender(() => {
+      if (this.mobileSearchOpen()) this.searchInput?.nativeElement.focus();
+    }, { injector: this.injector });
+  }
+
+  dismissSearch(): void {
+    this.searchInput?.nativeElement.focus();
+    this.close();
+    this.mobileSearchOpen.set(false);
+    afterNextRender(() => {
+      const toggle = this.mobileSearchToggle?.nativeElement;
+      if (toggle?.getClientRects().length) toggle.focus();
+    }, { injector: this.injector });
   }
 
   get showEmptyState(): boolean {

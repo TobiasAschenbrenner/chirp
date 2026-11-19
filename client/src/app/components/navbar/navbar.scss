@@ -29,6 +29,9 @@
 }
 
 .navbar__searchWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   justify-self: center;
   width: 100%;
   max-width: 34rem;
@@ -37,6 +40,8 @@
 }
 
 .navbar__search {
+  flex: 1;
+  min-width: 0;
   background: var(--color-gray-100);
   padding: 0.6rem 1rem;
   border-radius: var(--radius-2);
@@ -46,12 +51,14 @@
   gap: 1rem;
 
   input {
+    min-width: 0;
     background: transparent;
     width: 100%;
     color: var(--color-gray-900);
   }
 
   button {
+    flex-shrink: 0;
     background: var(--color-primary);
     color: var(--color-gray-0);
     width: 2rem;
@@ -63,6 +70,21 @@
     &:hover {
       background: var(--color-gray-900);
     }
+  }
+}
+
+.navbar__searchToggle,
+.navbar__searchBack {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-gray-900);
+
+  &:hover {
+    background: var(--color-gray-100);
   }
 }
 
@@ -110,8 +132,24 @@
 }
 
 .navbar__searchName {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-weight: 600;
   color: var(--color-gray-900);
+}
+
+.navbar__searchEmpty,
+.navbar__searchLoading {
+  padding: 1rem 1.2rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-gray-600);
+  text-align: center;
+}
+
+.navbar__profile {
+  display: grid;
+  place-items: center;
 }
 
 .navbar__right {
@@ -145,6 +183,66 @@
   font: inherit;
   color: var(--color-gray-900);
   text-decoration: underline;
+}
+
+@media (max-width: 599px) {
+  .container.navbar__container {
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar__searchToggle {
+    display: grid;
+    justify-self: end;
+  }
+
+  .navbar__searchWrap {
+    display: none;
+  }
+
+  .navbar__right {
+    gap: 0.5rem;
+  }
+
+  .navbar__profile,
+  .navbar__right .linkish {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .navbar:not(.navbar--search-open) .navbar__backdrop {
+    display: none;
+  }
+
+  .navbar--search-open {
+    .navbar__container {
+      width: 100%;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .navbar__logo,
+    .navbar__right,
+    .navbar__searchToggle {
+      display: none;
+    }
+
+    .navbar__searchWrap {
+      display: flex;
+      max-width: none;
+    }
+
+    .navbar__searchBack {
+      display: grid;
+    }
+
+    .navbar__search {
+      min-height: 44px;
+      padding: 0.5rem 0.75rem;
+
+      input {
+        font-size: 16px;
+      }
+    }
+  }
 }
 
 @media (min-width: 900px) {
