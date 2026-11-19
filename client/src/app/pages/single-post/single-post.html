@@ -47,6 +47,7 @@
     <ul class="singlePost__comments">
       <form class="singlePost__comments-form" (ngSubmit)="createComment()">
         <textarea
+          aria-label="Reply"
           placeholder="Post your reply"
           name="comment"
           [ngModel]="commentText()"

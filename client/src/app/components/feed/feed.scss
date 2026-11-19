@@ -18,11 +18,13 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 0.5rem;
   margin-bottom: 0.3rem;
   position: relative;
 }
 
 .feed__header-left {
+  min-width: 0;
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -56,6 +58,8 @@
 }
 
 .feed__header-details {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
@@ -124,6 +128,8 @@
 }
 
 .feed__action {
+  min-height: 44px;
+  min-width: 44px;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -155,6 +161,7 @@
 ========================================================= */
 
 .feed__header-actions {
+  flex-shrink: 0;
   display: flex;
   gap: 0.35rem;
   align-items: center;
@@ -198,13 +205,12 @@
   padding: 1rem;
   border-radius: var(--radius-3);
   border: 0.2rem solid var(--color-gray-100);
-  outline: none;
   background: var(--color-gray-100);
   color: var(--color-gray-900);
 }
 
 .feed__edit textarea:focus {
-  border-color: var(--color-primary);
+  border-color: transparent;
 }
 
 .feed__edit-actions {

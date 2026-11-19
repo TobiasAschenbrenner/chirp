@@ -3,79 +3,97 @@
     <h2>Sign up</h2>
 
     <form (ngSubmit)="registerUser()">
-      <p *ngIf="error" class="form__error-message">
+      <p *ngIf="error" class="form__error-message" role="alert">
         {{ error }}
       </p>
 
-      <input
-        type="text"
-        name="fullName"
-        placeholder="Full name"
-        [(ngModel)]="userData.fullName"
-        [attr.maxlength]="validationLimits.fullName"
-        autocomplete="name"
-        required
-      />
-
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        [(ngModel)]="userData.email"
-        [attr.maxlength]="validationLimits.email"
-        autocomplete="email"
-        required
-      />
-
-      <div class="password">
+      <div class="form__field">
+        <label for="register-name">Full name</label>
         <input
-          [type]="showPassword ? 'text' : 'password'"
-          name="password"
-          placeholder="Password"
-          [(ngModel)]="userData.password"
-          [attr.minlength]="validationLimits.registrationPassword"
-          [attr.maxlength]="validationLimits.passwordBytes"
-          autocomplete="new-password"
-          aria-describedby="password-requirements"
+          id="register-name"
+          type="text"
+          name="fullName"
+          placeholder="Full name"
+          [(ngModel)]="userData.fullName"
+          [attr.maxlength]="validationLimits.fullName"
+          autocomplete="name"
           required
         />
+      </div>
 
-        <button
-          type="button"
-          class="password__toggle"
-          (click)="togglePassword()"
-          aria-label="Toggle password visibility"
-        >
-          <mat-icon>
-            {{ showPassword ? 'visibility_off' : 'visibility' }}
-          </mat-icon>
-        </button>
+      <div class="form__field">
+        <label for="register-email">Email</label>
+        <input
+          id="register-email"
+          type="email"
+          name="email"
+          placeholder="Email"
+          [(ngModel)]="userData.email"
+          [attr.maxlength]="validationLimits.email"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <div class="form__field">
+        <label for="register-password">Password</label>
+        <div class="password">
+          <input
+            id="register-password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            placeholder="Password"
+            [(ngModel)]="userData.password"
+            [attr.minlength]="validationLimits.registrationPassword"
+            [attr.maxlength]="validationLimits.passwordBytes"
+            autocomplete="new-password"
+            aria-describedby="password-requirements"
+            required
+          />
+
+          <button
+            type="button"
+            class="password__toggle"
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            [attr.aria-pressed]="showPassword"
+          >
+            <mat-icon>
+              {{ showPassword ? 'visibility_off' : 'visibility' }}
+            </mat-icon>
+          </button>
+        </div>
       </div>
 
       <p id="password-requirements" class="form__hint">Use at least 15 characters.</p>
 
-      <div class="password">
-        <input
-          [type]="showPassword ? 'text' : 'password'"
-          name="confirmPassword"
-          placeholder="Confirm password"
-          [(ngModel)]="userData.confirmPassword"
-          [attr.minlength]="validationLimits.registrationPassword"
-          [attr.maxlength]="validationLimits.passwordBytes"
-          autocomplete="new-password"
-          required
-        />
+      <div class="form__field">
+        <label for="register-confirm-password">Confirm password</label>
+        <div class="password">
+          <input
+            id="register-confirm-password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="confirmPassword"
+            placeholder="Confirm password"
+            [(ngModel)]="userData.confirmPassword"
+            [attr.minlength]="validationLimits.registrationPassword"
+            [attr.maxlength]="validationLimits.passwordBytes"
+            autocomplete="new-password"
+            required
+          />
 
-        <button
-          type="button"
-          class="password__toggle"
-          (click)="togglePassword()"
-          aria-label="Toggle password visibility"
-        >
-          <mat-icon>
-            {{ showPassword ? 'visibility_off' : 'visibility' }}
-          </mat-icon>
-        </button>
+          <button
+            type="button"
+            class="password__toggle"
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword ? 'Hide confirm password' : 'Show confirm password'"
+            [attr.aria-pressed]="showPassword"
+          >
+            <mat-icon>
+              {{ showPassword ? 'visibility_off' : 'visibility' }}
+            </mat-icon>
+          </button>
+        </div>
       </div>
 
       <p>

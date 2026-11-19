@@ -3,26 +3,42 @@
     <h2>Sign in</h2>
 
     <form (ngSubmit)="loginUser()">
-      <p *ngIf="error" class="form__error-message">{{ error }}</p>
+      <p *ngIf="error" class="form__error-message" role="alert">{{ error }}</p>
 
-      <input type="email" name="email" placeholder="Email" [(ngModel)]="loginData.email" />
-
-      <div class="password">
+      <div class="form__field">
+        <label for="login-email">Email</label>
         <input
-          [type]="showPassword ? 'text' : 'password'"
-          name="password"
-          placeholder="Password"
-          [(ngModel)]="loginData.password"
+          id="login-email"
+          type="email"
+          name="email"
+          placeholder="Email"
+          autocomplete="username"
+          [(ngModel)]="loginData.email"
         />
+      </div>
 
-        <button
-          type="button"
-          class="password__toggle"
-          (click)="togglePassword()"
-          aria-label="Toggle password visibility"
-        >
-          <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button>
+      <div class="form__field">
+        <label for="login-password">Password</label>
+        <div class="password">
+          <input
+            id="login-password"
+            [type]="showPassword ? 'text' : 'password'"
+            name="password"
+            placeholder="Password"
+            autocomplete="current-password"
+            [(ngModel)]="loginData.password"
+          />
+
+          <button
+            type="button"
+            class="password__toggle"
+            (click)="togglePassword()"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+            [attr.aria-pressed]="showPassword"
+          >
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
       </div>
 
       <p>

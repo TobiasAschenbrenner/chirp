@@ -2,11 +2,15 @@
   margin: 0;
   padding: 0;
   border: 0;
-  outline: 0;
   appearance: none;
   list-style: none;
   text-decoration: none;
   box-sizing: border-box;
+}
+
+:is(a, button, input, textarea, select):focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
 }
 
 ::-webkit-scrollbar {

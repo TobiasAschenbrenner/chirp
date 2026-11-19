@@ -43,8 +43,12 @@
   transition: var(--transition);
 }
 
+.createPost__field {
+  flex: 1;
+  min-width: 0;
+}
+
 .createPost__top textarea:focus {
-  border-color: var(--color-primary);
   background: var(--color-gray-0);
 }
 
@@ -61,7 +65,8 @@
 }
 
 .icon-button {
-  width: 2.6rem;
+  width: 44px;
+  height: 44px;
   aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
@@ -83,14 +88,15 @@
   height: 22px;
 }
 
-.icon-button.isDisabled {
+.icon-button:disabled {
   opacity: 0.6;
   pointer-events: none;
 }
 
 .createPost__actions button[type='submit'] {
-  background: var(--color-primary);
-  color: var(--color-gray-0);
+  min-height: 44px;
+  background: var(--color-primary-button);
+  color: var(--color-on-primary);
   padding: 0.8rem 1.4rem;
   border-radius: var(--radius-3);
   font-weight: 600;
