@@ -9,11 +9,20 @@
 }
 
 .createPost__error-message {
-  background: var(--color-danger);
-  color: white;
-  padding: 0.9rem 1rem;
-  border-radius: var(--radius-2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 12rem;
+  min-width: 0;
+  color: light-dark(var(--color-danger), #f49aaa);
   font-weight: 500;
+}
+
+.createPost__error-message mat-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 .createPost__top {
@@ -37,7 +46,10 @@
   background: var(--color-gray-100);
   border-radius: var(--radius-3);
   padding: 1rem;
-  min-height: 5.2rem;
+  height: 8.8rem;
+  min-height: 8.8rem;
+  max-height: 8.8rem;
+  overflow-y: auto;
   color: var(--color-gray-900);
   border: 2px solid transparent;
   transition: var(--transition);
@@ -56,12 +68,36 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.createPost__attachment {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  margin-left: 3.8rem;
+  color: var(--color-gray-600);
+}
+
+.createPost__attachment mat-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.createPost__attachment span {
+  overflow-wrap: anywhere;
 }
 
 .createPost__actions {
   display: flex;
   align-items: center;
   gap: 0.9rem;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .icon-button {
