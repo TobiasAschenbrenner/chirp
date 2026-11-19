@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="990" viewBox="0 0 1440 990" role="img" aria-labelledby="title description">
+  <title id="title">Chirp architecture</title>
+  <desc id="description">Hostinger serves the Angular app to the user's browser over HTTPS. The browser exchanges REST requests with the Node.js and Express API behind Nginx on a Hostinger VPS. The API reads and writes MongoDB Atlas data over TLS and uploads images to Cloudinary. Cloudinary serves images directly to the browser over HTTPS. One GitHub repository contains client and server code. The frontend is built and deployed to Hostinger; the backend is deployed manually to the VPS. GitHub Actions runs lint, test, build and dependency-audit checks.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 9 5 L 1 9 Z" fill="#30343b" />
+    </marker>
+    <marker id="deployment-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 9 5 L 1 9 Z" fill="#656b73" />
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #24282e; text-anchor: middle; }
+      .heading { font-size: 30px; font-weight: 600; text-anchor: start; }
+      .section { font-size: 20px; font-weight: 600; text-anchor: start; }
+      .name { font-size: 23px; font-weight: 600; }
+      .detail { font-size: 20px; }
+      .small { font-size: 18px; fill: #4c535c; }
+      .label { font-size: 19px; }
+      .start { text-anchor: start; }
+      .node { fill: #fff; stroke: #30343b; stroke-width: 2; }
+      .traffic { fill: none; stroke: #30343b; stroke-width: 2; stroke-linejoin: round; marker-start: url(#arrow); marker-end: url(#arrow); }
+      .deployment { fill: none; stroke: #656b73; stroke-width: 2; stroke-dasharray: 8 6; stroke-linejoin: round; marker-end: url(#deployment-arrow); }
+    </style>
+  </defs>
+
+  <rect width="1440" height="990" fill="#fff" />
+  <text class="heading" x="48" y="60">Chirp architecture</text>
+
+  <!-- Application traffic -->
+  <path class="traffic" d="M 248 465 H 362" />
+  <text class="label" x="305" y="435">HTTPS</text>
+  <text class="label" x="305" y="506">App files</text>
+
+  <path class="traffic" d="M 578 465 H 815" />
+  <text class="label" x="696" y="431">HTTPS · REST API</text>
+  <text class="small" x="696" y="502">JSON &amp; image uploads</text>
+
+  <path class="traffic" d="M 1065 465 H 1196" />
+  <text class="label" x="1130" y="419">MongoDB</text>
+  <text class="small" x="1130" y="444">over TLS</text>
+  <text class="small" x="1130" y="502">Read / write</text>
+
+  <path class="traffic" d="M 470 357 V 202 Q 470 182 490 182 H 830" />
+  <text class="label" x="650" y="144">HTTPS · image delivery</text>
+
+  <path class="traffic" d="M 940 265 V 346" />
+  <text class="label start" x="963" y="297">HTTPS · image uploads</text>
+  <text class="small start" x="963" y="325">Image URLs returned</text>
+
+  <path class="traffic" d="M 470 573 V 630" />
+  <text class="label start" x="495" y="611">User interaction</text>
+
+  <!-- Frontend hosting and browser -->
+  <rect class="node" x="48" y="382" width="200" height="166" rx="14" />
+  <text class="detail" x="148" y="418">Frontend hosting</text>
+  <text class="name" x="148" y="450">Hostinger</text>
+  <text class="detail" x="148" y="481">chirp.blog</text>
+  <text class="small" x="148" y="518">Built Angular app</text>
+
+  <circle class="node" cx="470" cy="465" r="108" />
+  <text class="name" x="470" y="438">Chirp web app</text>
+  <text class="detail" x="470" y="470">Angular</text>
+  <text class="small" x="470" y="502">User's browser</text>
+
+  <g fill="none" stroke="#30343b" stroke-width="2">
+    <circle cx="470" cy="649" r="16" />
+    <path d="M 440 700 C 440 657 500 657 500 700 Z" />
+  </g>
+
+  <!-- Backend host -->
+  <rect class="node" x="815" y="346" width="250" height="230" rx="14" />
+  <text class="name" x="940" y="385">Backend</text>
+  <text class="detail" x="940" y="421">Nginx reverse proxy</text>
+  <path d="M 840 439 H 1040" stroke="#d4d8dc" stroke-width="1" />
+  <text class="name" x="940" y="476">Node.js · Express</text>
+  <text class="detail" x="940" y="510">api.chirp.blog</text>
+  <text class="small" x="940" y="549">Hostinger VPS</text>
+
+  <!-- Image storage and delivery -->
+  <path class="node" d="M 830 125 V 240 C 830 273 1050 273 1050 240 V 125 Z" />
+  <ellipse class="node" cx="940" cy="125" rx="110" ry="25" />
+  <text class="name" x="940" y="185">Cloudinary</text>
+  <text class="small" x="940" y="216">Profile &amp; post images</text>
+  <text class="small" x="940" y="243">Image storage / CDN</text>
+
+  <!-- Application database -->
+  <path class="node" d="M 1196 406 V 524 C 1196 556 1392 556 1392 524 V 406 Z" />
+  <ellipse class="node" cx="1294" cy="406" rx="98" ry="24" />
+  <text class="name" x="1294" y="461">MongoDB Atlas</text>
+  <text class="small" x="1294" y="493">Application data</text>
+  <text class="small" x="1294" y="521">Refresh sessions</text>
+
+  <!-- Source, deployment and continuous integration -->
+  <path d="M 48 744 H 1392" stroke="#d4d8dc" stroke-width="1" />
+  <text class="section" x="570" y="777">Source &amp; deployment</text>
+
+  <path class="deployment" d="M 570 835 H 148 V 548" />
+  <text class="label start" x="168" y="643">Build &amp; deploy</text>
+  <text class="small start" x="168" y="671">Frontend · client/</text>
+
+  <path class="deployment" d="M 870 835 H 940 V 576" />
+  <text class="label start" x="963" y="643">Manual deploy</text>
+  <text class="small start" x="963" y="671">Backend · server/</text>
+
+  <path class="deployment" d="M 870 876 H 1080" />
+  <text class="small" x="975" y="918">Push / pull request</text>
+
+  <rect class="node" x="570" y="795" width="300" height="110" rx="14" />
+  <text class="name" x="720" y="838">GitHub · chirp</text>
+  <text class="detail" x="720" y="875">client/ + server/ · main</text>
+
+  <rect class="node" x="1080" y="795" width="312" height="110" rx="14" />
+  <text class="name" x="1236" y="838">GitHub Actions · CI</text>
+  <text class="small" x="1236" y="875">Lint · tests · build · audits</text>
+
+  <path class="traffic" d="M 48 954 H 106" />
+  <text class="small start" x="120" y="960">Application traffic</text>
+  <path class="deployment" d="M 340 954 H 398" />
+  <text class="small start" x="412" y="960">Source / deployment</text>
+</svg>
