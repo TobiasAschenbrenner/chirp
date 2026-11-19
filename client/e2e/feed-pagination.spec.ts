@@ -94,14 +94,14 @@ test('pages both feeds, retries failures, and keeps follow state after navigatio
   }
 
   const authorLink = posts.filter({ hasText: newAuthorBody })
-    .getByRole('link', { name: 'Open profile', exact: true });
+    .getByRole('link', { name: 'Open Pagination Author’s profile', exact: true });
   await authorLink.click();
   await page.getByRole('button', { name: 'Unfollow', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Follow', exact: true })).toBeVisible();
 
   await page.getByRole('link', { name: 'Nest', exact: true }).click();
   const followingCount = page.locator('.profile__follows li').filter({ hasText: 'Following' })
-    .getByRole('heading');
+    .locator('.profile__count');
   await expect(followingCount).toHaveText('0');
 
   await page.getByRole('link', { name: 'Forest', exact: true }).click();

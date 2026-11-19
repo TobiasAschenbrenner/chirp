@@ -1,6 +1,6 @@
-<section class="register">
+<main class="register" id="main-content" tabindex="-1">
   <div class="container register__container">
-    <h2>Sign up</h2>
+    <h1 tabindex="-1">Sign up</h1>
 
     <form (ngSubmit)="registerUser()">
       <p *ngIf="error" class="form__error-message" role="alert">
@@ -106,4 +106,4 @@
       </button>
     </form>
   </div>
-</section>
+</main>

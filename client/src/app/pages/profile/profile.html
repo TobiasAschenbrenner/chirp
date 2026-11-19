@@ -1,13 +1,14 @@
-<section class="profilePage">
+<section class="profilePage" [attr.aria-busy]="loading()">
   <ng-container *ngIf="user() as u">
     <app-user-profile
       [user]="u"
+      [busy]="busy()"
       (editProfile)="openEditProfile()"
       (followToggle)="toggleFollow()"
       (avatarChange)="changeAvatar($event)"
     ></app-user-profile>
 
-    <h3 class="profilePage__title">{{ u.fullName }}’s posts</h3>
+    <h2 class="profilePage__title">{{ u.fullName }}’s posts</h2>
   </ng-container>
 
   <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
@@ -23,5 +24,5 @@
     ></app-feeds>
   </ng-container>
 
-  <p *ngIf="error()" class="error">{{ error() }}</p>
+  <p *ngIf="error()" class="error" role="alert">{{ error() }}</p>
 </section>

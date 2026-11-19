@@ -45,8 +45,4 @@ export class LikePost {
         error: (err: ApiError) => console.log(err),
       });
   }
-
-  get ariaLabel(): string {
-    return this.liked() ? 'Unlike post' : 'Like post';
-  }
 }

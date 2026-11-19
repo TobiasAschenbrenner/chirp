@@ -1,5 +1,10 @@
-<li class="comment">
-  <a *ngIf="creatorId() as uid" [routerLink]="['/users', uid]" class="comment__avatar">
+<div class="comment">
+  <a
+    *ngIf="creatorId() as uid"
+    [routerLink]="['/users', uid]"
+    class="comment__avatar"
+    [attr.aria-label]="'Open ' + creatorName() + '’s profile'"
+  >
     <app-profile-image *ngIf="photoUrl()" [src]="photoUrl()!" size="sm"></app-profile-image>
   </a>
   <div class="comment__body">
@@ -18,8 +23,8 @@
     type="button"
     class="comment__delete"
     (click)="onDelete()"
-    aria-label="Delete"
+    aria-label="Delete comment"
   >
     <mat-icon>delete_outline</mat-icon>
   </button>
-</li>
+</div>

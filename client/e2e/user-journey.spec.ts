@@ -24,6 +24,27 @@ test('registers, edits posts with accessible controls, and keeps profile changes
   await page.getByRole('button', { name: 'Login' }).click();
 
   await expect(page).toHaveURL(/\/home$/);
+  await expect(page).toHaveTitle('Feed | Chirp');
+  const feedHeading = page.getByRole('heading', { level: 1, name: 'Feed', exact: true });
+  await expect(feedHeading).toBeFocused();
+  await expect(feedHeading).toHaveCSS('position', 'absolute');
+  await expect(feedHeading).toHaveCSS('height', '1px');
+  await expect(page.getByRole('navigation', { name: 'Main', exact: true })
+    .getByRole('link', { name: 'Forest', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('button', { name: 'For you', exact: true }))
+    .toHaveAttribute('aria-pressed', 'true');
+
+  const search = page.getByRole('searchbox', { name: 'Search users', exact: true });
+  await search.fill('E2E');
+  const searchResult = page.getByRole('button', { name: user.fullName, exact: true });
+  await searchResult.waitFor();
+  await search.press('Tab');
+  await page.keyboard.press('Tab');
+  await expect(searchResult).toBeFocused();
+  await searchResult.press('Escape');
+  await expect(search).toBeFocused();
+  await expect(searchResult).toBeHidden();
+  await search.fill('');
 
   const imageChooser = page.waitForEvent('filechooser');
   await page.getByRole('button', { name: 'Add image', exact: true }).press('Enter');
@@ -33,6 +54,16 @@ test('registers, edits posts with accessible controls, and keeps profile changes
   await page.getByRole('button', { name: 'Post', exact: true }).click();
 
   await expect(page.getByText(postBody, { exact: true })).toBeVisible();
+
+  const ownPost = page.getByRole('article').filter({ hasText: postBody });
+  await ownPost.getByRole('button', { name: 'Like post', exact: true }).click();
+  await expect(ownPost.getByRole('button', { name: 'Like post', exact: true }))
+    .toHaveAttribute('aria-pressed', 'true');
+  await expect(ownPost.getByRole('button', { name: 'Like post', exact: true }))
+    .toHaveAccessibleDescription('1 like');
+  await ownPost.getByRole('button', { name: 'Bookmark post', exact: true }).click();
+  await expect(ownPost.getByRole('button', { name: 'Bookmark post', exact: true }))
+    .toHaveAttribute('aria-pressed', 'true');
 
   await page.reload();
 
@@ -81,6 +112,19 @@ test('registers, edits posts with accessible controls, and keeps profile changes
   await page.getByRole('article').filter({ hasText: updatedBody })
     .getByRole('link', { name: 'Comments', exact: true }).click();
   await expect(page.getByLabel('Reply', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Post', exact: true })).toBeFocused();
+  await page.getByRole('button', { name: 'Comments', exact: true }).click();
+  await expect(page.getByLabel('Reply', { exact: true })).toBeFocused();
+  await page.getByLabel('Reply', { exact: true }).fill('A thoughtful post.');
+  await page.getByRole('button', { name: 'Send', exact: true }).click();
+  const comments = page.getByRole('list', { name: 'Comments', exact: true });
+  await expect(comments.getByRole('listitem')).toHaveCount(1);
+  await expect(comments.getByRole('listitem')).toContainText('A thoughtful post.');
+  const deleteComment = comments.getByRole('button', { name: 'Delete comment', exact: true });
+  await deleteComment.focus();
+  await expect(deleteComment).toHaveCSS('opacity', '1');
+  await deleteComment.press('Enter');
+  await expect(comments).toBeHidden();
   await page.getByRole('link', { name: 'Nest', exact: true }).click();
   await expect(page.getByRole('heading', { name: `${user.fullName}’s posts`, exact: true }))
     .toBeVisible();
@@ -90,8 +134,15 @@ test('registers, edits posts with accessible controls, and keeps profile changes
   await expect(page.getByText(updatedBody, { exact: true })).toBeVisible();
 
   await page.getByRole('link', { name: 'Nest', exact: true }).click();
-  await page.getByRole('button', { name: 'Edit profile', exact: true }).click();
-  const profileDialog = page.getByRole('dialog');
+  const editProfileButton = page.getByRole('button', { name: 'Edit profile', exact: true });
+  await editProfileButton.focus();
+  await editProfileButton.press('Enter');
+  const profileDialog = page.getByRole('dialog', { name: 'Edit profile', exact: true });
+  await expect(profileDialog.getByLabel('Full name', { exact: true })).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(profileDialog).toBeHidden();
+  await expect(editProfileButton).toBeFocused();
+  await editProfileButton.press('Enter');
   const updatedName = 'E2E Test User Updated';
   const bio = 'A quiet place to share thoughts.';
   await profileDialog.getByLabel('Full name', { exact: true }).fill(updatedName);

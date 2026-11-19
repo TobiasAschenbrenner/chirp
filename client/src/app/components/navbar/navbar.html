@@ -1,4 +1,4 @@
-<nav class="navbar">
+<header class="navbar">
   <button
     type="button"
     class="navbar__backdrop"
@@ -11,19 +11,23 @@
     <a routerLink="/home" class="navbar__logo">CHIRP</a>
 
     <div class="navbar__searchWrap">
-      <form class="navbar__search" (submit)="$event.preventDefault()">
+      <form class="navbar__search" role="search" aria-label="Users" (submit)="$event.preventDefault()">
         <input
+          #userSearch
           type="search"
           aria-label="Search users"
           [formControl]="search"
           placeholder="Search"
           (focus)="open.set(true)"
           autocomplete="off"
+          (keydown.escape)="close()"
         />
         <button type="button" aria-label="Search">
           <mat-icon>search</mat-icon>
         </button>
       </form>
+
+      <p class="cdk-visually-hidden" role="status">{{ searchStatus }}</p>
 
       <div class="navbar__searchResults" *ngIf="open()">
         <div class="navbar__searchLoading" *ngIf="searching()">Searching…</div>
@@ -33,6 +37,7 @@
           class="navbar__searchItem"
           *ngFor="let u of results()"
           (click)="goToUser(u._id)"
+          (keydown.escape)="userSearch.focus(); close()"
         >
           <app-profile-image *ngIf="u.profilePhoto" [src]="u.profilePhoto" size="sm" />
           <span class="navbar__searchName">{{ u.fullName }}</span>
@@ -61,4 +66,4 @@
       </button>
     </div>
   </div>
-</nav>
+</header>

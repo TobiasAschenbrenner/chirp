@@ -13,7 +13,9 @@
   border-radius: var(--radius-5);
 }
 
-.register__container h2 {
+.register__container h1 {
+  font-size: 1.4rem;
+  outline: none;
   margin-bottom: 2rem;
   color: var(--color-primary);
 }

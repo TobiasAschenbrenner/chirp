@@ -38,15 +38,15 @@
       </ng-container>
     </div>
 
-    <h4 class="profile__name">{{ user.fullName }}</h4>
+    <h1 class="profile__name" tabindex="-1">{{ user.fullName }}</h1>
 
     <ul class="profile__follows">
       <li>
-        <h4>{{ followingCount() }}</h4>
+        <strong class="profile__count">{{ followingCount() }}</strong>
         <small>Following</small>
       </li>
       <li>
-        <h4>{{ followerCount() }}</h4>
+        <strong class="profile__count">{{ followerCount() }}</strong>
         <small>Followers</small>
       </li>
     </ul>

@@ -50,6 +50,8 @@ describe('BookmarkPost', () => {
 
     const btn = getButton();
     expect(btn.classList.contains('bookmarked')).toBe(false);
+    expect(btn.getAttribute('aria-label')).toBe('Bookmark post');
+    expect(btn.getAttribute('aria-pressed')).toBe('false');
     expect(getIconText()).toBe('bookmark_border');
   });
 
@@ -60,6 +62,8 @@ describe('BookmarkPost', () => {
 
     const btn = getButton();
     expect(btn.classList.contains('bookmarked')).toBe(true);
+    expect(btn.getAttribute('aria-label')).toBe('Bookmark post');
+    expect(btn.getAttribute('aria-pressed')).toBe('true');
     expect(getIconText()).toBe('bookmark');
   });
 

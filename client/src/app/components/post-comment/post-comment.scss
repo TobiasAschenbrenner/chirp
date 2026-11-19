@@ -100,7 +100,8 @@
     opacity: 0;
   }
 
-  .comment:hover .comment__delete {
+  .comment:hover .comment__delete,
+  .comment:focus-within .comment__delete {
     opacity: 1;
   }
 }

@@ -47,7 +47,7 @@ describe('LikePost', () => {
     fixture.detectChanges();
 
     const count = fixture.debugElement.query(By.css('.likeButton__count'));
-    expect(count.nativeElement.textContent.trim()).toBe('3');
+    expect(count.nativeElement.textContent.trim()).toBe('3 likes');
   });
 
   it('liked() should be true when current user is in likes', () => {
@@ -61,6 +61,8 @@ describe('LikePost', () => {
 
     const btn = fixture.debugElement.query(By.css('button.likeButton'));
     expect(btn.nativeElement.classList.contains('liked')).toBe(true);
+    expect(btn.nativeElement.getAttribute('aria-label')).toBe('Like post');
+    expect(btn.nativeElement.getAttribute('aria-pressed')).toBe('true');
 
     const icon = fixture.debugElement.query(By.css('mat-icon'));
     expect(icon.nativeElement.textContent).toContain('favorite');

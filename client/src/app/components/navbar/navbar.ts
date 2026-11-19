@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, debounceTime, distinctUntilChanged, filter, of, switchMap, tap } from 'rxjs';
+import { catchError, distinctUntilChanged, map, of, switchMap, tap, timer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Auth } from '../../services/auth/auth';
@@ -58,6 +58,16 @@ export class Navbar implements OnInit {
     );
   }
 
+  get searchStatus(): string {
+    if (!this.open()) return '';
+    if (this.searching()) return 'Searching…';
+
+    const count = this.results().length;
+    if (count > 0) return `${count} ${count === 1 ? 'user' : 'users'} found.`;
+
+    return this.showEmptyState ? 'No users found.' : '';
+  }
+
   logout(): void {
     this.auth.logout();
     this.router.navigate(['/login']);
@@ -66,28 +76,29 @@ export class Navbar implements OnInit {
   private setupSearch(): void {
     this.search.valueChanges
       .pipe(
-        debounceTime(250),
+        map((query) => query.trim()),
         distinctUntilChanged(),
         tap((q) => {
-          if (q.trim().length < this.minQueryLength) this.resetSearchUi();
-        }),
-        filter((q) => q.trim().length >= this.minQueryLength),
-        tap(() => {
-          this.searching.set(true);
-          this.open.set(true);
+          if (q.length < this.minQueryLength) {
+            this.resetSearchUi();
+          } else {
+            this.searching.set(true);
+            this.open.set(true);
+          }
         }),
         switchMap((q) =>
-          this.usersApi.searchUsers(q.trim(), 8, 1).pipe(
+          q.length < this.minQueryLength ? of(null) : timer(250).pipe(
+            switchMap(() => this.usersApi.searchUsers(q, 8, 1)),
             catchError((err: ApiError) => {
               console.log(err);
               return of({ users: [], total: 0, page: 1, limit: 8 });
-            })
-          )
+            }),
+          ),
         ),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((res) => {
-        this.results.set(res.users ?? []);
+        this.results.set(res?.users ?? []);
         this.searching.set(false);
       });
   }

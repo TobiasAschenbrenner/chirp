@@ -1,13 +1,14 @@
-<section class="singlePost">
-  <p *ngIf="loading()">Loading…</p>
-  <p *ngIf="error()" class="error">{{ error() }}</p>
+<section class="singlePost" [attr.aria-busy]="loading()">
+  <h1 class="cdk-visually-hidden" tabindex="-1">Post</h1>
+  <p *ngIf="loading()" role="status">Loading…</p>
+  <p *ngIf="error()" class="error" role="alert">{{ error() }}</p>
 
   <ng-container *ngIf="post() as p">
     <a
       class="singlePost__author feed__header"
       *ngIf="authorId() as uid"
       [routerLink]="['/users', uid]"
-      aria-label="Open profile"
+      [attr.aria-label]="'Open ' + (creator()?.fullName || 'User') + '’s profile'"
     >
       <app-profile-image
         *ngIf="creator()?.profilePhoto"
@@ -16,7 +17,7 @@
       ></app-profile-image>
 
       <div class="feed__header-details">
-        <h4>{{ creator()?.fullName || 'User' }}</h4>
+        <p class="feed__name">{{ creator()?.fullName || 'User' }}</p>
         <small>{{ p.createdAt | timeAgo }}</small>
       </div>
     </a>
@@ -30,9 +31,18 @@
 
     <footer class="feed__footer">
       <div class="feed__footer-left">
-        <button type="button" class="feed__action" aria-label="Comments">
+        <button
+          type="button"
+          class="feed__action"
+          aria-label="Comments"
+          aria-controls="post-reply"
+          aria-describedby="comments-count"
+          (click)="replyInput.focus()"
+        >
           <mat-icon>chat_bubble_outline</mat-icon>
-          <small>{{ comments().length }}</small>
+          <small id="comments-count">
+            {{ comments().length }}<span class="cdk-visually-hidden">{{ comments().length === 1 ? ' comment' : ' comments' }}</span>
+          </small>
         </button>
       </div>
 
@@ -44,9 +54,11 @@
       </div>
     </footer>
 
-    <ul class="singlePost__comments">
+    <div class="singlePost__comments">
       <form class="singlePost__comments-form" (ngSubmit)="createComment()">
         <textarea
+          #replyInput
+          id="post-reply"
           aria-label="Reply"
           placeholder="Post your reply"
           name="comment"
@@ -60,11 +72,11 @@
         </button>
       </form>
 
-      <app-post-comment
-        *ngFor="let c of comments()"
-        [comment]="c"
-        (delete)="deleteComment($event)"
-      ></app-post-comment>
-    </ul>
+      <ul class="singlePost__comment-list" aria-label="Comments" *ngIf="comments().length">
+        <li *ngFor="let c of comments()">
+          <app-post-comment [comment]="c" (delete)="deleteComment($event)"></app-post-comment>
+        </li>
+      </ul>
+    </div>
   </ng-container>
 </section>

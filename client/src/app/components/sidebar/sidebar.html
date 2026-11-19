@@ -1,8 +1,9 @@
-<menu class="sidebar">
+<nav class="sidebar" aria-label="Main">
   <a
     class="sidebar__item"
     routerLink="/home"
     routerLinkActive="active"
+    ariaCurrentWhenActive="page"
     [routerLinkActiveOptions]="{ exact: true }"
     aria-label="Forest"
   >
@@ -15,14 +16,21 @@
     class="sidebar__item"
     [routerLink]="['/users', userId]"
     routerLinkActive="active"
+    ariaCurrentWhenActive="page"
     aria-label="Nest"
   >
     <span class="sidebar__icon"><mat-icon>person_outline</mat-icon></span>
     <p class="sidebar__label">Nest</p>
   </a>
 
-  <a class="sidebar__item" routerLink="/bookmarks" routerLinkActive="active" aria-label="Seeds">
+  <a
+    class="sidebar__item"
+    routerLink="/bookmarks"
+    routerLinkActive="active"
+    ariaCurrentWhenActive="page"
+    aria-label="Seeds"
+  >
     <span class="sidebar__icon"><mat-icon>bookmark_border</mat-icon></span>
     <p class="sidebar__label">Seeds</p>
   </a>
-</menu>
+</nav>

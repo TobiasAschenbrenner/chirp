@@ -4,7 +4,7 @@
       class="feed__header-left"
       *ngIf="creator() as u; else headerPlaceholder"
       [routerLink]="['/users', u._id]"
-      aria-label="Open profile"
+      [attr.aria-label]="'Open ' + u.fullName + '’s profile'"
     >
       <div class="feed__avatar">
         <app-profile-image
@@ -15,7 +15,7 @@
       </div>
 
       <div class="feed__header-details">
-        <h4 class="feed__name">{{ u.fullName || 'User' }}</h4>
+        <p class="feed__name">{{ u.fullName || 'User' }}</p>
         <small class="feed__time">{{ post.createdAt | timeAgo }}</small>
       </div>
     </a>
@@ -24,7 +24,7 @@
       <div class="feed__header-left feed__header-left--placeholder">
         <div class="feed__avatar"></div>
         <div class="feed__header-details">
-          <h4 class="feed__name">User</h4>
+          <p class="feed__name">User</p>
           <small class="feed__time">{{ post.createdAt | timeAgo }}</small>
         </div>
       </div>
@@ -82,9 +82,16 @@
     <div class="feed__footer-left">
       <app-like-post [post]="post" (postUpdated)="emitUpdatedPost($event)"></app-like-post>
 
-      <a class="feed__action" [routerLink]="['/posts', post._id]" aria-label="Comments">
+      <a
+        class="feed__action"
+        [routerLink]="['/posts', post._id]"
+        aria-label="Comments"
+        [attr.aria-describedby]="'comments-count-' + post._id"
+      >
         <mat-icon>chat_bubble_outline</mat-icon>
-        <small>{{ post.comments.length || 0 }}</small>
+        <small [id]="'comments-count-' + post._id">
+          {{ post.comments.length || 0 }}<span class="cdk-visually-hidden">{{ post.comments.length === 1 ? ' comment' : ' comments' }}</span>
+        </small>
       </a>
     </div>
 
