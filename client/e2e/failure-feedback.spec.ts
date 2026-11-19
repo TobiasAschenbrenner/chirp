@@ -143,7 +143,8 @@ test('keeps the selected avatar after failure and clears it only after a success
   const uploadResponse = new Promise<void>((resolve) => { finishUpload = resolve; });
   await page.route('**/api/users/avatar', async (route) => {
     uploads.push(route.request().postDataBuffer()!);
-    if (uploads.length === 1) await route.fulfill({ status: 503, json: {} });
+    if (uploads.length === 1) await route.fulfill({ status: 413, json: {} });
+    else if (uploads.length === 2) await route.fulfill({ status: 503, json: {} });
     else {
       await uploadResponse;
       await route.fulfill({ json: { ...user, profilePhoto: '/favicon.ico?updated' } });
@@ -151,7 +152,13 @@ test('keeps the selected avatar after failure and clears it only after a success
   });
   const save = page.getByRole('button', { name: 'Save avatar', exact: true });
   await save.click();
-  await expect(page.getByRole('alert')).toHaveText('Couldn’t update photo.');
+  await expect(page.getByRole('alert').locator('span')).toHaveText('Image is too large.');
+  const chooseImage = page.getByRole('button', { name: 'Choose image', exact: true });
+  const chooser = page.waitForEvent('filechooser');
+  await chooseImage.click();
+  await (await chooser).setFiles(image);
+  await save.click();
+  await expect(page.getByRole('alert').locator('span')).toHaveText('Couldn’t update photo.');
   await expect(save).toBeEnabled();
   expect(await fileInput.evaluate((input: HTMLInputElement) => input.files?.[0]?.name)).toBe(image.name);
   const selectedBytes = await fileInput.evaluate(async (input: HTMLInputElement) =>
@@ -165,7 +172,7 @@ test('keeps the selected avatar after failure and clears it only after a success
   await expect(page.getByRole('button', { name: 'Change avatar', exact: true })).toBeVisible();
   await expect(page.getByRole('alert')).toHaveCount(0);
   expect(await fileInput.evaluate((input: HTMLInputElement) => input.files?.length)).toBe(0);
-  expect(uploads).toHaveLength(2);
+  expect(uploads).toHaveLength(3);
   expect(uploads.every((body) => body.includes(image.name))).toBe(true);
   // WebKit omits file bytes from intercepted bodies: microsoft/playwright#14624.
   if (browserName !== 'webkit') {

@@ -85,6 +85,10 @@ export class UserProfile {
     this.avatarChange.emit(file);
   }
 
+  chooseAvatar(): void {
+    this.avatarInput?.nativeElement.click();
+  }
+
   resetAvatar(): void {
     this.avatarTouched.set(false);
     this.pendingAvatar.set(null);

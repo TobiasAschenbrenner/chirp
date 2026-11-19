@@ -73,7 +73,16 @@
       </button>
     </div>
 
-    <p *ngIf="actionError" class="profile__error" role="alert">{{ actionError }}</p>
+    <div *ngIf="actionError" class="profile__error" role="alert">
+      <span>{{ actionError }}</span>
+      <button
+        *ngIf="avatarTouched()"
+        type="button"
+        class="linkish"
+        (click)="chooseAvatar()"
+        [disabled]="busy"
+      >Choose image</button>
+    </div>
 
     <article class="profile__bio" *ngIf="user.bio">
       <p>{{ user.bio }}</p>

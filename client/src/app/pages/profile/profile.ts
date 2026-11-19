@@ -1,5 +1,6 @@
 import { Component, DestroyRef, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -90,7 +91,9 @@ export class Profile implements OnInit {
         this.user.set(normalizeUser(updated));
         this.profileCard?.resetAvatar();
       },
-      error: () => this.actionError.set('Couldn’t update photo.'),
+      error: (err: HttpErrorResponse) => this.actionError.set(
+        err.status === 413 ? 'Image is too large.' : 'Couldn’t update photo.',
+      ),
     });
   }
 
