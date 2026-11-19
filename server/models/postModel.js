@@ -11,4 +11,7 @@ const postSchema = new Schema(
   { timestamps: true }
 );
 
+postSchema.index({ createdAt: -1, _id: -1 });
+postSchema.index({ creator: 1, createdAt: -1, _id: -1 });
+
 module.exports = model("Post", postSchema);

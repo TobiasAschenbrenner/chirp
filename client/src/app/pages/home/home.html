@@ -13,14 +13,30 @@
   <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
 
   <ng-container *ngIf="!loading()">
-    <p class="center" *ngIf="posts().length < 1">No posts found</p>
+    <p class="center" *ngIf="posts().length < 1 && !feedError()">No posts found</p>
 
     <app-feeds
       *ngIf="posts().length > 0"
       [posts]="posts()"
-      [bookmarkedIds]="bookmarkedIds()"
       (postUpdated)="onPostUpdated($event)"
       (postDeleted)="onPostDeleted($event)"
     ></app-feeds>
+
+    <div class="forest__pagination" *ngIf="feedError()">
+      <p class="error" role="alert">{{ feedError() }}</p>
+      <button type="button" class="btn" (click)="retryPosts()">Try again</button>
+    </div>
+
+    <div class="forest__pagination" *ngIf="hasMore() && !feedError()" aria-live="polite">
+      <button
+        type="button"
+        class="btn"
+        [disabled]="loadingMore()"
+        [attr.aria-busy]="loadingMore()"
+        (click)="loadMorePosts()"
+      >
+        {{ loadingMore() ? 'Loading…' : 'Load more' }}
+      </button>
+    </div>
   </ng-container>
 </section>

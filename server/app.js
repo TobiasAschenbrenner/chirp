@@ -41,6 +41,7 @@ const configureApp = (app) => {
     cors({
       credentials: true,
       origin: ALLOWED_ORIGINS,
+      exposedHeaders: ["X-Next-Cursor"],
     }),
   );
 

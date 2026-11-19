@@ -24,7 +24,7 @@
     <div class="feed__body">
       <p>{{ p.body }}</p>
       <div class="feed__images">
-        <img *ngIf="p.image" [src]="p.image" alt="Post image" />
+        <img *ngIf="p.image" [src]="p.image" alt="Post image" decoding="async" />
       </div>
     </div>
 

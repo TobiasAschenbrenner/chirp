@@ -6,6 +6,22 @@ const { randomUUID } = require("node:crypto");
 const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 const path = require("path");
+const { parsePostPagination, createPostCursor } = require("../utils/postPagination");
+
+const sendPostPage = async (req, res, filter = {}) => {
+  const { limit, filter: cursorFilter } = parsePostPagination(req.query);
+  const posts = await PostModel.find({ ...filter, ...cursorFilter })
+    .sort({ createdAt: -1, _id: -1 })
+    .limit(limit + 1)
+    .populate("creator", "fullName profilePhoto");
+  const page = posts.slice(0, limit);
+
+  if (posts.length > limit) {
+    res.set("X-Next-Cursor", createPostCursor(page[page.length - 1]));
+  }
+
+  return res.json(page);
+};
 
 // CREATE POST
 // POST: /api/posts
@@ -98,12 +114,9 @@ const getPost = async (req, res, next) => {
 // PROTECTED
 const getPosts = async (req, res, next) => {
   try {
-    const posts = await PostModel.find()
-      .sort({ createdAt: -1 })
-      .populate("creator", "fullName profilePhoto");
-    res.json(posts);
+    return await sendPostPage(req, res);
   } catch (error) {
-    return next(new HttpError(error));
+    return next(error);
   }
 };
 
@@ -160,11 +173,13 @@ const deletePost = async (req, res, next) => {
 // PROTECTED
 const getFollowingPosts = async (req, res, next) => {
   try {
-    const user = await UserModel.findById(req.user.id);
-    const posts = await PostModel.find({ creator: { $in: user?.following } });
-    res.json(posts);
+    const user = await UserModel.findById(req.user.id).select("following");
+
+    if (!user) return next(new HttpError("User not found", 404));
+
+    return await sendPostPage(req, res, { creator: { $in: user.following } });
   } catch (error) {
-    return next(new HttpError(error));
+    return next(error);
   }
 };
 

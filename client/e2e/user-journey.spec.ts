@@ -77,4 +77,15 @@ test('registers, logs in, and creates and edits a post with accessible controls'
   await dialog.getByRole('button', { name: 'Update Post', exact: true }).click();
   await expect(dialog).toBeHidden();
   await expect(page.getByText(updatedBody, { exact: true })).toBeVisible();
+
+  await page.getByRole('article').filter({ hasText: updatedBody })
+    .getByRole('link', { name: 'Comments', exact: true }).click();
+  await expect(page.getByLabel('Reply', { exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Nest', exact: true }).click();
+  await expect(page.getByRole('heading', { name: `${user.fullName}’s posts`, exact: true }))
+    .toBeVisible();
+  await page.getByRole('link', { name: 'Seeds', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Bookmarks', exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Forest', exact: true }).click();
+  await expect(page.getByText(updatedBody, { exact: true })).toBeVisible();
 });

@@ -74,7 +74,7 @@
     </ng-template>
 
     <div class="feed__images" *ngIf="post.image">
-      <img [src]="post.image" alt="Post image" />
+      <img [src]="post.image" alt="Post image" loading="lazy" decoding="async" />
     </div>
   </div>
 
