@@ -1,5 +1,10 @@
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+
 .profile-image {
-  display: inline-block;
+  display: block;
   border-radius: 50%;
   overflow: hidden;
   background: var(--color-gray-200);

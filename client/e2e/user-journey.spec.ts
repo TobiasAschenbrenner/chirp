@@ -35,6 +35,68 @@ test('registers, edits posts with accessible controls, and keeps profile changes
     .toHaveAttribute('aria-pressed', 'true');
 
   const search = page.getByRole('searchbox', { name: 'Search users', exact: true });
+  const originalViewport = page.viewportSize()!;
+  const logo = page.getByRole('link', { name: 'CHIRP', exact: true });
+  const openSearch = page.getByRole('button', { name: 'Open search', exact: true });
+  const closeSearch = page.getByRole('button', { name: 'Close search', exact: true });
+
+  for (const width of [390, 320]) {
+    await page.setViewportSize({ width, height: 844 });
+    await expect(logo).toBeVisible();
+    await expect(logo.locator('.navbar__logoIcon')).toBeVisible();
+    await expect(logo.locator('.navbar__logoText')).toBeHidden();
+    await expect(search).toBeHidden();
+    await openSearch.press('Enter');
+    await expect(search).toBeFocused();
+    await expect(logo).toBeHidden();
+    await expect(page.getByRole('link', { name: 'Profile', exact: true })).toBeHidden();
+    await expect(page.getByRole('button', { name: 'Logout', exact: true })).toBeHidden();
+    expect(await page.locator('.navbar__searchWrap').evaluate(e => e.clientWidth))
+      .toBeGreaterThan(width * 0.9);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth))
+      .toBeLessThanOrEqual(width);
+
+    await search.fill('Nobody matches this search');
+    await expect(page.getByText('No users found', { exact: true })).toBeVisible();
+    await search.press('Escape');
+    await expect(search).toBeHidden();
+    await expect(openSearch).toBeFocused();
+    await openSearch.press('Enter');
+    await closeSearch.press('Enter');
+    await expect(openSearch).toBeFocused();
+  }
+
+  await openSearch.press('Enter');
+  await search.fill('E2E');
+  await page.getByRole('button', { name: user.fullName, exact: true }).press('Enter');
+  await expect(page.getByRole('heading', { level: 1, name: user.fullName, exact: true }))
+    .toBeVisible();
+  await expect(search).toBeHidden();
+  await expect(openSearch).toBeVisible();
+  await logo.click();
+  await expect(page).toHaveURL(/\/home$/);
+  await page.setViewportSize(originalViewport);
+  await expect(logo.locator('.navbar__logoIcon')).toBeVisible();
+  await expect(logo.locator('.navbar__logoText')).toBeVisible();
+  await expect(search).toBeVisible();
+  await expect(openSearch).toBeHidden();
+
+  await page.locator('.createPost__avatar .profile-image').waitFor({ state: 'visible' });
+  const avatar = await page.locator('.createPost__avatar').evaluate(element => {
+    const wrapper = element.getBoundingClientRect();
+    const circle = element.querySelector('.profile-image')!.getBoundingClientRect();
+    const image = element.querySelector('img')!.getBoundingClientRect();
+    return {
+      wrapper: { width: wrapper.width, height: wrapper.height },
+      circle: { width: circle.width, height: circle.height },
+      offsetX: Math.abs(circle.x + circle.width / 2 - image.x - image.width / 2),
+      offsetY: Math.abs(circle.y + circle.height / 2 - image.y - image.height / 2),
+    };
+  });
+  expect(avatar.wrapper).toEqual(avatar.circle);
+  expect(avatar.offsetX).toBeLessThan(0.5);
+  expect(avatar.offsetY).toBeLessThan(0.5);
+
   await search.fill('E2E');
   const searchResult = page.getByRole('button', { name: user.fullName, exact: true });
   await searchResult.waitFor();

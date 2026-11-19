@@ -150,6 +150,8 @@ describe('Navbar', () => {
   it('goToUser should close dropdown, clear results and navigate', () => {
     fixture.detectChanges();
 
+    component.search.setValue('Tobi');
+    component.mobileSearchOpen.set(true);
     component.open.set(true);
     component.results.set([{ _id: 'u2' } as any]);
 
@@ -157,7 +159,23 @@ describe('Navbar', () => {
 
     expect(component.open()).toBe(false);
     expect(component.results()).toEqual([]);
+    expect(component.mobileSearchOpen()).toBe(false);
+    expect(component.search.value).toBe('');
     expect(router.navigate).toHaveBeenCalledWith(['/users', 'u2']);
+  });
+
+  it('dismisses mobile search without losing the query or reopening pending results', () => {
+    fixture.detectChanges();
+    component.search.setValue('Tobi');
+    component.openMobileSearch();
+    expect(component.mobileSearchOpen()).toBe(true);
+
+    component.dismissSearch();
+    vi.advanceTimersByTime(250);
+
+    expect(component.mobileSearchOpen()).toBe(false);
+    expect(component.open()).toBe(false);
+    expect(component.search.value).toBe('Tobi');
   });
 
   it('logout should call auth.logout and navigate to /login', () => {

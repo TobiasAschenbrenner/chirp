@@ -1,4 +1,4 @@
-<header class="navbar">
+<header class="navbar" [class.navbar--search-open]="mobileSearchOpen()">
   <button
     type="button"
     class="navbar__backdrop"
@@ -8,10 +8,40 @@
   ></button>
 
   <div class="container navbar__container">
-    <a routerLink="/home" class="navbar__logo">CHIRP</a>
+    <a routerLink="/home" class="navbar__logo" aria-label="CHIRP">
+      <span class="navbar__logoIcon" aria-hidden="true"></span>
+      <span class="navbar__logoText" aria-hidden="true">CHIRP</span>
+    </a>
+
+    <button
+      #mobileSearchToggle
+      type="button"
+      class="navbar__searchToggle"
+      aria-label="Open search"
+      aria-controls="user-search-form"
+      [attr.aria-expanded]="mobileSearchOpen()"
+      (click)="openMobileSearch()"
+    >
+      <mat-icon aria-hidden="true">search</mat-icon>
+    </button>
 
     <div class="navbar__searchWrap">
-      <form class="navbar__search" role="search" aria-label="Users" (submit)="$event.preventDefault()">
+      <button
+        type="button"
+        class="navbar__searchBack"
+        aria-label="Close search"
+        (click)="dismissSearch()"
+      >
+        <mat-icon aria-hidden="true">arrow_back</mat-icon>
+      </button>
+
+      <form
+        id="user-search-form"
+        class="navbar__search"
+        role="search"
+        aria-label="Users"
+        (submit)="$event.preventDefault()"
+      >
         <input
           #userSearch
           type="search"
@@ -20,9 +50,9 @@
           placeholder="Search"
           (focus)="open.set(true)"
           autocomplete="off"
-          (keydown.escape)="close()"
+          (keydown.escape)="dismissSearch()"
         />
-        <button type="button" aria-label="Search">
+        <button type="button" aria-label="Search" (click)="userSearch.focus(); open.set(true)">
           <mat-icon>search</mat-icon>
         </button>
       </form>
@@ -37,7 +67,7 @@
           class="navbar__searchItem"
           *ngFor="let u of results()"
           (click)="goToUser(u._id)"
-          (keydown.escape)="userSearch.focus(); close()"
+          (keydown.escape)="dismissSearch()"
         >
           <app-profile-image *ngIf="u.profilePhoto" [src]="u.profilePhoto" size="sm" />
           <span class="navbar__searchName">{{ u.fullName }}</span>
