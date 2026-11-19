@@ -31,10 +31,22 @@
     </ng-template>
 
     <div *ngIf="isOwner()" class="feed__header-actions">
-      <button type="button" class="iconBtn" (click)="startEdit()" [disabled]="busy()">
+      <button
+        type="button"
+        class="iconBtn"
+        (click)="startEdit()"
+        [disabled]="busy()"
+        aria-label="Edit post"
+      >
         <mat-icon>edit</mat-icon>
       </button>
-      <button type="button" class="iconBtn" (click)="deletePost()" [disabled]="busy()">
+      <button
+        type="button"
+        class="iconBtn"
+        (click)="deletePost()"
+        [disabled]="busy()"
+        aria-label="Delete post"
+      >
         <mat-icon>delete_outline</mat-icon>
       </button>
     </div>
@@ -42,7 +54,12 @@
 
   <div class="feed__body">
     <div *ngIf="editing(); else readMode" class="feed__edit">
-      <textarea [ngModel]="editBody()" (ngModelChange)="editBody.set($event)" rows="3"></textarea>
+      <textarea
+        aria-label="Post text"
+        [ngModel]="editBody()"
+        (ngModelChange)="editBody.set($event)"
+        rows="3"
+      ></textarea>
 
       <div class="feed__edit-actions">
         <button type="button" class="btn" (click)="cancelEdit()" [disabled]="busy()">Cancel</button>

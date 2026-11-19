@@ -1,17 +1,32 @@
-<form class="editPost" (click)="close($event)" (keydown.escape)="close()" (submit)="submit()">
-  <div class="editPost__container">
-    <h3 class="editPost__title">Edit post</h3>
+<form class="editPost" (click)="close($event)" (keydown.escape)="close()" (ngSubmit)="submit()">
+  <div
+    class="editPost__container"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="edit-post-title"
+    cdkTrapFocus
+    [cdkTrapFocusAutoCapture]="true"
+  >
+    <h3 class="editPost__title" id="edit-post-title">Edit post</h3>
 
-    <textarea
-      name="body"
-      [ngModel]="body()"
-      (ngModelChange)="body.set($event)"
-      placeholder="What's on your mind?"
-      [attr.maxlength]="validationLimits.post"
-    ></textarea>
+    <p *ngIf="error()" class="form__error-message" role="alert">{{ error() }}</p>
+
+    <div class="form__field">
+      <label for="edit-post-body">Post text</label>
+      <textarea
+        id="edit-post-body"
+        name="body"
+        [ngModel]="body()"
+        (ngModelChange)="body.set($event)"
+        placeholder="What's on your mind?"
+        [attr.maxlength]="validationLimits.post"
+        [readOnly]="loading()"
+        cdkFocusInitial
+      ></textarea>
+    </div>
 
     <div class="editPost__actions">
-      <button type="button" class="btn" (click)="close($event)" [disabled]="loading()">
+      <button type="button" class="btn" (click)="close()" [disabled]="loading()">
         Cancel
       </button>
 

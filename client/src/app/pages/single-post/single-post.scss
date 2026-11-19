@@ -138,10 +138,9 @@
     padding: 1rem;
     border-radius: var(--radius-3);
     border: 2px solid var(--color-gray-0);
-    outline: none;
 
     &:focus {
-      border-color: var(--color-primary);
+      border-color: transparent;
     }
   }
 }

@@ -9,13 +9,23 @@ textarea {
 
 input:focus,
 textarea:focus {
-  border-color: var(--color-primary);
   background: var(--color-gray-0);
+}
+
+.form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    color: var(--color-gray-900);
+    font-weight: 500;
+  }
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: var(--color-gray-500);
+  color: var(--color-gray-600);
 }
 
 .form__error-message,

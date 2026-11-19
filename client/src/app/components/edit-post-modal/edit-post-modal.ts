@@ -2,6 +2,7 @@ import { Component, DestroyRef, EventEmitter, Input, OnInit, Output, signal } fr
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 
 import { Posts as PostsApi } from '../../services/posts/posts';
 import { Post } from '../../models/post.model';
@@ -12,7 +13,7 @@ import { VALIDATION_LIMITS } from '../../utils/input-validation';
 @Component({
   selector: 'app-edit-post-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CdkTrapFocus],
   templateUrl: './edit-post-modal.html',
   styleUrls: ['./edit-post-modal.scss'],
 })

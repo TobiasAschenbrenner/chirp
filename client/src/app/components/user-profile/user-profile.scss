@@ -42,13 +42,22 @@
   opacity: 1;
 }
 
+.profile__image:focus-within {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+
+  .profile__image-edit {
+    opacity: 1;
+  }
+}
+
 .profile__image-btn {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 3.2rem;
-  width: 3.2rem;
+  height: 44px;
+  width: 44px;
   border-radius: 50%;
   background: var(--color-primary);
   color: var(--color-gray-0);
