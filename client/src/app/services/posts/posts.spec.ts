@@ -46,25 +46,30 @@ describe('Posts service', () => {
     req.flush(mockPost);
   });
 
-  it('should get all posts', () => {
-    service.getPosts().subscribe((posts) => {
-      expect(posts.length).toBe(1);
-      expect(posts[0]._id).toBe('p1');
+  it('should request a bounded first page and read its next cursor', () => {
+    service.getPosts().subscribe((page) => {
+      expect(page.posts).toEqual([mockPost]);
+      expect(page.nextCursor).toBe('next-page');
     });
 
-    const req = httpMock.expectOne('/api/posts');
+    const req = httpMock.expectOne((request) => request.url === '/api/posts');
     expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('limit')).toBe('20');
+    expect(req.request.params.has('cursor')).toBe(false);
 
-    req.flush([mockPost]);
+    req.flush([mockPost], { headers: { 'X-Next-Cursor': 'next-page' } });
   });
 
-  it('should get following posts', () => {
-    service.getFollowingPosts().subscribe((posts) => {
-      expect(posts.length).toBe(1);
+  it('should request the next following page and recognize the end of the feed', () => {
+    service.getFollowingPosts('previous-page').subscribe((page) => {
+      expect(page.posts).toEqual([mockPost]);
+      expect(page.nextCursor).toBeNull();
     });
 
-    const req = httpMock.expectOne('/api/posts/following');
+    const req = httpMock.expectOne((request) => request.url === '/api/posts/following');
     expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('limit')).toBe('20');
+    expect(req.request.params.get('cursor')).toBe('previous-page');
 
     req.flush([mockPost]);
   });

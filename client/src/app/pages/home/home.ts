@@ -1,6 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { CreatePost } from '../../components/create-post/create-post';
 import { ForYouOrFollowing } from '../../components/for-you-or-following/for-you-or-following';
@@ -9,7 +10,6 @@ import { Feeds } from '../../components/feeds/feeds';
 
 import { Posts } from '../../services/posts/posts';
 import { Post } from '../../models/post.model';
-import { Users } from '../../services/users/users';
 import { ApiError } from '../../models/api-error.model';
 import { FeedMode } from '../../models/feed-mode.model';
 
@@ -23,22 +23,41 @@ import { FeedMode } from '../../models/feed-mode.model';
 export class Home implements OnInit {
   mode = signal<FeedMode>('foryou');
   posts = signal<Post[]>([]);
-  bookmarkedIds = signal<ReadonlySet<string>>(new Set<string>());
 
   loading = signal(false);
+  loadingMore = signal(false);
   posting = signal(false);
   error = signal('');
+  feedError = signal('');
+  readonly hasMore = computed(() => this.nextCursor() !== null);
 
-  constructor(private usersApi: Users, private postsApi: Posts) {}
+  private readonly nextCursor = signal<string | null>(null);
+  private feedRequest?: Subscription;
+
+  constructor(
+    private postsApi: Posts,
+    private destroyRef: DestroyRef,
+  ) {}
 
   ngOnInit(): void {
     this.loadPosts();
-    this.loadBookmarks();
   }
 
   onModeChange(mode: FeedMode): void {
+    if (this.mode() === mode) return;
     this.mode.set(mode);
     this.loadPosts();
+  }
+
+  loadMorePosts(): void {
+    const cursor = this.nextCursor();
+    if (!cursor || this.loading() || this.loadingMore()) return;
+    this.loadPosts(cursor);
+  }
+
+  retryPosts(): void {
+    if (this.loading() || this.loadingMore()) return;
+    this.loadPosts(this.nextCursor() ?? undefined);
   }
 
   onPostUpdated(updated: Post): void {
@@ -76,32 +95,40 @@ export class Home implements OnInit {
     });
   }
 
-  private getPostsRequest(): Observable<Post[]> {
-    return this.mode() === 'foryou' ? this.postsApi.getPosts() : this.postsApi.getFollowingPosts();
-  }
+  private loadPosts(cursor?: string): void {
+    this.feedRequest?.unsubscribe();
+    this.feedError.set('');
+    this.loading.set(!cursor);
+    this.loadingMore.set(!!cursor);
 
-  private loadPosts(): void {
-    this.loading.set(true);
+    if (!cursor) {
+      this.posts.set([]);
+      this.nextCursor.set(null);
+    }
 
-    this.getPostsRequest().subscribe({
-      next: (posts) => {
-        this.posts.set(posts);
-        this.loading.set(false);
-      },
-      error: (err: ApiError) => {
-        console.log('Load posts failed:', err);
-        this.loading.set(false);
-      },
-    });
-  }
+    const request =
+      this.mode() === 'foryou'
+        ? this.postsApi.getPosts(cursor)
+        : this.postsApi.getFollowingPosts(cursor);
 
-  private loadBookmarks(): void {
-    this.usersApi.getBookmarks().subscribe({
-      next: (res) => {
-        const ids = new Set<string>(res.bookmarks.map((p) => p._id));
-        this.bookmarkedIds.set(ids);
-      },
-      error: (err: ApiError) => console.log(err),
-    });
+    this.feedRequest = request
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.loading.set(false);
+          this.loadingMore.set(false);
+        }),
+      )
+      .subscribe({
+        next: (page) => {
+          this.posts.update((current) => {
+            if (!cursor) return page.posts;
+            const existingIds = new Set(current.map((post) => post._id));
+            return [...current, ...page.posts.filter((post) => !existingIds.has(post._id))];
+          });
+          this.nextCursor.set(page.nextCursor);
+        },
+        error: (err: ApiError) => this.feedError.set(err.error?.message || 'Failed to load posts.'),
+      });
   }
 }

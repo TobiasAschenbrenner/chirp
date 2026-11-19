@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Post } from '../../models/post.model';
+import { map, Observable } from 'rxjs';
+import { Post, PostPage } from '../../models/post.model';
 
 import { environment } from '../../../environments/environment';
 
@@ -15,12 +15,12 @@ export class Posts {
     return this.http.post<Post>(`${this.baseUrl}/posts`, data);
   }
 
-  getPosts() {
-    return this.http.get<Post[]>(`${this.baseUrl}/posts`);
+  getPosts(cursor?: string): Observable<PostPage> {
+    return this.getPostPage('/posts', cursor);
   }
 
-  getFollowingPosts() {
-    return this.http.get<Post[]>(`${this.baseUrl}/posts/following`);
+  getFollowingPosts(cursor?: string): Observable<PostPage> {
+    return this.getPostPage('/posts/following', cursor);
   }
 
   likePost(postId: string) {
@@ -41,5 +41,17 @@ export class Posts {
 
   toggleBookmark(postId: string) {
     return this.http.get<{ bookmarks: string[] }>(`${this.baseUrl}/posts/${postId}/bookmarks`);
+  }
+
+  private getPostPage(path: string, cursor?: string): Observable<PostPage> {
+    const params: { limit: number; cursor?: string } = { limit: 20 };
+    if (cursor) params.cursor = cursor;
+
+    return this.http.get<Post[]>(`${this.baseUrl}${path}`, { params, observe: 'response' }).pipe(
+      map((response) => ({
+        posts: response.body ?? [],
+        nextCursor: response.headers.get('X-Next-Cursor') || null,
+      })),
+    );
   }
 }

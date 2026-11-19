@@ -16,3 +16,8 @@ export interface Post {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface PostPage {
+  posts: Post[];
+  nextCursor: string | null;
+}

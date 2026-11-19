@@ -34,6 +34,12 @@ after(
     }),
 );
 
+test("preserves the production API health check", async () => {
+  const response = await fetch(baseUrl);
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { status: "ok", service: "chirp-api" });
+});
+
 test("sets security headers and removes the Express disclosure header", async () => {
   const response = await fetch(`${baseUrl}/api/not-found`);
 
@@ -76,6 +82,7 @@ test("allows both production frontend origins but not arbitrary origins", async 
       apexCredentials: apexResponse.headers.get(
         "access-control-allow-credentials",
       ),
+      exposedHeaders: apexResponse.headers.get("access-control-expose-headers"),
       wwwOrigin: wwwResponse.headers.get("access-control-allow-origin"),
       wwwCredentials: wwwResponse.headers.get(
         "access-control-allow-credentials",
@@ -87,6 +94,7 @@ test("allows both production frontend origins but not arbitrary origins", async 
     {
       apexOrigin: "https://chirp.blog",
       apexCredentials: "true",
+      exposedHeaders: "X-Next-Cursor",
       wwwOrigin: "https://www.chirp.blog",
       wwwCredentials: "true",
       untrustedOrigin: null,

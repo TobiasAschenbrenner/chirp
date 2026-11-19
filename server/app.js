@@ -41,6 +41,7 @@ const configureApp = (app) => {
     cors({
       credentials: true,
       origin: ALLOWED_ORIGINS,
+      exposedHeaders: ["X-Next-Cursor"],
     }),
   );
 
@@ -75,6 +76,10 @@ const configureApp = (app) => {
   );
 
   app.use("/api", routes);
+
+  app.get("/", (req, res) => {
+    res.json({ status: "ok", service: "chirp-api" });
+  });
 
   app.use(notFound);
   app.use(errorHandler);
