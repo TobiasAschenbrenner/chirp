@@ -77,6 +77,10 @@ const configureApp = (app) => {
 
   app.use("/api", routes);
 
+  app.get("/", (req, res) => {
+    res.json({ status: "ok", service: "chirp-api" });
+  });
+
   app.use(notFound);
   app.use(errorHandler);
 
