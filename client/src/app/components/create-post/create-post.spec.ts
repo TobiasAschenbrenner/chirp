@@ -52,7 +52,7 @@ describe('CreatePost', () => {
     expect(p?.textContent).toContain('Boom');
   });
 
-  it('should disable textarea and submit button when loading is true', async () => {
+  it('keeps the draft readable and prevents changes while posting', async () => {
     const fixture = TestBed.createComponent(CreatePost);
     const component = fixture.componentInstance;
 
@@ -71,7 +71,9 @@ describe('CreatePost', () => {
       'button[type="submit"]',
     ) as HTMLButtonElement;
 
-    expect(textarea.disabled).toBe(true);
+    expect(textarea.disabled).toBe(false);
+    expect(textarea.readOnly).toBe(true);
+    expect(textarea.value).toBe('hello');
     expect(submitBtn.disabled).toBe(true);
   });
 
@@ -118,6 +120,9 @@ describe('CreatePost', () => {
     input.dispatchEvent(new Event('change'));
 
     expect(component.image).toBe(file);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.createPost__attachment')?.textContent)
+      .toContain('pic.png');
   });
 
   it('onFileChange: should set image to null when no file selected', () => {
@@ -154,7 +159,7 @@ describe('CreatePost', () => {
     expect(emitSpy).not.toHaveBeenCalled();
   });
 
-  it('onSubmit: should emit FormData with body and reset fields (no image)', () => {
+  it('onSubmit: keeps the draft until publishing succeeds', () => {
     fixture.detectChanges();
 
     component.loading = false;
@@ -172,11 +177,11 @@ describe('CreatePost', () => {
     expect(fd.get('body')).toBe('Hello world');
     expect(fd.get('image')).toBeNull();
 
-    expect(component.body).toBe('');
+    expect(component.body).toBe('Hello world');
     expect(component.image).toBeNull();
   });
 
-  it('onSubmit: should emit FormData with body + image and reset fields', () => {
+  it('onSubmit: keeps both text and image available for retry', () => {
     fixture.detectChanges();
 
     const file = new File(['img'], 'pic.jpg', { type: 'image/jpeg' });
@@ -195,8 +200,19 @@ describe('CreatePost', () => {
     expect(fd.get('body')).toBe('Hello');
     expect(fd.get('image')).toBe(file);
 
+    expect(component.body).toBe('Hello');
+    expect(component.image).toBe(file);
+  });
+
+  it('resetDraft: clears the text and attachment after confirmed success', () => {
+    fixture.detectChanges();
+    component.body = 'Published post';
+    component.image = new File(['image'], 'pic.png', { type: 'image/png' });
+    component.resetDraft();
+    fixture.detectChanges();
     expect(component.body).toBe('');
     expect(component.image).toBeNull();
+    expect(fixture.nativeElement.querySelector('.createPost__attachment')).toBeNull();
   });
 
   it('onSubmit: should not emit posts longer than 500 characters', () => {

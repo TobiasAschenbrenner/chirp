@@ -1,8 +1,9 @@
-<form class="createPost" enctype="multipart/form-data" (ngSubmit)="onSubmit()">
-  <p *ngIf="error" class="createPost__error-message" role="alert">
-    {{ error }}
-  </p>
-
+<form
+  class="createPost"
+  enctype="multipart/form-data"
+  [attr.aria-busy]="loading"
+  (ngSubmit)="onSubmit()"
+>
   <div class="createPost__top">
     <div class="createPost__avatar">
       <app-profile-image
@@ -21,19 +22,27 @@
         placeholder="What's on your mind?"
         [attr.maxlength]="validationLimits.post"
         required
-        [disabled]="loading"
+        [readOnly]="loading"
       ></textarea>
     </div>
   </div>
 
+  <div class="createPost__attachment" *ngIf="image">
+    <mat-icon aria-hidden="true">image</mat-icon>
+    <span>{{ image.name }}</span>
+  </div>
+
   <div class="createPost__bottom">
-    <span></span>
+    <p *ngIf="error" class="createPost__error-message" role="alert">
+      <mat-icon aria-hidden="true">error_outline</mat-icon>
+      <span>{{ error }}</span>
+    </p>
 
     <div class="createPost__actions">
       <button
         type="button"
         class="icon-button"
-        aria-label="Add image"
+        [attr.aria-label]="image ? 'Change image' : 'Add image'"
         [disabled]="loading"
         (click)="imageInput.click()"
       >

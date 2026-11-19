@@ -68,7 +68,7 @@ test('pages both feeds without gaps and can retry a failed next page', async ({ 
 
   const loadMore = page.getByRole('button', { name: 'Load more', exact: true });
   await loadMore.click();
-  await expect(page.getByRole('alert')).toHaveText('Temporarily unavailable');
+  await expect(page.getByRole('alert').locator('span')).toHaveText('Couldn’t load more posts.');
   await expect(posts).toHaveCount(19);
   await page.getByRole('button', { name: 'Try again', exact: true }).click();
   await expect(posts).toHaveCount(expectedCount);

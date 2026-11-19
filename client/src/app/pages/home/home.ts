@@ -1,5 +1,7 @@
-import { Component, computed, DestroyRef, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
 import { finalize, Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -10,13 +12,12 @@ import { Feeds } from '../../components/feeds/feeds';
 
 import { Posts } from '../../services/posts/posts';
 import { Post } from '../../models/post.model';
-import { ApiError } from '../../models/api-error.model';
 import { FeedMode } from '../../models/feed-mode.model';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, CreatePost, ForYouOrFollowing, FeedSkeleton, Feeds],
+  imports: [CommonModule, MatIconModule, CreatePost, ForYouOrFollowing, FeedSkeleton, Feeds],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })
@@ -33,6 +34,7 @@ export class Home implements OnInit {
 
   private readonly nextCursor = signal<string | null>(null);
   private feedRequest?: Subscription;
+  @ViewChild(CreatePost) private postComposer?: CreatePost;
 
   constructor(
     private postsApi: Posts,
@@ -69,30 +71,39 @@ export class Home implements OnInit {
   }
 
   createPost(data: FormData): void {
+    if (this.posting()) return;
     this.error.set('');
     this.posting.set(true);
 
-    this.postsApi.createPost(data).subscribe({
-      next: (newPost) => {
-        this.posting.set(false);
+    this.postsApi
+      .createPost(data)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (newPost) => {
+          this.postComposer?.resetDraft();
+          this.posting.set(false);
 
-        if (this.mode() === 'foryou') {
-          this.posts.update((posts) => [newPost, ...posts]);
-        } else {
-          this.loadPosts();
-        }
-      },
-      error: (err: ApiError) => {
-        this.posting.set(false);
+          if (this.mode() === 'foryou') {
+            this.posts.update((posts) => [newPost, ...posts]);
+          } else {
+            this.loadPosts();
+          }
+        },
+        error: (err: HttpErrorResponse) => {
+          this.posting.set(false);
+          this.error.set(this.postErrorMessage(err));
+        },
+      });
+  }
 
-        const msg = err.error?.message || 'Failed to create post.';
-        this.error.set(
-          msg === "TypeError: Cannot read properties of null (reading 'image')"
-            ? 'Please upload an image'
-            : msg
-        );
-      },
-    });
+  private postErrorMessage(error: HttpErrorResponse): string {
+    if (error.status === 413) return 'Image is too large.';
+
+    if ([400, 422].includes(error.status) && typeof error.error?.message === 'string') {
+      return error.error.message;
+    }
+
+    return 'Couldn’t publish post.';
   }
 
   private loadPosts(cursor?: string): void {
@@ -128,7 +139,7 @@ export class Home implements OnInit {
           });
           this.nextCursor.set(page.nextCursor);
         },
-        error: (err: ApiError) => this.feedError.set(err.error?.message || 'Failed to load posts.'),
+        error: () => this.feedError.set(cursor ? 'Couldn’t load more posts.' : 'Can’t reach Chirp.'),
       });
   }
 }

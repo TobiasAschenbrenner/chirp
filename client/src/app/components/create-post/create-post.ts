@@ -81,7 +81,9 @@ export class CreatePost implements OnInit {
     if (this.image) postData.set('image', this.image);
 
     this.createPost.emit(postData);
+  }
 
+  resetDraft(): void {
     this.body = '';
     this.image = null;
     if (this.imageInput?.nativeElement) this.imageInput.nativeElement.value = '';

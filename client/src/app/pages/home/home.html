@@ -22,9 +22,20 @@
       (postDeleted)="onPostDeleted($event)"
     ></app-feeds>
 
-    <div class="forest__pagination" *ngIf="feedError()">
-      <p class="error" role="alert">{{ feedError() }}</p>
-      <button type="button" class="btn" (click)="retryPosts()">Try again</button>
+    <div
+      class="forest__feed-error"
+      [class.forest__feed-error--empty]="!hasMore()"
+      *ngIf="feedError()"
+    >
+      <mat-icon *ngIf="!hasMore()" aria-hidden="true">wifi_off</mat-icon>
+      <p role="alert">
+        <mat-icon *ngIf="hasMore()" aria-hidden="true">error_outline</mat-icon>
+        <span>{{ feedError() }}</span>
+      </p>
+      <button type="button" class="btn forest__retry" (click)="retryPosts()">
+        <mat-icon aria-hidden="true">refresh</mat-icon>
+        Try again
+      </button>
     </div>
 
     <div class="forest__pagination" *ngIf="hasMore() && !feedError()" aria-live="polite">
