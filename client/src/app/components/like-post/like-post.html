@@ -4,10 +4,14 @@
   [class.liked]="liked()"
   (click)="toggleLike()"
   [disabled]="busy()"
-  [attr.aria-label]="ariaLabel"
+  aria-label="Like post"
+  [attr.aria-pressed]="liked()"
+  [attr.aria-describedby]="'likes-count-' + post._id"
 >
   <mat-icon class="likeButton__icon">
     {{ liked() ? 'favorite' : 'favorite_border' }}
   </mat-icon>
-  <small class="likeButton__count">{{ likesCount() }}</small>
+  <small class="likeButton__count" [id]="'likes-count-' + post._id">
+    {{ likesCount() }}<span class="cdk-visually-hidden">{{ likesCount() === 1 ? ' like' : ' likes' }}</span>
+  </small>
 </button>

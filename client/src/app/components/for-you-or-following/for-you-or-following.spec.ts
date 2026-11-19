@@ -28,6 +28,8 @@ describe('ForYouOrFollowing', () => {
 
     expect(forYouBtn.nativeElement.classList.contains('active')).toBe(true);
     expect(followingBtn.nativeElement.classList.contains('active')).toBe(false);
+    expect(forYouBtn.nativeElement.getAttribute('aria-pressed')).toBe('true');
+    expect(followingBtn.nativeElement.getAttribute('aria-pressed')).toBe('false');
   });
 
   it('should mark "Following" active when input is set', () => {
@@ -39,6 +41,8 @@ describe('ForYouOrFollowing', () => {
 
     expect(forYouBtn.nativeElement.classList.contains('active')).toBe(false);
     expect(followingBtn.nativeElement.classList.contains('active')).toBe(true);
+    expect(forYouBtn.nativeElement.getAttribute('aria-pressed')).toBe('false');
+    expect(followingBtn.nativeElement.getAttribute('aria-pressed')).toBe('true');
   });
 
   it('should emit "foryou" when clicking "For you"', () => {

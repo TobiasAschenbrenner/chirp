@@ -1,8 +1,9 @@
-<div class="forYouOrFollowing">
+<div class="forYouOrFollowing" role="group" aria-label="Feed">
   <button
     *ngFor="let m of modes"
     type="button"
     [class.active]="active === m.key"
+    [attr.aria-pressed]="active === m.key"
     (click)="setMode(m.key)"
   >
     {{ m.label }}

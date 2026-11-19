@@ -1,4 +1,6 @@
-<section class="forest">
+<section class="forest" [attr.aria-busy]="loading()">
+  <h1 class="cdk-visually-hidden" tabindex="-1">Feed</h1>
+
   <app-create-post
     [error]="error()"
     [loading]="posting()"

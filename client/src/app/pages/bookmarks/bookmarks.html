@@ -1,7 +1,7 @@
-<section class="bookmarks">
-  <h2 class="bookmarks__title">Bookmarks</h2>
+<section class="bookmarks" [attr.aria-busy]="loading()">
+  <h1 class="bookmarks__title" tabindex="-1">Bookmarks</h1>
 
-  <p *ngIf="error()" class="error">{{ error() }}</p>
+  <p *ngIf="error()" class="error" role="alert">{{ error() }}</p>
 
   <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
 

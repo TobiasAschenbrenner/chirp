@@ -1,8 +1,8 @@
 <section class="editProfile">
-  <h3 class="editProfile__title">Edit profile</h3>
+  <h2 class="editProfile__title" id="edit-profile-title">Edit profile</h2>
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="editProfile__form">
-    <p *ngIf="error" class="editProfile__error">
+    <p *ngIf="error" class="editProfile__error" role="alert">
       {{ error }}
     </p>
 

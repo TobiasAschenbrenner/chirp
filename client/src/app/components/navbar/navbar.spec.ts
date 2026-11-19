@@ -3,7 +3,7 @@ import { Navbar } from './navbar';
 import { provideRouter } from '@angular/router';
 import { Router } from '@angular/router';
 import { vi } from 'vitest';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 
 import { Auth } from '../../services/auth/auth';
 import { Users } from '../../services/users/users';
@@ -118,6 +118,33 @@ describe('Navbar', () => {
 
     expect(component.results()).toEqual([]);
     expect(component.searching()).toBe(false);
+  });
+
+  it('keeps dismissed results closed when a debounced search finishes', () => {
+    fixture.detectChanges();
+    component.search.setValue('to');
+    expect(component.searchStatus).toBe('Searching…');
+
+    component.close();
+    vi.advanceTimersByTime(250);
+
+    expect(component.open()).toBe(false);
+    expect(component.searchStatus).toBe('');
+  });
+
+  it('ignores a pending search response after the query is cleared', () => {
+    const response = new Subject<any>();
+    (users.searchUsers as any).mockReturnValueOnce(response);
+    fixture.detectChanges();
+    component.search.setValue('to');
+    vi.advanceTimersByTime(250);
+
+    component.search.setValue('');
+    response.next({ users: [{ _id: 'u1', fullName: 'Tobi' }] });
+
+    expect(component.results()).toEqual([]);
+    expect(component.searching()).toBe(false);
+    expect(component.searchStatus).toBe('');
   });
 
   it('goToUser should close dropdown, clear results and navigate', () => {

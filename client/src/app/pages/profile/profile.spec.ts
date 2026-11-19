@@ -17,6 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 class UserProfileStub {
   @Input({ required: true }) user: any;
+  @Input() busy = false;
   @Output() editProfile = new EventEmitter<void>();
   @Output() followToggle = new EventEmitter<void>();
   @Output() avatarChange = new EventEmitter<File>();
