@@ -210,4 +210,4 @@ This application was built as a **university project** to learn about:
 
 ## 🤖 Use of AI Tools
 
-AI tools were used as supporting tools for code completion, discussing architecture and refactoring options, understanding errors, and reasoning about the database and security model. They were also used to help structure parts of the project documentation. All implementation decisions, code integration, and final validation were performed by the author.
+AI tools were used to support implementation, discuss architecture and refactoring options, understand errors and reason about frontend development, MongoDB data modelling and application security. They also supported testing and project documentation. All implementation decisions and final validations were performed by the author.
