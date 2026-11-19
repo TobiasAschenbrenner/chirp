@@ -55,7 +55,7 @@ A live version of the application is available at:
 
 ![Chirp architecture: Angular frontend on Hostinger, Express API on a Hostinger VPS, MongoDB Atlas, Cloudinary, and GitHub deployment flows](./assets/chirp-architecture.svg)
 
-The browser loads the Angular app from Hostinger and communicates with the Express API over HTTPS. The API uses Mongoose to access MongoDB Atlas and uploads images to Cloudinary, which serves them directly to the browser. GitHub Actions checks both parts of the repository; the backend is deployed manually to the VPS.
+Hostinger serves the Angular frontend and hosts the Express API on a VPS. MongoDB Atlas stores application data, and Cloudinary stores and delivers images.
 
 ---
 
