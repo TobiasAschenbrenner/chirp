@@ -1,98 +1,98 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="780" viewBox="0 0 1440 780" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="820" viewBox="0 0 1440 820" role="img" aria-labelledby="title description">
   <title id="title">Chirp architecture</title>
-  <desc id="description">Hostinger serves the Angular app to the user's browser over HTTPS. The browser exchanges REST requests with the Node.js and Express API behind Nginx on a Hostinger VPS. The API reads and writes MongoDB Atlas data over TLS and uploads images to Cloudinary. Cloudinary serves images directly to the browser over HTTPS. One GitHub repository contains client and server code. The frontend is built and deployed to Hostinger; the backend is deployed manually to the VPS. GitHub Actions runs lint, test, build and dependency-audit checks.</desc>
+  <desc id="description">Hostinger serves Chirp's Angular app to the user's browser. The app uses a Node.js and Express API on a Hostinger VPS, MongoDB Atlas for application data, and Cloudinary for images. Solid arrows show application requests and responses. Dashed arrows connect the GitHub repository to frontend deployment, manual backend deployment and GitHub Actions checks triggered by pushes or pull requests.</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto-start-reverse" markerUnits="userSpaceOnUse">
       <path d="M 1 1 L 9 5 L 1 9 Z" fill="#30343b" />
+    </marker>
+    <marker id="source-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 9 5 L 1 9 Z" fill="#656b73" />
     </marker>
     <style>
       text { font-family: Arial, Helvetica, sans-serif; fill: #24282e; text-anchor: middle; }
       .name { font-size: 23px; }
       .detail { font-size: 21px; }
       .label { font-size: 20px; }
-      .protocol { font-size: 17px; fill: #4c535c; }
+      .small { font-size: 18px; fill: #4c535c; }
       .start { text-anchor: start; }
       .node { fill: #fff; stroke: #30343b; stroke-width: 2; }
-      .flow { fill: none; stroke: #30343b; stroke-width: 2; stroke-linejoin: round; marker-end: url(#arrow); }
-      .both { marker-start: url(#arrow); }
+      .traffic { fill: none; stroke: #30343b; stroke-width: 2; stroke-linejoin: round; marker-start: url(#arrow); marker-end: url(#arrow); }
+      .source { fill: none; stroke: #656b73; stroke-width: 2; stroke-dasharray: 8 6; stroke-linejoin: round; marker-end: url(#source-arrow); }
     </style>
   </defs>
+  <rect width="1440" height="820" fill="#fff" />
 
-  <rect width="1440" height="780" fill="#fff" />
+  <!-- Application connections -->
+  <path class="traffic" d="M 250 395 H 380" />
+  <text class="small" x="315" y="363">HTTPS</text>
+  <text class="label" x="315" y="435">Load app</text>
 
-  <!-- Application traffic -->
-  <path class="flow both" d="M 185 220 V 270 Q 185 290 205 290 H 450 Q 470 290 470 308" />
-  <text class="protocol" x="310" y="265">HTTPS</text>
-  <text class="label" x="310" y="322">Load web app</text>
+  <path class="traffic" d="M 580 395 H 850" />
+  <text class="small" x="715" y="363">HTTPS · REST API</text>
+  <text class="label" x="715" y="435">Request &amp; serve data</text>
 
-  <path class="flow both" d="M 155 410 H 368" />
-  <text class="label" x="260" y="385">Use app</text>
+  <path class="traffic" d="M 1085 395 H 1220" />
+  <text class="small" x="1152" y="363">TLS</text>
+  <text class="label" x="1152" y="435">Read / write</text>
 
-  <path class="flow both" d="M 572 410 H 850" />
-  <text class="protocol" x="711" y="381">HTTPS · REST API</text>
-  <text class="label" x="711" y="448">Request &amp; serve data</text>
+  <path class="traffic" d="M 480 295 V 160 Q 480 140 500 140 H 700" />
+  <text class="small" x="590" y="110">HTTPS</text>
+  <text class="label" x="590" y="176">Load images</text>
 
-  <path class="flow both" d="M 1080 410 H 1220" />
-  <text class="protocol" x="1150" y="381">TLS</text>
-  <text class="label" x="1150" y="448">Read / write</text>
+  <path class="traffic" d="M 805 210 V 245 Q 805 265 825 265 H 947 Q 967 265 967 285 V 320" />
+  <text class="small start" x="995" y="239">HTTPS</text>
+  <text class="label start" x="995" y="270">Upload images</text>
+  <text class="label start" x="995" y="298">Return URLs</text>
 
-  <path class="flow both" d="M 542 338 V 160 Q 542 140 562 140 H 740" />
-  <text class="protocol" x="650" y="112">HTTPS</text>
-  <text class="label" x="650" y="174">Load images</text>
+  <path class="traffic" d="M 480 495 V 549" />
+  <text class="label start" x="505" y="530">User interaction</text>
 
-  <path class="flow both" d="M 965 335 V 278 Q 965 258 945 258 H 855 Q 835 258 835 238 V 215" />
-  <text class="protocol start" x="990" y="246">HTTPS</text>
-  <text class="label start" x="990" y="276">Upload images / return URLs</text>
+  <!-- Application components -->
+  <rect class="node" x="50" y="320" width="200" height="150" rx="12" />
+  <text class="name" x="150" y="386">Frontend hosting</text>
+  <text class="detail" x="150" y="423">Hostinger</text>
 
-  <!-- Frontend hosting and browser -->
-  <rect class="node" x="80" y="90" width="210" height="130" rx="10" />
-  <text class="name" x="185" y="147">Frontend hosting</text>
-  <text class="detail" x="185" y="182">Hostinger</text>
+  <circle class="node" cx="480" cy="395" r="100" />
+  <text class="name" x="480" y="372">Chirp web app</text>
+  <text class="detail" x="480" y="405">Angular</text>
+  <text class="small" x="480" y="436">User's browser</text>
 
-  <circle class="node" cx="470" cy="410" r="102" />
-  <text class="name" x="470" y="401">Chirp web app</text>
-  <text class="detail" x="470" y="436">Angular</text>
+  <rect class="node" x="850" y="320" width="235" height="150" rx="12" />
+  <text class="name" x="967" y="366">Backend app</text>
+  <text class="detail" x="967" y="401">Node.js · Express</text>
+  <text class="detail" x="967" y="436">Hostinger VPS</text>
+
+  <path class="node" d="M 700 85 V 185 C 700 218 910 218 910 185 V 85 Z" />
+  <ellipse class="node" cx="805" cy="85" rx="105" ry="25" />
+  <text class="name" x="805" y="149">Media CDN</text>
+  <text class="detail" x="805" y="184">Cloudinary</text>
+
+  <path class="node" d="M 1220 344 V 446 C 1220 478 1400 478 1400 446 V 344 Z" />
+  <ellipse class="node" cx="1310" cy="344" rx="90" ry="24" />
+  <text class="name" x="1310" y="407">Database</text>
+  <text class="detail" x="1310" y="442">MongoDB Atlas</text>
 
   <g fill="none" stroke="#30343b" stroke-width="2">
-    <circle cx="120" cy="372" r="16" />
-    <path d="M 90 423 C 90 380 150 380 150 423 Z" />
+    <circle cx="480" cy="569" r="16" />
+    <path d="M 450 620 C 450 577 510 577 510 620 Z" />
   </g>
-  <text class="label" x="120" y="459">User</text>
 
-  <!-- Backend host -->
-  <rect class="node" x="850" y="335" width="230" height="150" rx="10" />
-  <text class="name" x="965" y="384">Backend app</text>
-  <text class="detail" x="965" y="418">Node.js · Express</text>
-  <text class="detail" x="965" y="452">Hostinger VPS</text>
+  <!-- GitHub and deployment connections -->
+  <path class="source" d="M 590 712 H 150 V 470" />
+  <text class="label start" x="175" y="577">Deploy frontend</text>
 
-  <!-- Image storage and delivery -->
-  <path class="node" d="M 740 85 V 190 C 740 223 930 223 930 190 V 85 Z" />
-  <ellipse class="node" cx="835" cy="85" rx="95" ry="25" />
-  <text class="name" x="835" y="151">Media CDN</text>
-  <text class="detail" x="835" y="186">Cloudinary</text>
+  <path class="source" d="M 850 712 H 967 V 470" />
+  <text class="label start" x="995" y="565">Deploy backend</text>
+  <text class="small start" x="995" y="593">Manual</text>
 
-  <!-- Application database -->
-  <path class="node" d="M 1220 359 V 461 C 1220 493 1390 493 1390 461 V 359 Z" />
-  <ellipse class="node" cx="1305" cy="359" rx="85" ry="24" />
-  <text class="name" x="1305" y="422">Database</text>
-  <text class="detail" x="1305" y="457">MongoDB Atlas</text>
+  <path class="source" d="M 850 749 H 1090" />
+  <text class="small" x="970" y="790">Push / pull request</text>
 
-  <!-- Source, deployment and continuous integration -->
-  <path class="flow" d="M 690 700 H 55 V 155 H 80" />
-  <text class="label" x="370" y="676">Deploy frontend</text>
+  <rect class="node" x="590" y="680" width="260" height="90" rx="12" />
+  <text class="name" x="720" y="719">Chirp repository</text>
+  <text class="detail" x="720" y="752">GitHub</text>
 
-  <path class="flow" d="M 815 670 V 570 H 965 V 485" />
-  <text class="label" x="1090" y="565">Deploy backend</text>
-  <text class="protocol" x="1090" y="593">Manual</text>
-
-  <path class="flow" d="M 940 712 H 1080" />
-  <text class="label" x="1010" y="689">Run checks</text>
-
-  <rect class="node" x="690" y="670" width="250" height="85" rx="10" />
-  <text class="name" x="815" y="706">Chirp repository</text>
-  <text class="detail" x="815" y="737">GitHub</text>
-
-  <rect class="node" x="1080" y="670" width="280" height="85" rx="10" />
-  <text class="name" x="1220" y="706">CI</text>
-  <text class="detail" x="1220" y="737">GitHub Actions</text>
+  <rect class="node" x="1090" y="680" width="310" height="90" rx="12" />
+  <text class="name" x="1245" y="719">GitHub Actions</text>
+  <text class="detail" x="1245" y="752">CI checks</text>
 </svg>
