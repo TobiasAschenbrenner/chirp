@@ -29,33 +29,6 @@ describe('UserProfile', () => {
     }).compileComponents();
   });
 
-  it('should detect own profile when auth userId matches', () => {
-    auth.getUserId.mockReturnValue('u1');
-
-    const fixture = TestBed.createComponent(UserProfile);
-    fixture.componentInstance.user = makeUser({ _id: 'u1' });
-    fixture.detectChanges();
-
-    expect(fixture.componentInstance.isOwnProfile()).toBe(true);
-
-    const editBtn = fixture.debugElement.query(By.css('button.btn'));
-    expect(editBtn.nativeElement.textContent).toContain('Edit profile');
-  });
-
-  it('should show follow button when viewing someone else', () => {
-    auth.getUserId.mockReturnValue('me');
-
-    const fixture = TestBed.createComponent(UserProfile);
-    fixture.componentInstance.user = makeUser({ _id: 'u1' });
-    fixture.detectChanges();
-
-    expect(fixture.componentInstance.isOwnProfile()).toBe(false);
-
-    const followBtn = fixture.debugElement.query(By.css('button.btn.dark'));
-    expect(followBtn).toBeTruthy();
-    expect(followBtn.nativeElement.textContent).toContain('Follow');
-  });
-
   it('followsUser should return true when current user is in followers (string ids)', () => {
     auth.getUserId.mockReturnValue('me');
 
@@ -93,7 +66,7 @@ describe('UserProfile', () => {
     expect(fixture.componentInstance.followingCount()).toBe(1);
   });
 
-  it('should emit editProfile when clicking edit', () => {
+  it('shows the edit control on the current user’s profile and emits editProfile', () => {
     auth.getUserId.mockReturnValue('u1');
 
     const fixture = TestBed.createComponent(UserProfile);
@@ -104,12 +77,14 @@ describe('UserProfile', () => {
     fixture.componentInstance.editProfile.subscribe(spy);
 
     const btn = fixture.debugElement.query(By.css('button.btn'));
+    expect(fixture.componentInstance.isOwnProfile()).toBe(true);
+    expect(btn.nativeElement.textContent).toContain('Edit profile');
     btn.nativeElement.click();
 
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it('should emit followToggle when clicking follow/unfollow', () => {
+  it('shows the follow control on another user’s profile and emits followToggle', () => {
     auth.getUserId.mockReturnValue('me');
 
     const fixture = TestBed.createComponent(UserProfile);
@@ -120,6 +95,9 @@ describe('UserProfile', () => {
     fixture.componentInstance.followToggle.subscribe(spy);
 
     const btn = fixture.debugElement.query(By.css('button.btn.dark'));
+    expect(fixture.componentInstance.isOwnProfile()).toBe(false);
+    expect(btn).toBeTruthy();
+    expect(btn.nativeElement.textContent).toContain('Follow');
     btn.nativeElement.click();
 
     expect(spy).toHaveBeenCalledTimes(1);

@@ -68,13 +68,13 @@ describe('EditProfileDialog', () => {
     expect(dialogRef.close).toHaveBeenCalled();
   });
 
-  it('should submit form and close dialog with updated user', () => {
+  it('trims profile data, submits it, and closes the dialog with the updated user', () => {
     const fixture = TestBed.createComponent(EditProfileDialog);
     const component = fixture.componentInstance;
 
     component.form.setValue({
-      fullName: 'Updated Name',
-      bio: 'Updated bio',
+      fullName: '  Updated Name  ',
+      bio: '  Updated bio  ',
     });
 
     component.submit();
@@ -156,23 +156,6 @@ describe('EditProfileDialog', () => {
     component.form.controls.bio.setValue('a'.repeat(161));
 
     expect(component.form.controls.bio.valid).toBe(false);
-  });
-
-  it('should trim profile data before submitting', () => {
-    const fixture = TestBed.createComponent(EditProfileDialog);
-    const component = fixture.componentInstance;
-
-    component.form.setValue({
-      fullName: '  Updated Name  ',
-      bio: '  Updated biography  ',
-    });
-
-    component.submit();
-
-    expect(users.updateProfile).toHaveBeenCalledWith({
-      fullName: 'Updated Name',
-      bio: 'Updated biography',
-    });
   });
 
   it('should expose the backend limits through HTML attributes', () => {

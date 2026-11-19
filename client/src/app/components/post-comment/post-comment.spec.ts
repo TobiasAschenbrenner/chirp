@@ -59,11 +59,13 @@ describe('PostComment', () => {
     return fixture;
   }
 
-  it('should load creator user on init', () => {
+  it('loads the comment author and exposes their name and photo', () => {
     const fixture = createComponent({ creator: 'author1' });
 
     expect(users.getUser).toHaveBeenCalledWith('author1');
     expect(fixture.componentInstance.liveCreator()?._id).toBe('author1');
+    expect(fixture.componentInstance.creatorName()).toBe('Comment Author');
+    expect(fixture.componentInstance.photoUrl()).toContain('avatar.png');
   });
 
   it('should not load creator when creatorId is missing', () => {
@@ -73,24 +75,12 @@ describe('PostComment', () => {
     expect(fixture.componentInstance.liveCreator()).toBeNull();
   });
 
-  it('creatorName should return user name when loaded', () => {
-    const fixture = createComponent();
-
-    expect(fixture.componentInstance.creatorName()).toBe('Comment Author');
-  });
-
   it('creatorName should fall back to "User"', () => {
     vi.spyOn(users, 'getUser').mockReturnValueOnce(throwError(() => new Error('fail')));
 
     const fixture = createComponent();
 
     expect(fixture.componentInstance.creatorName()).toBe('User');
-  });
-
-  it('photoUrl should return profile photo when available', () => {
-    const fixture = createComponent();
-
-    expect(fixture.componentInstance.photoUrl()).toContain('avatar.png');
   });
 
   it('isOwner should return false when current user is not creator', () => {

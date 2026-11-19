@@ -92,24 +92,6 @@ describe('Profile', () => {
       .compileComponents();
   });
 
-  it('should load profile when route param id is set', () => {
-    usersApi.getUser.mockReturnValue(of({ _id: 'u1', fullName: 'Alice', followers: [] }));
-    usersApi.getUserPosts.mockReturnValue(of({ posts: [{ _id: 'p1' }, { _id: 'p2' }] }));
-
-    const fixture = TestBed.createComponent(Profile);
-    fixture.detectChanges();
-
-    const cmp = fixture.componentInstance;
-
-    expect(usersApi.getUser).toHaveBeenCalledWith('u1');
-    expect(usersApi.getUserPosts).toHaveBeenCalledWith('u1');
-
-    expect(cmp.user()?._id).toBe('u1');
-    expect(cmp.posts().length).toBe(2);
-    expect(cmp.loading()).toBe(false);
-    expect(cmp.error()).toBe('');
-  });
-
   it('should set error if loading user fails', () => {
     usersApi.getUser.mockReturnValue(throwError(() => ({ error: { message: 'User boom' } })));
     usersApi.getUserPosts.mockReturnValue(of({ posts: [] }));
@@ -211,14 +193,20 @@ describe('Profile', () => {
     expect(cmp.posts().map((p: any) => p._id)).toEqual(['p2']);
   });
 
-  it('should reload when route param changes', () => {
+  it('loads a profile and reloads it when the route changes', () => {
     usersApi.getUser.mockReturnValue(of({ _id: 'u1', fullName: 'Alice', followers: [] }));
-    usersApi.getUserPosts.mockReturnValue(of({ posts: [] }));
+    usersApi.getUserPosts.mockReturnValue(of({ posts: [{ _id: 'p1' }, { _id: 'p2' }] }));
 
     const fixture = TestBed.createComponent(Profile);
     fixture.detectChanges();
 
     expect(usersApi.getUser).toHaveBeenCalledWith('u1');
+    expect(usersApi.getUserPosts).toHaveBeenCalledWith('u1');
+    const cmp = fixture.componentInstance;
+    expect(cmp.user()?._id).toBe('u1');
+    expect(cmp.posts().length).toBe(2);
+    expect(cmp.loading()).toBe(false);
+    expect(cmp.error()).toBe('');
 
     usersApi.getUser.mockClear();
     usersApi.getUserPosts.mockClear();

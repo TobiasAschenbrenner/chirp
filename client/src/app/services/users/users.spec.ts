@@ -40,13 +40,6 @@ describe('Users service', () => {
   });
 
   describe('getUser (with cache)', () => {
-    it('should request user by id', () => {
-      service.getUser('u1').subscribe((u) => expect(u._id).toBe('u1'));
-
-      const req = httpMock.expectOne('/api/users/u1');
-      expect(req.request.method).toBe('GET');
-      req.flush(u1);
-    });
 
     it('should cache the observable and not issue a second HTTP request', () => {
       let a: User | undefined;
@@ -92,16 +85,6 @@ describe('Users service', () => {
     req.flush({ posts });
   });
 
-  it('should follow/unfollow a user', () => {
-    service.followUnfollow('u2').subscribe((u) => {
-      expect(u._id).toBe('u1');
-    });
-
-    const req = httpMock.expectOne('/api/users/u2/follow-unfollow');
-    expect(req.request.method).toBe('GET');
-    req.flush(u1);
-  });
-
   it('refreshes both profiles after following or unfollowing', () => {
     const otherUser: User = { ...u1, _id: 'u2', fullName: 'Alice' };
     service.getUser('u1').subscribe();
@@ -110,8 +93,10 @@ describe('Users service', () => {
     httpMock.expectOne('/api/users/u2').flush(otherUser);
 
     const followedUser = { ...otherUser, followers: ['u1'] };
-    service.followUnfollow('u2').subscribe();
-    httpMock.expectOne('/api/users/u2/follow-unfollow').flush(followedUser);
+    service.followUnfollow('u2').subscribe((user) => expect(user).toEqual(followedUser));
+    const followRequest = httpMock.expectOne('/api/users/u2/follow-unfollow');
+    expect(followRequest.request.method).toBe('GET');
+    followRequest.flush(followedUser);
 
     service.getUser('u2').subscribe((user) => expect(user.followers).toEqual(['u1']));
     httpMock.expectOne('/api/users/u2').flush(followedUser);
@@ -172,18 +157,6 @@ describe('Users service', () => {
     httpMock.expectOne('/api/users/u1').flush(updatedUser);
   });
 
-  it('should get bookmarks', () => {
-    service.getBookmarks().subscribe((res) => {
-      expect(res.bookmarks.length).toBe(2);
-      expect(res.bookmarks[0]._id).toBe('p1');
-    });
-
-    const req = httpMock.expectOne('/api/users/bookmarks');
-    expect(req.request.method).toBe('GET');
-
-    req.flush({ bookmarks: posts });
-  });
-
   describe('bookmark state', () => {
     it('loadBookmarks should update bookmarkIds signal and return Set', () => {
       let returned: Set<string> | undefined;
@@ -195,6 +168,7 @@ describe('Users service', () => {
       req.flush({ bookmarks: posts });
 
       expect(returned).toBeInstanceOf(Set);
+      expect(returned?.size).toBe(2);
       expect(returned?.has('p1')).toBe(true);
       expect(returned?.has('p2')).toBe(true);
 
@@ -203,29 +177,22 @@ describe('Users service', () => {
       expect(internal.has('p2')).toBe(true);
     });
 
-    it('isBookmarked should reflect bookmarkIds signal', () => {
-      expect(service.isBookmarked('p1')).toBe(false);
-
-      service.setBookmarked('p1', true);
-      expect(service.isBookmarked('p1')).toBe(true);
-
-      service.setBookmarked('p1', false);
-      expect(service.isBookmarked('p1')).toBe(false);
-    });
-
     it('setBookmarked should add/remove ids without mutating the previous Set', () => {
       const before = service.bookmarkIds();
+      expect(service.isBookmarked('p1')).toBe(false);
 
       service.setBookmarked('p1', true);
       const afterAdd = service.bookmarkIds();
 
       expect(before).not.toBe(afterAdd);
       expect(afterAdd.has('p1')).toBe(true);
+      expect(service.isBookmarked('p1')).toBe(true);
 
       service.setBookmarked('p1', false);
       const afterRemove = service.bookmarkIds();
 
       expect(afterRemove.has('p1')).toBe(false);
+      expect(service.isBookmarked('p1')).toBe(false);
     });
   });
 });

@@ -10,22 +10,16 @@ describe('ForYouOrFollowing', () => {
     }).compileComponents();
   });
 
-  it('should render two buttons', () => {
-    const fixture = TestBed.createComponent(ForYouOrFollowing);
-    fixture.detectChanges();
-
-    const buttons = fixture.debugElement.queryAll(By.css('button'));
-    expect(buttons.length).toBe(2);
-    expect(buttons[0].nativeElement.textContent).toContain('For you');
-    expect(buttons[1].nativeElement.textContent).toContain('Following');
-  });
-
   it('should mark "For you" active by default', () => {
     const fixture = TestBed.createComponent(ForYouOrFollowing);
     fixture.detectChanges();
 
-    const [forYouBtn, followingBtn] = fixture.debugElement.queryAll(By.css('button'));
+    const buttons = fixture.debugElement.queryAll(By.css('button'));
+    const [forYouBtn, followingBtn] = buttons;
 
+    expect(buttons.length).toBe(2);
+    expect(forYouBtn.nativeElement.textContent).toContain('For you');
+    expect(followingBtn.nativeElement.textContent).toContain('Following');
     expect(forYouBtn.nativeElement.classList.contains('active')).toBe(true);
     expect(followingBtn.nativeElement.classList.contains('active')).toBe(false);
     expect(forYouBtn.nativeElement.getAttribute('aria-pressed')).toBe('true');

@@ -38,7 +38,7 @@ describe('Bookmarks', () => {
     component = fixture.componentInstance;
   });
 
-  it('should load bookmarks on init', () => {
+  it('loads bookmarks and exposes their saved post ids', () => {
     usersApi.getBookmarks.mockReturnValue(of({ bookmarks: mockPosts }));
 
     fixture.detectChanges();
@@ -46,6 +46,7 @@ describe('Bookmarks', () => {
     expect(usersApi.getBookmarks).toHaveBeenCalled();
     expect(component.bookmarks()).toEqual(mockPosts);
     expect(component.loading()).toBe(false);
+    expect(component.bookmarkedIds()).toEqual(new Set(['p1', 'p2']));
   });
 
   it('should set error when loading bookmarks fails', () => {
@@ -56,16 +57,6 @@ describe('Bookmarks', () => {
     expect(component.error()).toBe('Couldn’t load bookmarks.');
     expect(component.loading()).toBe(false);
     expect(component.isEmpty()).toBe(false);
-  });
-
-  it('should compute bookmarkedIds correctly', () => {
-    usersApi.getBookmarks.mockReturnValue(of({ bookmarks: mockPosts }));
-
-    fixture.detectChanges();
-
-    const ids = component.bookmarkedIds();
-    expect(ids.has('p1')).toBe(true);
-    expect(ids.has('p2')).toBe(true);
   });
 
   it('should update a post when onPostUpdated is called', () => {

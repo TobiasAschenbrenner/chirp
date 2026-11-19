@@ -61,19 +61,5 @@ describe('Comments service', () => {
 
       expect(result).toEqual(mockResponse);
     });
-
-    it('should DELETE /api/comments/:commentId and handle empty response body', () => {
-      const commentId = 'c999';
-
-      let result: any;
-      service.deleteComment(commentId).subscribe((res) => (result = res));
-
-      const req = httpMock.expectOne(`/api/comments/${commentId}`);
-      expect(req.request.method).toBe('DELETE');
-
-      req.flush({});
-
-      expect(result).toEqual({});
-    });
   });
 });

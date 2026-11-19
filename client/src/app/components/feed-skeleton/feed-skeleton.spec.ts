@@ -18,26 +18,16 @@ describe('FeedSkeleton', () => {
     component = fixture.componentInstance;
   });
 
-  it('should render default count (3)', () => {
-    fixture.componentRef.setInput('count', 3);
-    fixture.detectChanges();
-    expect(countArticles()).toBe(3);
-  });
-
-  it('should render the provided count (5)', () => {
-    fixture.componentRef.setInput('count', 5);
-    fixture.detectChanges();
-    expect(countArticles()).toBe(5);
-  });
-
-  it('should update items when count changes', () => {
+  it('renders the requested number of cards and updates them when count changes', () => {
     fixture.componentRef.setInput('count', 3);
     fixture.detectChanges();
     expect(component.items).toEqual([0, 1, 2]);
+    expect(countArticles()).toBe(3);
 
-    fixture.componentRef.setInput('count', 1);
+    fixture.componentRef.setInput('count', 5);
     fixture.detectChanges();
-    expect(component.items).toEqual([0]);
+    expect(component.items).toEqual([0, 1, 2, 3, 4]);
+    expect(countArticles()).toBe(5);
   });
 
   it('should handle count = 0', () => {

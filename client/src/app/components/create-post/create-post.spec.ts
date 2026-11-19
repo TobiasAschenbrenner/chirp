@@ -77,14 +77,6 @@ describe('CreatePost', () => {
     expect(submitBtn.disabled).toBe(true);
   });
 
-  it('ngOnInit: should call usersApi.getUser when auth.getUserId returns id', () => {
-    auth.getUserId.mockReturnValue('u1');
-    fixture.detectChanges();
-
-    expect(usersApi.getUser).toHaveBeenCalledTimes(1);
-    expect(usersApi.getUser).toHaveBeenCalledWith('u1');
-  });
-
   it('ngOnInit: should not call usersApi.getUser when auth.getUserId returns null', () => {
     auth.getUserId.mockReturnValue(null);
     fixture.detectChanges();
@@ -92,7 +84,7 @@ describe('CreatePost', () => {
     expect(usersApi.getUser).not.toHaveBeenCalled();
   });
 
-  it('should render profile image when loaded user has profilePhoto', () => {
+  it('loads the current user and renders their profile image', () => {
     auth.getUserId.mockReturnValue('u1');
     usersApi.getUser.mockReturnValue(
       of({
@@ -104,6 +96,8 @@ describe('CreatePost', () => {
 
     fixture.detectChanges();
 
+    expect(usersApi.getUser).toHaveBeenCalledTimes(1);
+    expect(usersApi.getUser).toHaveBeenCalledWith('u1');
     const img: HTMLImageElement | null =
       fixture.nativeElement.querySelector('app-profile-image img');
     expect(img).toBeTruthy();

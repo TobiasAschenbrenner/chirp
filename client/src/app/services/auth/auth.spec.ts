@@ -47,6 +47,10 @@ describe('Auth service', () => {
   });
 
   it('login(): should POST /api/users/login and store token + user id', () => {
+    expect(service.isLoggedIn()).toBe(false);
+    expect(service.getToken()).toBeNull();
+    expect(service.getUserId()).toBeNull();
+
     const payload: LoginPayload = { email: 'tobi@test.com', password: 'pw' };
 
     let received: LoginResponse | undefined;
@@ -62,6 +66,9 @@ describe('Auth service', () => {
 
     expect(localStorage.getItem(TOKEN_KEY)).toBe('t123');
     expect(localStorage.getItem(USER_ID_KEY)).toBe('u123');
+    expect(service.isLoggedIn()).toBe(true);
+    expect(service.getToken()).toBe('t123');
+    expect(service.getUserId()).toBe('u123');
 
     expect(req.request.withCredentials).toBe(true);
   });
@@ -84,27 +91,6 @@ describe('Auth service', () => {
       status: 204,
       statusText: 'No Content',
     });
-  });
-
-  it('isLoggedIn(): should be true when token exists', () => {
-    expect(service.isLoggedIn()).toBe(false);
-
-    localStorage.setItem(TOKEN_KEY, 't123');
-    expect(service.isLoggedIn()).toBe(true);
-  });
-
-  it('getToken(): should read token from localStorage', () => {
-    expect(service.getToken()).toBeNull();
-
-    localStorage.setItem(TOKEN_KEY, 't123');
-    expect(service.getToken()).toBe('t123');
-  });
-
-  it('getUserId(): should read user id from localStorage', () => {
-    expect(service.getUserId()).toBeNull();
-
-    localStorage.setItem(USER_ID_KEY, 'u123');
-    expect(service.getUserId()).toBe('u123');
   });
 
   it('register(): should POST /api/users/register with payload', () => {

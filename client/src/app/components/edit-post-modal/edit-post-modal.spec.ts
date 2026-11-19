@@ -184,22 +184,6 @@ describe('EditPostModal', () => {
     expect(closedSpy).toHaveBeenCalledTimes(0);
   });
 
-  it('close should NOT emit closed when click target is not the backdrop', () => {
-    const fixture = createFixture();
-
-    const closedSpy = vi.fn();
-    fixture.componentInstance.closed.subscribe(closedSpy);
-
-    const el = document.createElement('div');
-
-    fixture.componentInstance.close({
-      target: el,
-      currentTarget: document.createElement('form'),
-    } as unknown as MouseEvent);
-
-    expect(closedSpy).not.toHaveBeenCalled();
-  });
-
   it('submit should not update posts longer than 500 characters', () => {
     const fixture = createFixture();
 
