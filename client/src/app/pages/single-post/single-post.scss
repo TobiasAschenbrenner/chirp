@@ -10,6 +10,11 @@
   margin-bottom: 0.75rem;
 }
 
+.singlePost__actionError {
+  color: var(--color-gray-900);
+  line-height: 1.5;
+}
+
 .singlePost__author {
   display: flex;
   gap: 1rem;

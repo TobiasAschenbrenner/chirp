@@ -107,7 +107,7 @@ describe('Navbar', () => {
     expect(component.searching()).toBe(false);
   });
 
-  it('should handle search errors by returning empty results and not crashing', () => {
+  it('distinguishes failed searches from empty results and retries the same query', () => {
     (users.searchUsers as any).mockReturnValueOnce(throwError(() => new Error('boom')));
 
     fixture.detectChanges();
@@ -118,6 +118,14 @@ describe('Navbar', () => {
 
     expect(component.results()).toEqual([]);
     expect(component.searching()).toBe(false);
+    expect(component.searchError()).toBe('Couldn’t search.');
+    expect(component.showEmptyState).toBe(false);
+
+    component.retrySearch();
+    vi.advanceTimersByTime(250);
+    expect(users.searchUsers).toHaveBeenCalledTimes(2);
+    expect(component.searchError()).toBe('');
+    expect(component.showEmptyState).toBe(true);
   });
 
   it('keeps dismissed results closed when a debounced search finishes', () => {

@@ -18,6 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
 class UserProfileStub {
   @Input({ required: true }) user: any;
   @Input() busy = false;
+  @Input() actionError = '';
   @Output() editProfile = new EventEmitter<void>();
   @Output() followToggle = new EventEmitter<void>();
   @Output() avatarChange = new EventEmitter<File>();
@@ -118,7 +119,7 @@ describe('Profile', () => {
 
     const cmp = fixture.componentInstance;
 
-    expect(cmp.error()).toBe('User boom');
+    expect(cmp.error()).toBe('Couldn’t load profile.');
     expect(cmp.loading()).toBe(false);
   });
 
@@ -131,8 +132,16 @@ describe('Profile', () => {
 
     const cmp = fixture.componentInstance;
 
-    expect(cmp.error()).toBe('Posts boom');
+    expect(cmp.error()).toBe('Couldn’t load posts.');
     expect(cmp.loading()).toBe(false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('No posts by this user');
+
+    usersApi.getUserPosts.mockReturnValue(of({ posts: [] }));
+    cmp.retryProfile();
+    fixture.detectChanges();
+    expect(cmp.error()).toBe('');
+    expect(fixture.nativeElement.textContent).toContain('No posts by this user');
   });
 
   it('should follow/unfollow and update followers list', () => {
@@ -222,5 +231,39 @@ describe('Profile', () => {
 
     expect(usersApi.getUser).toHaveBeenCalledWith('u2');
     expect(usersApi.getUserPosts).toHaveBeenCalledWith('u2');
+  });
+
+  it('ignores an old profile response after navigating to another user', () => {
+    const oldUser = new Subject<any>();
+    usersApi.getUser.mockReturnValueOnce(oldUser);
+    usersApi.getUserPosts.mockReturnValue(of({ posts: [] }));
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+
+    usersApi.getUser.mockReturnValue(of({ _id: 'u2', fullName: 'Bob' }));
+    paramMap$.next(convertToParamMap({ id: 'u2' }));
+    oldUser.next({ _id: 'u1', fullName: 'Alice' });
+    oldUser.complete();
+
+    expect(fixture.componentInstance.user()?.fullName).toBe('Bob');
+    expect(fixture.componentInstance.loading()).toBe(false);
+  });
+
+  it('does not apply a pending follow response to the next profile', () => {
+    auth.getUserId.mockReturnValue('me');
+    usersApi.getUser.mockReturnValue(of({ _id: 'u1', fullName: 'Alice', followers: [] }));
+    usersApi.getUserPosts.mockReturnValue(of({ posts: [] }));
+    const follow = new Subject<any>();
+    usersApi.followUnfollow.mockReturnValue(follow);
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    fixture.componentInstance.toggleFollow();
+
+    usersApi.getUser.mockReturnValue(of({ _id: 'u2', fullName: 'Bob', followers: [] }));
+    paramMap$.next(convertToParamMap({ id: 'u2' }));
+    follow.next({});
+
+    expect(fixture.componentInstance.user()?.followers).toEqual([]);
+    expect(fixture.componentInstance.busy()).toBe(false);
   });
 });

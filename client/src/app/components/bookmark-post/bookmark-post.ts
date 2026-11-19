@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { finalize } from 'rxjs';
 
 import { Posts } from '../../services/posts/posts';
 import { Users } from '../../services/users/users';
@@ -23,6 +24,7 @@ export class BookmarkPost {
   }
 
   @Output() changed = new EventEmitter<{ postId: string; bookmarked: boolean }>();
+  @Output() actionError = new EventEmitter<string>();
 
   constructor(private postsApi: Posts, private usersApi: Users) {}
 
@@ -30,17 +32,16 @@ export class BookmarkPost {
     if (!this.postId || this.busy()) return;
 
     this.busy.set(true);
+    this.actionError.emit('');
 
-    this.postsApi.toggleBookmark(this.postId).subscribe({
+    this.postsApi.toggleBookmark(this.postId).pipe(
+      finalize(() => this.busy.set(false)),
+    ).subscribe({
       next: (res) => {
         const isOn = res.bookmarks.includes(this.postId);
         this.setBookmarkedState(isOn, { emit: true });
-        this.busy.set(false);
       },
-      error: (err) => {
-        console.error(err);
-        this.busy.set(false);
-      },
+      error: () => this.actionError.emit('Couldn’t update bookmark.'),
     });
   }
 

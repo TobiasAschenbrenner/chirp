@@ -45,21 +45,6 @@ describe('Feeds', () => {
       .overrideComponent(Feeds, {
         set: {
           imports: [CommonModule, FeedStub],
-
-          template: `
-          <div class="feeds">
-            <p *ngIf="posts.length === 0" class="center">No posts found</p>
-
-            <app-feed
-              *ngFor="let post of posts"
-              [post]="post"
-              [bookmarked]="usersApi.isBookmarked(post._id)"
-              (postUpdated)="postUpdated.emit($event)"
-              (postDeleted)="postDeleted.emit($event)"
-              (bookmarkChanged)="bookmarkChanged.emit($event)"
-            ></app-feed>
-          </div>
-        `,
         },
       })
       .compileComponents();
@@ -88,19 +73,19 @@ describe('Feeds', () => {
     expect(items[1].componentInstance.post._id).toBe('p2');
   });
 
-  it('should pass bookmarked input based on usersApi.isBookmarked', () => {
+  it('uses loaded bookmark ids as well as shared bookmark state', () => {
     const fixture = TestBed.createComponent(Feeds);
     fixture.componentInstance.posts = [makePost('p1'), makePost('p2')];
+    fixture.componentInstance.bookmarkedIds = new Set(['p1']);
 
     usersApi.isBookmarked.mockImplementation((id: string) => id === 'p2');
 
     fixture.detectChanges();
 
     const items = fixture.debugElement.queryAll(By.directive(FeedStub));
-    expect(items[0].componentInstance.bookmarked).toBe(false);
+    expect(items[0].componentInstance.bookmarked).toBe(true);
     expect(items[1].componentInstance.bookmarked).toBe(true);
 
-    expect(usersApi.isBookmarked).toHaveBeenCalledWith('p1');
     expect(usersApi.isBookmarked).toHaveBeenCalledWith('p2');
   });
 

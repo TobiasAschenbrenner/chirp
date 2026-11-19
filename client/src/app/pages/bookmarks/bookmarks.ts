@@ -43,10 +43,7 @@ export class Bookmarks implements OnInit {
         next: (res) => {
           this.bookmarks.set(res.bookmarks || []);
         },
-        error: (err) => {
-          console.log(err);
-          this.error.set(err?.error?.message || 'Failed to load bookmarks.');
-        },
+        error: () => this.error.set('Couldn’t load bookmarks.'),
       });
   }
 
@@ -64,6 +61,6 @@ export class Bookmarks implements OnInit {
     }
   }
 
-  readonly isEmpty = computed(() => !this.loading() && this.bookmarks().length === 0);
+  readonly isEmpty = computed(() => !this.loading() && !this.error() && this.bookmarks().length === 0);
   readonly hasBookmarks = computed(() => this.bookmarks().length > 0);
 }

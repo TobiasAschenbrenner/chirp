@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, distinctUntilChanged, map, of, switchMap, tap, timer } from 'rxjs';
+import { catchError, distinctUntilChanged, map, merge, of, Subject, switchMap, tap, timer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { Auth } from '../../services/auth/auth';
@@ -24,6 +24,7 @@ import { ApiError } from '../../models/api-error.model';
 export class Navbar implements OnInit {
   private readonly minQueryLength = 2;
   private readonly injector = inject(Injector);
+  private readonly searchRetries = new Subject<void>();
 
   @ViewChild('userSearch') private searchInput?: ElementRef<HTMLInputElement>;
   @ViewChild('mobileSearchToggle') private mobileSearchToggle?: ElementRef<HTMLButtonElement>;
@@ -32,6 +33,7 @@ export class Navbar implements OnInit {
 
   results = signal<User[]>([]);
   searching = signal(false);
+  searchError = signal('');
   open = signal(false);
   mobileSearchOpen = signal(false);
   user = signal<User | null>(null);
@@ -79,6 +81,7 @@ export class Navbar implements OnInit {
   get showEmptyState(): boolean {
     return (
       !this.searching() &&
+      !this.searchError() &&
       this.results().length === 0 &&
       this.search.value.trim().length >= this.minQueryLength
     );
@@ -87,6 +90,7 @@ export class Navbar implements OnInit {
   get searchStatus(): string {
     if (!this.open()) return '';
     if (this.searching()) return 'Searching…';
+    if (this.searchError()) return '';
 
     const count = this.results().length;
     if (count > 0) return `${count} ${count === 1 ? 'user' : 'users'} found.`;
@@ -99,12 +103,21 @@ export class Navbar implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  retrySearch(): void {
+    if (this.searching()) return;
+    this.searchInput?.nativeElement.focus();
+    this.searchRetries.next();
+  }
+
   private setupSearch(): void {
-    this.search.valueChanges
+    merge(
+      this.search.valueChanges.pipe(map((query) => query.trim()), distinctUntilChanged()),
+      this.searchRetries.pipe(map(() => this.search.value.trim())),
+    )
       .pipe(
-        map((query) => query.trim()),
-        distinctUntilChanged(),
         tap((q) => {
+          this.searchError.set('');
+          this.results.set([]);
           if (q.length < this.minQueryLength) {
             this.resetSearchUi();
           } else {
@@ -115,9 +128,9 @@ export class Navbar implements OnInit {
         switchMap((q) =>
           q.length < this.minQueryLength ? of(null) : timer(250).pipe(
             switchMap(() => this.usersApi.searchUsers(q, 8, 1)),
-            catchError((err: ApiError) => {
-              console.log(err);
-              return of({ users: [], total: 0, page: 1, limit: 8 });
+            catchError(() => {
+              this.searchError.set('Couldn’t search.');
+              return of(null);
             }),
           ),
         ),
@@ -145,6 +158,7 @@ export class Navbar implements OnInit {
   private resetSearchUi(): void {
     this.results.set([]);
     this.searching.set(false);
+    this.searchError.set('');
     this.open.set(false);
   }
 }

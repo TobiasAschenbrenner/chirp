@@ -73,6 +73,8 @@
       </button>
     </div>
 
+    <p *ngIf="actionError" class="profile__error" role="alert">{{ actionError }}</p>
+
     <article class="profile__bio" *ngIf="user.bio">
       <p>{{ user.bio }}</p>
     </article>

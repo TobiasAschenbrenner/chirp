@@ -147,6 +147,10 @@ describe('UserProfile', () => {
     fixture.componentInstance.submitAvatar();
 
     expect(spy).toHaveBeenCalledWith(file);
+    expect(fixture.componentInstance.avatarTouched()).toBe(true);
+    expect(fixture.componentInstance.pendingAvatar()).toBe(file);
+
+    fixture.componentInstance.resetAvatar();
     expect(fixture.componentInstance.avatarTouched()).toBe(false);
     expect(fixture.componentInstance.pendingAvatar()).toBe(null);
   });

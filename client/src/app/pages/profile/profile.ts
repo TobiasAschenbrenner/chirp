@@ -1,8 +1,9 @@
-import { Component, DestroyRef, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, finalize, forkJoin, of, Subscription } from 'rxjs';
 
 import { Auth } from '../../services/auth/auth';
 import { Users } from '../../services/users/users';
@@ -13,7 +14,6 @@ import { FeedSkeleton } from '../../components/feed-skeleton/feed-skeleton';
 import { UserProfile } from '../../components/user-profile/user-profile';
 import { EditProfileDialog } from '../../components/edit-profile-dialog/edit-profile-dialog';
 
-import { ApiError } from '../../models/api-error.model';
 import { ApiUser } from '../../models/api-user.model';
 import { User } from '../../models/user.model';
 import { normalizeUser } from '../../utils/normalize-user';
@@ -31,6 +31,12 @@ export class Profile implements OnInit {
   loading = signal(true);
   error = signal('');
   busy = signal(false);
+  actionError = signal('');
+
+  @ViewChild(UserProfile) private profileCard?: UserProfile;
+  private profileId = '';
+  private profileRequest?: Subscription;
+  private actionRequest?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,6 +51,8 @@ export class Profile implements OnInit {
       const profileId = params.get('id');
       if (!profileId) return;
 
+      this.profileId = profileId;
+      this.actionRequest?.unsubscribe();
       this.resetState();
       this.loadProfile(profileId);
     });
@@ -58,23 +66,31 @@ export class Profile implements OnInit {
     if (!myId) return;
 
     this.busy.set(true);
+    this.actionError.set('');
 
-    this.usersApi.followUnfollow(profileId).subscribe({
-      next: () => {
-        this.applyFollowToggle(myId);
-        this.busy.set(false);
-      },
-      error: (err: ApiError) => {
-        console.log(err);
-        this.busy.set(false);
-      },
+    this.actionRequest = this.usersApi.followUnfollow(profileId).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.busy.set(false)),
+    ).subscribe({
+      next: () => this.applyFollowToggle(myId),
+      error: () => this.actionError.set('Couldn’t update follow.'),
     });
   }
 
   changeAvatar(file: File): void {
-    this.usersApi.changeAvatar(file).subscribe({
-      next: (updated: ApiUser) => this.user.set(normalizeUser(updated)),
-      error: (err: ApiError) => console.log(err),
+    if (this.busy()) return;
+    this.busy.set(true);
+    this.actionError.set('');
+
+    this.actionRequest = this.usersApi.changeAvatar(file).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.busy.set(false)),
+    ).subscribe({
+      next: (updated: ApiUser) => {
+        this.user.set(normalizeUser(updated));
+        this.profileCard?.resetAvatar();
+      },
+      error: () => this.actionError.set('Couldn’t update photo.'),
     });
   }
 
@@ -105,43 +121,30 @@ export class Profile implements OnInit {
     this.posts.update((list) => list.filter((p) => p._id !== postId));
   }
 
-  private loadProfile(id: string): void {
-    let userDone = false;
-    let postsDone = false;
+  retryProfile(): void {
+    if (this.profileId && !this.loading()) this.loadProfile(this.profileId);
+  }
 
+  private loadProfile(id: string): void {
+    this.profileRequest?.unsubscribe();
     this.loading.set(true);
     this.error.set('');
 
-    const finishLoadingIfDone = () => {
-      if (userDone && postsDone) this.loading.set(false);
-    };
-
-    this.usersApi.getUser(id).subscribe({
-      next: (u: ApiUser) => {
-        this.user.set(normalizeUser(u));
-        userDone = true;
-        finishLoadingIfDone();
-      },
-      error: (err: ApiError) => {
-        console.log(err);
-        this.error.set(err.error?.message || 'Failed to load user.');
-        userDone = true;
-        finishLoadingIfDone();
-      },
-    });
-
-    this.usersApi.getUserPosts(id).subscribe({
-      next: (res) => {
-        this.posts.set(res.posts || []);
-        postsDone = true;
-        finishLoadingIfDone();
-      },
-      error: (err: ApiError) => {
-        console.log(err);
-        this.error.set(err.error?.message || 'Failed to load posts.');
-        postsDone = true;
-        finishLoadingIfDone();
-      },
+    this.profileRequest = forkJoin({
+      user: this.usersApi.getUser(id).pipe(catchError(() => {
+        this.error.set('Couldn’t load profile.');
+        return of(null);
+      })),
+      posts: this.usersApi.getUserPosts(id).pipe(catchError(() => {
+        this.error.set('Couldn’t load posts.');
+        return of(null);
+      })),
+    }).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.loading.set(false)),
+    ).subscribe(({ user, posts }) => {
+      this.user.set(user ? normalizeUser(user) : null);
+      this.posts.set(posts?.posts ?? []);
     });
   }
 
@@ -150,6 +153,7 @@ export class Profile implements OnInit {
     this.posts.set([]);
     this.loading.set(true);
     this.error.set('');
+    this.actionError.set('');
   }
 
   private getMyUserId(): string | null {

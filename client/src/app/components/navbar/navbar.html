@@ -16,7 +16,7 @@
     <button
       #mobileSearchToggle
       type="button"
-      class="navbar__searchToggle"
+      class="navbar__searchControl navbar__searchToggle"
       aria-label="Open search"
       aria-controls="user-search-form"
       [attr.aria-expanded]="mobileSearchOpen()"
@@ -28,7 +28,7 @@
     <div class="navbar__searchWrap">
       <button
         type="button"
-        class="navbar__searchBack"
+        class="navbar__searchControl navbar__searchBack"
         aria-label="Close search"
         (click)="dismissSearch()"
       >
@@ -74,6 +74,10 @@
         </button>
 
         <div class="navbar__searchEmpty" *ngIf="showEmptyState">No users found</div>
+        <div class="navbar__searchEmpty navbar__searchError" *ngIf="searchError()" role="alert">
+          <span>{{ searchError() }}</span>
+          <button type="button" class="linkish" (click)="retrySearch()" (keydown.escape)="dismissSearch()">Try again</button>
+        </div>
       </div>
     </div>
 
