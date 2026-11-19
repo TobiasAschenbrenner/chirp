@@ -20,12 +20,23 @@
 }
 
 .navbar__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 2rem;
   font-weight: 300;
   letter-spacing: 0.5px;
   text-decoration: none;
   color: var(--color-gray-900);
   white-space: nowrap;
+}
+
+.navbar__logoIcon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  background: var(--color-primary);
+  mask: url('/chirp-bird.svg') center / contain no-repeat;
 }
 
 .navbar__searchWrap {
@@ -188,6 +199,16 @@
 @media (max-width: 599px) {
   .container.navbar__container {
     padding: 0.5rem 1rem;
+  }
+
+  .navbar__logo {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  .navbar__logoText {
+    display: none;
   }
 
   .navbar__searchToggle {

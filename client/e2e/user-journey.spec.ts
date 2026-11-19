@@ -36,15 +36,19 @@ test('registers, edits posts with accessible controls, and keeps profile changes
 
   const search = page.getByRole('searchbox', { name: 'Search users', exact: true });
   const originalViewport = page.viewportSize()!;
+  const logo = page.getByRole('link', { name: 'CHIRP', exact: true });
   const openSearch = page.getByRole('button', { name: 'Open search', exact: true });
   const closeSearch = page.getByRole('button', { name: 'Close search', exact: true });
 
   for (const width of [390, 320]) {
     await page.setViewportSize({ width, height: 844 });
+    await expect(logo).toBeVisible();
+    await expect(logo.locator('.navbar__logoIcon')).toBeVisible();
+    await expect(logo.locator('.navbar__logoText')).toBeHidden();
     await expect(search).toBeHidden();
     await openSearch.press('Enter');
     await expect(search).toBeFocused();
-    await expect(page.getByRole('link', { name: 'CHIRP', exact: true })).toBeHidden();
+    await expect(logo).toBeHidden();
     await expect(page.getByRole('link', { name: 'Profile', exact: true })).toBeHidden();
     await expect(page.getByRole('button', { name: 'Logout', exact: true })).toBeHidden();
     expect(await page.locator('.navbar__searchWrap').evaluate(e => e.clientWidth))
@@ -69,8 +73,11 @@ test('registers, edits posts with accessible controls, and keeps profile changes
     .toBeVisible();
   await expect(search).toBeHidden();
   await expect(openSearch).toBeVisible();
-  await page.getByRole('link', { name: 'Forest', exact: true }).click();
+  await logo.click();
+  await expect(page).toHaveURL(/\/home$/);
   await page.setViewportSize(originalViewport);
+  await expect(logo.locator('.navbar__logoIcon')).toBeVisible();
+  await expect(logo.locator('.navbar__logoText')).toBeVisible();
   await expect(search).toBeVisible();
   await expect(openSearch).toBeHidden();
 

@@ -8,7 +8,10 @@
   ></button>
 
   <div class="container navbar__container">
-    <a routerLink="/home" class="navbar__logo">CHIRP</a>
+    <a routerLink="/home" class="navbar__logo" aria-label="CHIRP">
+      <span class="navbar__logoIcon" aria-hidden="true"></span>
+      <span class="navbar__logoText" aria-hidden="true">CHIRP</span>
+    </a>
 
     <button
       #mobileSearchToggle
