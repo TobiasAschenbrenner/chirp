@@ -38,17 +38,23 @@ export class Users {
   }
 
   followUnfollow(userId: string) {
-    return this.http.get<User>(`${this.baseUrl}/users/${userId}/follow-unfollow`);
+    return this.http
+      .get<User>(`${this.baseUrl}/users/${userId}/follow-unfollow`)
+      .pipe(tap(() => this.cache.clear()));
   }
 
   changeAvatar(file: File) {
     const fd = new FormData();
     fd.set('avatar', file);
-    return this.http.post<User>(`${this.baseUrl}/users/avatar`, fd);
+    return this.http
+      .post<User>(`${this.baseUrl}/users/avatar`, fd)
+      .pipe(tap(() => this.cache.clear()));
   }
 
   updateProfile(data: { fullName: string; bio: string }) {
-    return this.http.patch<User>(`${this.baseUrl}/users/edit`, data);
+    return this.http
+      .patch<User>(`${this.baseUrl}/users/edit`, data)
+      .pipe(tap(() => this.cache.clear()));
   }
 
   getBookmarks() {

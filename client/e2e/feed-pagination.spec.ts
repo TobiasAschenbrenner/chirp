@@ -16,7 +16,7 @@ async function createUser(request: APIRequestContext, name: string) {
   return { email, id, headers: { Authorization: `Bearer ${token}` } };
 }
 
-test('pages both feeds without gaps and can retry a failed next page', async ({ page, request }) => {
+test('pages both feeds, retries failures, and keeps follow state after navigation', async ({ page, request }) => {
   const author = await createUser(request, 'Pagination Author');
   const reader = await createUser(request, 'Pagination Reader');
   const authorBodies = Array.from({ length: 21 }, (_, index) => `Pagination post ${index + 1}`);
@@ -92,4 +92,26 @@ test('pages both feeds without gaps and can retry a failed next page', async ({ 
   for (const body of [...authorBodies, newAuthorBody]) {
     await expect(posts.getByText(body, { exact: true })).toHaveCount(1);
   }
+
+  const authorLink = posts.filter({ hasText: newAuthorBody })
+    .getByRole('link', { name: 'Open profile', exact: true });
+  await authorLink.click();
+  await page.getByRole('button', { name: 'Unfollow', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Follow', exact: true })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Nest', exact: true }).click();
+  const followingCount = page.locator('.profile__follows li').filter({ hasText: 'Following' })
+    .getByRole('heading');
+  await expect(followingCount).toHaveText('0');
+
+  await page.getByRole('link', { name: 'Forest', exact: true }).click();
+  await authorLink.click();
+  await page.getByRole('button', { name: 'Follow', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Unfollow', exact: true })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Forest', exact: true }).click();
+  await authorLink.click();
+  await expect(page.getByRole('button', { name: 'Unfollow', exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Nest', exact: true }).click();
+  await expect(followingCount).toHaveText('1');
 });

@@ -102,8 +102,36 @@ describe('Users service', () => {
     req.flush(u1);
   });
 
+  it('refreshes both profiles after following or unfollowing', () => {
+    const otherUser: User = { ...u1, _id: 'u2', fullName: 'Alice' };
+    service.getUser('u1').subscribe();
+    httpMock.expectOne('/api/users/u1').flush(u1);
+    service.getUser('u2').subscribe();
+    httpMock.expectOne('/api/users/u2').flush(otherUser);
+
+    const followedUser = { ...otherUser, followers: ['u1'] };
+    service.followUnfollow('u2').subscribe();
+    httpMock.expectOne('/api/users/u2/follow-unfollow').flush(followedUser);
+
+    service.getUser('u2').subscribe((user) => expect(user.followers).toEqual(['u1']));
+    httpMock.expectOne('/api/users/u2').flush(followedUser);
+    service.getUser('u1').subscribe((user) => expect(user.following).toEqual(['u2']));
+    httpMock.expectOne('/api/users/u1').flush({ ...u1, following: ['u2'] });
+
+    service.followUnfollow('u2').subscribe();
+    httpMock.expectOne('/api/users/u2/follow-unfollow').flush(otherUser);
+
+    service.getUser('u2').subscribe((user) => expect(user.followers).toEqual([]));
+    httpMock.expectOne('/api/users/u2').flush(otherUser);
+    service.getUser('u1').subscribe((user) => expect(user.following).toEqual([]));
+    httpMock.expectOne('/api/users/u1').flush(u1);
+  });
+
   it('should change avatar via FormData', () => {
     const file = new File(['x'], 'avatar.png', { type: 'image/png' });
+    const updatedUser = { ...u1, profilePhoto: 'new-avatar.png' };
+    service.getUser('u1').subscribe();
+    httpMock.expectOne('/api/users/u1').flush(u1);
 
     service.changeAvatar(file).subscribe((u) => {
       expect(u._id).toBe('u1');
@@ -116,10 +144,17 @@ describe('Users service', () => {
     expect(body instanceof FormData).toBe(true);
     expect(body.get('avatar')).toBe(file);
 
-    req.flush(u1);
+    req.flush(updatedUser);
+
+    service.getUser('u1').subscribe((user) => expect(user.profilePhoto).toBe('new-avatar.png'));
+    httpMock.expectOne('/api/users/u1').flush(updatedUser);
   });
 
   it('should update profile via PATCH', () => {
+    const updatedUser = { ...u1, fullName: 'New Name', bio: 'New bio' };
+    service.getUser('u1').subscribe();
+    httpMock.expectOne('/api/users/u1').flush(u1);
+
     service.updateProfile({ fullName: 'New Name', bio: 'New bio' }).subscribe((u) => {
       expect(u._id).toBe('u1');
     });
@@ -128,7 +163,13 @@ describe('Users service', () => {
     expect(req.request.method).toBe('PATCH');
     expect(req.request.body).toEqual({ fullName: 'New Name', bio: 'New bio' });
 
-    req.flush(u1);
+    req.flush(updatedUser);
+
+    service.getUser('u1').subscribe((user) => {
+      expect(user.fullName).toBe('New Name');
+      expect(user.bio).toBe('New bio');
+    });
+    httpMock.expectOne('/api/users/u1').flush(updatedUser);
   });
 
   it('should get bookmarks', () => {

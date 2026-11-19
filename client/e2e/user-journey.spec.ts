@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test('registers, logs in, and creates and edits a post with accessible controls', async ({ page }) => {
+test('registers, edits posts with accessible controls, and keeps profile changes after navigation', async ({ page }) => {
   const user = {
     fullName: 'E2E Test User',
     email: 'e2e.user@example.com',
@@ -88,6 +88,22 @@ test('registers, logs in, and creates and edits a post with accessible controls'
   await expect(page.getByRole('heading', { name: 'Bookmarks', exact: true })).toBeVisible();
   await page.getByRole('link', { name: 'Forest', exact: true }).click();
   await expect(page.getByText(updatedBody, { exact: true })).toBeVisible();
+
+  await page.getByRole('link', { name: 'Nest', exact: true }).click();
+  await page.getByRole('button', { name: 'Edit profile', exact: true }).click();
+  const profileDialog = page.getByRole('dialog');
+  const updatedName = 'E2E Test User Updated';
+  const bio = 'A quiet place to share thoughts.';
+  await profileDialog.getByLabel('Full name', { exact: true }).fill(updatedName);
+  await profileDialog.getByLabel('Bio', { exact: true }).fill(bio);
+  await profileDialog.getByRole('button', { name: 'Update', exact: true }).click();
+  await expect(profileDialog).toBeHidden();
+
+  await page.getByRole('link', { name: 'Forest', exact: true }).click();
+  await page.getByRole('link', { name: 'Nest', exact: true }).click();
+  await expect(page.getByRole('heading', { name: `${updatedName}’s posts`, exact: true }))
+    .toBeVisible();
+  await expect(page.getByText(bio, { exact: true })).toBeVisible();
 });
 
 test('keeps a failed post and its image until a retry succeeds', async ({ page, request }) => {
