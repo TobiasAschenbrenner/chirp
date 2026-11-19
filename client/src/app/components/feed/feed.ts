@@ -4,6 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 
 import { Posts as PostsApi } from '../../services/posts/posts';
 import { Post } from '../../models/post.model';
@@ -56,6 +57,7 @@ export class Feed implements OnInit {
   editModalOpen = signal(false);
 
   busy = signal(false);
+  actionError = signal('');
 
   constructor(
     private usersApi: Users,
@@ -115,6 +117,7 @@ export class Feed implements OnInit {
   }
 
   onModalUpdated(updated: Post): void {
+    this.actionError.set('');
     this.postUpdated.emit(updated);
     this.editModalOpen.set(false);
   }
@@ -126,37 +129,35 @@ export class Feed implements OnInit {
 
   saveEdit(): void {
     const body = this.editBody().trim();
-    if (!body || !this.post?._id) return;
+    if (!body || !this.post?._id || this.busy()) return;
 
     this.busy.set(true);
+    this.actionError.set('');
 
-    this.postsApi.editPost(this.post._id, body).subscribe({
+    this.postsApi.editPost(this.post._id, body).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.busy.set(false)),
+    ).subscribe({
       next: (updated) => {
         this.postUpdated.emit(updated);
         this.editing.set(false);
-        this.busy.set(false);
       },
-      error: (err: ApiError) => {
-        console.log(err);
-        this.busy.set(false);
-      },
+      error: () => this.actionError.set('Couldn’t update post.'),
     });
   }
 
   deletePost(): void {
-    if (!this.post?._id) return;
+    if (!this.post?._id || this.busy()) return;
 
     this.busy.set(true);
+    this.actionError.set('');
 
-    this.postsApi.deletePost(this.post._id).subscribe({
-      next: () => {
-        this.postDeleted.emit(this.post._id);
-        this.busy.set(false);
-      },
-      error: (err: ApiError) => {
-        console.log(err);
-        this.busy.set(false);
-      },
+    this.postsApi.deletePost(this.post._id).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.busy.set(false)),
+    ).subscribe({
+      next: () => this.postDeleted.emit(this.post._id),
+      error: () => this.actionError.set('Couldn’t delete post.'),
     });
   }
 

@@ -127,6 +127,12 @@
   align-items: center;
 }
 
+.feed__error {
+  margin: 0;
+  color: var(--color-gray-900);
+  line-height: 1.5;
+}
+
 .feed__action {
   min-height: 44px;
   min-width: 44px;

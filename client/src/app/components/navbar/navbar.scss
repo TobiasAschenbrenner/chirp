@@ -84,8 +84,7 @@
   }
 }
 
-.navbar__searchToggle,
-.navbar__searchBack {
+.navbar__searchControl {
   display: none;
   width: 44px;
   height: 44px;
@@ -161,6 +160,18 @@
 .navbar__profile {
   display: grid;
   place-items: center;
+}
+
+.navbar__searchError {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  button {
+    min-height: 44px;
+  }
 }
 
 .navbar__right {

@@ -138,6 +138,8 @@ describe('LikePost', () => {
 
     const emitted = vi.fn();
     fixture.componentInstance.postUpdated.subscribe(emitted);
+    const feedback = vi.fn();
+    fixture.componentInstance.actionError.subscribe(feedback);
 
     fixture.detectChanges();
     fixture.componentInstance.toggleLike();
@@ -145,6 +147,7 @@ describe('LikePost', () => {
     expect(postsApi.likePost).toHaveBeenCalledTimes(1);
     expect(emitted).not.toHaveBeenCalled();
     expect(fixture.componentInstance.busy()).toBe(false);
+    expect(feedback).toHaveBeenLastCalledWith('Couldn’t update like.');
   });
 
   it('should disable button when busy', () => {

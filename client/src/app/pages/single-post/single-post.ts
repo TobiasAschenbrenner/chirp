@@ -38,6 +38,7 @@ export class SinglePost implements OnInit {
   readonly post = signal<Post | null>(null);
   readonly loading = signal(false);
   readonly error = signal('');
+  readonly actionError = signal('');
 
   readonly commentText = signal('');
 

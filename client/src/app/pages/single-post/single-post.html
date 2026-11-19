@@ -50,9 +50,12 @@
         <app-bookmark-post
           [postId]="p._id"
           [initialBookmarked]="usersApi.isBookmarked(p._id)"
+          (actionError)="actionError.set($event)"
         ></app-bookmark-post>
       </div>
     </footer>
+
+    <p *ngIf="actionError()" class="singlePost__actionError" role="alert">{{ actionError() }}</p>
 
     <div class="singlePost__comments">
       <form class="singlePost__comments-form" (ngSubmit)="createComment()">

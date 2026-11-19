@@ -3,6 +3,7 @@
     <app-user-profile
       [user]="u"
       [busy]="busy()"
+      [actionError]="actionError()"
       (editProfile)="openEditProfile()"
       (followToggle)="toggleFollow()"
       (avatarChange)="changeAvatar($event)"
@@ -14,7 +15,7 @@
   <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
 
   <ng-container *ngIf="!loading()">
-    <p class="center" *ngIf="posts().length < 1">No posts by this user</p>
+    <p class="center" *ngIf="!error() && posts().length < 1">No posts by this user</p>
 
     <app-feeds
       *ngIf="posts().length > 0"
@@ -24,5 +25,8 @@
     ></app-feeds>
   </ng-container>
 
-  <p *ngIf="error()" class="error" role="alert">{{ error() }}</p>
+  <div *ngIf="error()" class="error" role="alert">
+    <span>{{ error() }}</span>
+    <button type="button" class="btn" (click)="retryProfile()" [disabled]="loading()">Try again</button>
+  </div>
 </section>

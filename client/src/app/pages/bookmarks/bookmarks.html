@@ -1,7 +1,10 @@
 <section class="bookmarks" [attr.aria-busy]="loading()">
   <h1 class="bookmarks__title" tabindex="-1">Bookmarks</h1>
 
-  <p *ngIf="error()" class="error" role="alert">{{ error() }}</p>
+  <div *ngIf="error()" class="error" role="alert">
+    <span>{{ error() }}</span>
+    <button type="button" class="btn" (click)="loadBookmarks()" [disabled]="loading()">Try again</button>
+  </div>
 
   <app-feed-skeleton *ngIf="loading()" [count]="3"></app-feed-skeleton>
 
@@ -12,6 +15,8 @@
       *ngIf="hasBookmarks()"
       [posts]="bookmarks()"
       [bookmarkedIds]="bookmarkedIds()"
+      (postUpdated)="onPostUpdated($event)"
+      (postDeleted)="onPostDeleted($event)"
       (bookmarkChanged)="onBookmarkChanged($event)"
     ></app-feeds>
   </ng-container>

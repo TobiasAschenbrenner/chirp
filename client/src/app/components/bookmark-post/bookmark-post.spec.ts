@@ -113,9 +113,10 @@ describe('BookmarkPost', () => {
     const error = new Error('Boom');
     postsApi.toggleBookmark.mockReturnValue(throwError(() => error));
 
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const changedSpy = vi.fn();
     component.changed.subscribe(changedSpy);
+    const feedback = vi.fn();
+    component.actionError.subscribe(feedback);
 
     fixture.detectChanges();
     component.toggleBookmark();
@@ -125,7 +126,7 @@ describe('BookmarkPost', () => {
     expect(component.bookmarked()).toBe(false);
     expect(usersApi.setBookmarked).not.toHaveBeenCalled();
     expect(changedSpy).not.toHaveBeenCalled();
+    expect(feedback).toHaveBeenLastCalledWith('Couldn’t update bookmark.');
 
-    consoleError.mockRestore();
   });
 });

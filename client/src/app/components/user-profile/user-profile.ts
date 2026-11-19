@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, computed, signal } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
@@ -17,6 +17,8 @@ import { FollowerRef } from '../../models/api-user.model';
 })
 export class UserProfile {
   @Input() busy = false;
+  @Input() actionError = '';
+  @ViewChild('avatarInput') private avatarInput?: ElementRef<HTMLInputElement>;
 
   private readonly _user = signal<User | null>(null);
 
@@ -78,11 +80,19 @@ export class UserProfile {
 
   submitAvatar(): void {
     const file = this.pendingAvatar();
-    if (!file) return;
+    if (!file || this.busy) return;
 
     this.avatarChange.emit(file);
+  }
+
+  chooseAvatar(): void {
+    this.avatarInput?.nativeElement.click();
+  }
+
+  resetAvatar(): void {
     this.avatarTouched.set(false);
     this.pendingAvatar.set(null);
+    if (this.avatarInput) this.avatarInput.nativeElement.value = '';
   }
 
   private getFirstFile(target: EventTarget | null): File | null {

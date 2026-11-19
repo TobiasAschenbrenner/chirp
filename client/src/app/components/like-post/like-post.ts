@@ -6,7 +6,6 @@ import { finalize } from 'rxjs/operators';
 import { Posts } from '../../services/posts/posts';
 import { Post } from '../../models/post.model';
 import { Auth } from '../../services/auth/auth';
-import { ApiError } from '../../models/api-error.model';
 
 @Component({
   selector: 'app-like-post',
@@ -18,6 +17,7 @@ import { ApiError } from '../../models/api-error.model';
 export class LikePost {
   @Input({ required: true }) post!: Post;
   @Output() postUpdated = new EventEmitter<Post>();
+  @Output() actionError = new EventEmitter<string>();
 
   busy = signal(false);
 
@@ -36,13 +36,14 @@ export class LikePost {
     if (!this.post?._id || this.busy()) return;
 
     this.busy.set(true);
+    this.actionError.emit('');
 
     this.postsApi
       .likePost(this.post._id)
       .pipe(finalize(() => this.busy.set(false)))
       .subscribe({
         next: (updated) => this.postUpdated.emit(updated),
-        error: (err: ApiError) => console.log(err),
+        error: () => this.actionError.emit('Couldn’t update like.'),
       });
   }
 }

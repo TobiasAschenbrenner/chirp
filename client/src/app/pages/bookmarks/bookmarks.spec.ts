@@ -53,8 +53,9 @@ describe('Bookmarks', () => {
 
     fixture.detectChanges();
 
-    expect(component.error()).toBe('Boom');
+    expect(component.error()).toBe('Couldn’t load bookmarks.');
     expect(component.loading()).toBe(false);
+    expect(component.isEmpty()).toBe(false);
   });
 
   it('should compute bookmarkedIds correctly', () => {
